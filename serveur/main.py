@@ -1,9 +1,9 @@
 # coding=utf-8
 import select
 import socket
-from carte import *
-from entitee import *
-from controlleur import controler_types
+from serveur.carte import *
+from serveur.entitee import *
+from serveur.controlleur import controler_types
 
 
 def tempspawnentitee(listecarte, cartes):
@@ -22,7 +22,7 @@ def demarage():
             carte = carte.split(":")
             carte[2] = carte[2].replace("\n", "")
             listecarte[(int(carte[0]), int(carte[1]))] = carte[2]
-    connexion = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    connexion = socket.socket()
     connexion.bind(('', 12800))
     connexion.listen(5)
     clients_connectes = []
@@ -83,7 +83,7 @@ def boucle(ids, joueurs, cartes, connexion, clients_connectes, idslibre, listeca
                                 directionmouv = Direction.CARTE
                                 if cartes[joueur.carte].deconnexion(joueur):
                                     del cartes[joueur.carte]
-                                joueur.carte = (joueur.carte[0] + 1, joueur.carte[1])
+                                joueur.carte = ((joueur.carte[0]) + 1, joueur.carte[1])
                                 joueur.position = (0, joueur.position[1])
                                 if joueur.carte not in cartes.keys():
                                     cartes[joueur.carte] = Carte("cartes/" + listecarte[joueur.carte])

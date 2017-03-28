@@ -1,4 +1,5 @@
 # coding=utf-8
+from controlleur import *
 
 
 class AbstractClassError(Exception):
@@ -14,6 +15,7 @@ class Forme:
     def __init__(self):
         raise AbstractClassError()
 
+    @controler_types(object,int,int)
     def position(self, x, y):
         self.x = x
         self.y = y
@@ -27,6 +29,7 @@ class Portee(Forme):
         self.distancemax = distancemax
         self.distancemin = distancemin
 
+    @controler_types(object, int, int)
     def isin(self, x, y):
         if self.distancemin <= abs(x - self.x) + abs(y - self.y) <= self.distancemax:
             return True
@@ -34,9 +37,11 @@ class Portee(Forme):
 
 
 class Ligne(Forme):
+    @controler_types(object, int)
     def __init__(self, longueur):
         self.longueur = longueur
 
+    @controler_types(object, int, int)
     def isin(self, x, y):
         if (((x == self.x) and (abs(self.y - y) < self.longueur)) or (
                     (y == self.y) and (abs(self.x - x) < self.longueur))):
@@ -54,10 +59,12 @@ class Sort:
 
 
 class Classe:
+    @controler_types(object, str)
     def __init__(self, nom):
         self.listsort = {}
         self.nom = nom
 
+    @controler_types(object, Sort, int)
     def addsort(self, sort, ids):
         if ids not in self.listsort:
             self.listsort[ids] = sort

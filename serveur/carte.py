@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from entitee import *
+from serveur.entitee import *
 
 
 class Direction(enum.Enum):

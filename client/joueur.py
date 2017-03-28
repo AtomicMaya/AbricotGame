@@ -1,16 +1,8 @@
 # coding=utf-8
-
-import enum
-from client.controlleur import *
-from client.tempserv import *
-from client.classes import *
-
-
-class Direction(enum.Enum):
-    HAUT = 0
-    BAS = 1
-    DROITE = 2
-    GAUCHE = 3
+from tempserv import *
+from classes import *
+from chemin import *
+import pygame
 
 
 class Etat(enum.Enum):
@@ -19,72 +11,11 @@ class Etat(enum.Enum):
     NORMAL = 2
 
 
-class Chemin:
-    @controler_types(object, int, int, list)
-    def __init__(self, x, y, mouvements):
-        self.actuel = (x, y)
-        self.mouvement = mouvements
-
-
-@controler_types(list, int, int, int, int)
-def findchemin(grille, xactuel, yactuel, xcible, ycible):
-    """Methode servant a trouver le plus court chemin entre deux points"""
-    casesvisitee = [(xactuel, yactuel)]
-
-    chemins = [Chemin(xactuel, yactuel, [])]
-
-    resultat = chemins[0]
-
-    if resultat.actuel == (xcible, ycible):
-        resultat.mouvement = [-1]
-    else:
-        for i in chemins:
-            tempx = i.actuel[0] + 1
-            tempy = i.actuel[1]
-            if -1 < tempx < 10 and -1 < tempy < 10:
-                if (tempx, tempy) not in casesvisitee and grille[tempy][tempx] == 0:
-                    nouvmouvement = list(i.mouvement)
-                    nouvmouvement.append(Direction.HAUT)
-                    resultat = Chemin(tempx, tempy, nouvmouvement)
-                    chemins.append(resultat)
-                    casesvisitee.append((tempx, tempy))
-                    if resultat.actuel == (xcible, ycible):
-                        break
-            tempx = i.actuel[0] - 1
-            tempy = i.actuel[1]
-            if -1 < tempx < 10 and -1 < tempy < 10:
-                if (tempx, tempy) not in casesvisitee and grille[tempy][tempx] == 0:
-                    nouvmouvement = list(i.mouvement)
-                    nouvmouvement.append(Direction.BAS)
-                    resultat = Chemin(tempx, tempy, nouvmouvement)
-                    chemins.append(resultat)
-                    casesvisitee.append((tempx, tempy))
-                    if resultat.actuel == (xcible, ycible):
-                        break
-            tempx = i.actuel[0]
-            tempy = i.actuel[1] + 1
-            if -1 < tempx < 10 and -1 < tempy < 10:
-                if (tempx, tempy) not in casesvisitee and grille[tempy][tempx] == 0:
-                    nouvmouvement = list(i.mouvement)
-                    nouvmouvement.append(Direction.DROITE)
-                    resultat = Chemin(tempx, tempy, nouvmouvement)
-                    chemins.append(resultat)
-                    casesvisitee.append((tempx, tempy))
-                    if resultat.actuel == (xcible, ycible):
-                        break
-            tempx = i.actuel[0]
-            tempy = i.actuel[1] - 1
-            if -1 < tempx < 10 and -1 < tempy < 10:
-                if (tempx, tempy) not in casesvisitee and grille[tempy][tempx] == 0:
-                    nouvmouvement = list(i.mouvement)
-                    nouvmouvement.append(Direction.GAUCHE)
-                    resultat = Chemin(tempx, tempy, nouvmouvement)
-                    chemins.append(resultat)
-                    casesvisitee.append((tempx, tempy))
-                    if resultat.actuel == (xcible, ycible):
-                        break
-
-    return resultat.mouvement
+class EtatLectureEnnemis(enum.Enum):
+    NEUTRE = 0
+    JOUEUR = 1
+    ENNEMI = 2
+    STOP = 3
 
 
 @controler_types(str)
@@ -125,6 +56,12 @@ def _forme(carte):
     return tolist(demande("carte:carte:" + str(carte[0]) + ":" + str(carte[1])))
 
 
+def createimage(chemin, couleurfond=(255, 255, 255)):
+    chemin = pygame.image.load(chemin)
+    chemin.set_colorkey(couleurfond)
+    return chemin.convert_alpha()
+
+
 class Joueur:
     def __init__(self):
         self.carte = _carte()
@@ -134,6 +71,7 @@ class Joueur:
         self.classe = _classes()
         self.etat = Etat.NORMAL
 
+    @controler_types(object, int, int, int)
     def sort(self, ids, x, y):
         if True:
             demande("combat:sort:" + str(self.id) + ":" + str(ids) + ":" + str(x) + ":" + str(y))
@@ -205,5 +143,41 @@ class Joueur:
         return temp
 
     def start(self):
-        commande("combat:start:" + str(self.id))
+        # noinspection PyStatementEffect
         self.etat == Etat.COMBAT
+        commande("combat:start:" + str(self.id))
+
+    def lireentitee(self):
+        temp = demande("carte:entitee:" + str(self.carte[0]) + ":" + str(self.carte[1]))
+        temp = temp.split(":")
+        etat = EtatLectureEnnemis.NEUTRE
+        indice = 0
+        tempentitee = {}
+        tempennemi = {}
+        tempintentitee = 4
+        while indice < len(temp):
+            i = temp[indice]
+            if etat == EtatLectureEnnemis.NEUTRE:
+                if i == "J":
+                    etat = EtatLectureEnnemis.JOUEUR
+                elif i == "G":
+                    etat = EtatLectureEnnemis.ENNEMI
+                else:
+                    break
+                indice += 1
+            elif etat == EtatLectureEnnemis.JOUEUR:
+                tempentitee[(int(temp[indice + 1]), int(temp[indice + 2]))] = 3
+                indice += 3
+                etat = EtatLectureEnnemis.NEUTRE
+            elif etat == EtatLectureEnnemis.ENNEMI:
+                tempentitee[(int(temp[indice]), int(temp[indice + 1]))] = tempintentitee
+                tempindice = indice + 3
+                tempstr = ""
+                for j in range(int(temp[indice + 2])):
+                    tempstr += (temp[tempindice] + " niveau : " + temp[tempindice + 1] + " | ")
+                    tempindice += 2
+                tempennemi[tempintentitee] = tempstr
+                indice = tempindice
+                tempintentitee += 1
+                etat = EtatLectureEnnemis.NEUTRE
+        return tempentitee
