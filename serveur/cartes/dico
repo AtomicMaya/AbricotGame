@@ -1,0 +1,5 @@
+0:0:spawn.carte
+-1:0:gauche.carte
+1:0:droite.carte
+0:1:haut.carte
+0:-1:bas.carte
