@@ -83,7 +83,7 @@ def boucle(ids, joueurs, cartes, connexion, clients_connectes, idslibre, listeca
                                 directionmouv = Direction.CARTE
                                 if cartes[joueur.carte].deconnexion(joueur):
                                     del cartes[joueur.carte]
-                                joueur.carte = ((joueur.carte[0]) + 1, joueur.carte[1])
+                                joueur.carte = (joueur.carte[0] + 1, joueur.carte[1])
                                 joueur.position = (0, joueur.position[1])
                                 if joueur.carte not in cartes.keys():
                                     cartes[joueur.carte] = Carte("cartes/" + listecarte[joueur.carte])

@@ -12,7 +12,7 @@ def controler_types(*a_args, **a_kwargs):
                 for i in range(len(a_args)):
                     if not (isinstance(args[i], a_args[i])):
                         raise SyntaxError("l'argument numero " + str(i + 1) + " n'est pas du type " + str(a_args[i]) +
-                                          " mais du type " + str(type(args[i])))
+                                          " mais du type " + str(type(args[i]))+" ( "+str(args[1])+" )")
                 for cle in kwargs:
                     if cle not in a_kwargs:
                         raise SyntaxError("l'argument " + str(cle) + " n'existe pas")

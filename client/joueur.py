@@ -137,7 +137,6 @@ class Joueur:
     def moveto(self, x, y):
         if self.forme[y][x] == 0:
             temp = findchemin(self.forme, self.position[0], self.position[1], x, y)
-            self.move(temp[0])
         else:
             temp = []
         return temp
@@ -166,11 +165,11 @@ class Joueur:
                     break
                 indice += 1
             elif etat == EtatLectureEnnemis.JOUEUR:
-                tempentitee[(int(temp[indice + 1]), int(temp[indice + 2]))] = 3
+                tempentitee[(int(temp[indice + 1]), int(temp[indice + 2]))] = "J"
                 indice += 3
                 etat = EtatLectureEnnemis.NEUTRE
             elif etat == EtatLectureEnnemis.ENNEMI:
-                tempentitee[(int(temp[indice]), int(temp[indice + 1]))] = tempintentitee
+                tempentitee[(int(temp[indice]), int(temp[indice + 1]))] = "E"
                 tempindice = indice + 3
                 tempstr = ""
                 for j in range(int(temp[indice + 2])):

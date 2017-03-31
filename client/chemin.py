@@ -23,56 +23,54 @@ def findchemin(grille, xactuel, yactuel, xcible, ycible):
     casesvisitee = [(xactuel, yactuel)]
 
     chemins = [Chemin(xactuel, yactuel, [])]
-
+    if chemins[0].actuel == (xcible, ycible):
+        return []
     resultat = chemins[0]
 
-    if resultat.actuel == (xcible, ycible):
-        resultat.mouvement = [-1]
-    else:
-        for i in chemins:
-            tempx = i.actuel[0] + 1
-            tempy = i.actuel[1]
-            if -1 < tempx < 10 and -1 < tempy < 10:
-                if (tempx, tempy) not in casesvisitee and grille[tempy][tempx] == 0:
-                    nouvmouvement = list(i.mouvement)
-                    nouvmouvement.append(Direction.HAUT)
-                    resultat = Chemin(tempx, tempy, nouvmouvement)
-                    chemins.append(resultat)
-                    casesvisitee.append((tempx, tempy))
-                    if resultat.actuel == (xcible, ycible):
-                        break
-            tempx = i.actuel[0] - 1
-            tempy = i.actuel[1]
-            if -1 < tempx < 10 and -1 < tempy < 10:
-                if (tempx, tempy) not in casesvisitee and grille[tempy][tempx] == 0:
-                    nouvmouvement = list(i.mouvement)
-                    nouvmouvement.append(Direction.BAS)
-                    resultat = Chemin(tempx, tempy, nouvmouvement)
-                    chemins.append(resultat)
-                    casesvisitee.append((tempx, tempy))
-                    if resultat.actuel == (xcible, ycible):
-                        break
-            tempx = i.actuel[0]
-            tempy = i.actuel[1] + 1
-            if -1 < tempx < 10 and -1 < tempy < 10:
-                if (tempx, tempy) not in casesvisitee and grille[tempy][tempx] == 0:
-                    nouvmouvement = list(i.mouvement)
-                    nouvmouvement.append(Direction.DROITE)
-                    resultat = Chemin(tempx, tempy, nouvmouvement)
-                    chemins.append(resultat)
-                    casesvisitee.append((tempx, tempy))
-                    if resultat.actuel == (xcible, ycible):
-                        break
-            tempx = i.actuel[0]
-            tempy = i.actuel[1] - 1
-            if -1 < tempx < 10 and -1 < tempy < 10:
-                if (tempx, tempy) not in casesvisitee and grille[tempy][tempx] == 0:
-                    nouvmouvement = list(i.mouvement)
-                    nouvmouvement.append(Direction.GAUCHE)
-                    resultat = Chemin(tempx, tempy, nouvmouvement)
-                    chemins.append(resultat)
-                    casesvisitee.append((tempx, tempy))
-                    if resultat.actuel == (xcible, ycible):
-                        break
+    for i in chemins:
+        tempx = i.actuel[0] + 1
+        tempy = i.actuel[1]
+        if -1 < tempx < 10 and -1 < tempy < 10:
+            if (tempx, tempy) not in casesvisitee and grille[tempy][tempx] == 0:
+                nouvmouvement = list(i.mouvement)
+                nouvmouvement.append(Direction.HAUT)
+                resultat = Chemin(tempx, tempy, nouvmouvement)
+                chemins.append(resultat)
+                casesvisitee.append((tempx, tempy))
+                if resultat.actuel == (xcible, ycible):
+                    break
+        tempx = i.actuel[0] - 1
+        tempy = i.actuel[1]
+        if -1 < tempx < 10 and -1 < tempy < 10:
+            if (tempx, tempy) not in casesvisitee and grille[tempy][tempx] == 0:
+                nouvmouvement = list(i.mouvement)
+                nouvmouvement.append(Direction.BAS)
+                resultat = Chemin(tempx, tempy, nouvmouvement)
+                chemins.append(resultat)
+                casesvisitee.append((tempx, tempy))
+                if resultat.actuel == (xcible, ycible):
+                    break
+        tempx = i.actuel[0]
+        tempy = i.actuel[1] + 1
+        if -1 < tempx < 10 and -1 < tempy < 10:
+            if (tempx, tempy) not in casesvisitee and grille[tempy][tempx] == 0:
+                nouvmouvement = list(i.mouvement)
+                nouvmouvement.append(Direction.DROITE)
+                resultat = Chemin(tempx, tempy, nouvmouvement)
+                chemins.append(resultat)
+                casesvisitee.append((tempx, tempy))
+                if resultat.actuel == (xcible, ycible):
+                    break
+        tempx = i.actuel[0]
+        tempy = i.actuel[1] - 1
+        if -1 < tempx < 10 and -1 < tempy < 10:
+            if (tempx, tempy) not in casesvisitee and grille[tempy][tempx] == 0:
+                nouvmouvement = list(i.mouvement)
+                nouvmouvement.append(Direction.GAUCHE)
+                resultat = Chemin(tempx, tempy, nouvmouvement)
+                chemins.append(resultat)
+                casesvisitee.append((tempx, tempy))
+                if resultat.actuel == (xcible, ycible):
+                    break
 
     return resultat.mouvement
