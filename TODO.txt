@@ -1,0 +1,7 @@
+MAP :
+	- Toutes les cases ont un attribut 'Walkable' ou 'Marchable'
+	
+MOTEUR :
+	- Chaque instance d'acteur (Joueur, Mob ou NPC) doit avoir un up(), down(), left() et right() fonctionnel !!!
+	
+	
