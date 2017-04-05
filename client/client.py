@@ -54,7 +54,8 @@ def boucle(joueur, fenetre):
                 elif event.key == K_LEFT:
                     joueur.move(Direction.GAUCHE)
             if event.type == MOUSEBUTTONDOWN:
-                chemin = joueur.moveto(event.pos[0] // 50, event.pos[1] // 50)
+                if event.pos[0] // 50 < 10 and event.pos[1] // 50 < 10:
+                    chemin = joueur.moveto(event.pos[0] // 50, event.pos[1] // 50)
         yield True
 
 
@@ -79,8 +80,8 @@ def preparationcombat(joueur, fenetre):
         if event.type == QUIT:
             joueur.quitter()
             return False
-        if event.type==MOUSEBUTTONDOWN:
-            if 50<event.pos[0]<150 and 50<event.pos[1]<100:
+        if event.type == MOUSEBUTTONDOWN:
+            if 50 < event.pos[0] < 150 and 50 < event.pos[1] < 100:
                 joueur.start()
     affichercombat(fenetre)
     return True
@@ -91,6 +92,8 @@ def main():
     joueur = Joueur()
     actif = True
     fenetre = pygame.display.set_mode((640, 480))
+    pygame.display.set_icon(pygame.transform.scale(pygame.image.load("Assets/Image/UI/icone.png").convert_alpha(), (30, 30)))
+    pygame.display.set_caption("Abricot game")
     principale = boucle(joueur, fenetre)
     while actif:
         if joueur.etat == Etat.NORMAL:
