@@ -12,23 +12,17 @@ def tempspawnentitee(listecarte, cartes):
 
 
 def demarage():
-    cartes = {}
-    ids = 0
-    joueurs = {}
-    idslibre = []
     listecarte = {}
     with open("cartes/dico") as fichier:
         for carte in fichier:
-          #  carte = carte.split(":") YOU FKING PIECE OF SHI*
+            carte = carte.split(":")
             carte[2] = carte[2].replace("\n", "")
             listecarte[(int(carte[0]), int(carte[1]))] = carte[2]
     connexion = socket.socket()
     connexion.bind(('', 12800))
     connexion.listen(5)
-    clients_connectes = []
-    tempspawnentitee(listecarte, cartes)
     print("Ok")
-    return ids, joueurs, cartes, connexion, clients_connectes, idslibre, listecarte
+    return connexion, listecarte
 
 
 @controler_types(dict)
@@ -187,7 +181,13 @@ def boucle(ids, joueurs, cartes, connexion, clients_connectes, idslibre, listeca
 
 
 def main():
-    ids, joueurs, cartes, connexion, clients_connectes, idslibre, listecarte = demarage()
+    connexion, listecarte = demarage()
+    ids = 0
+    clients_connectes = []
+    joueurs = {}
+    cartes = {}
+    idslibre = []
+    tempspawnentitee(listecarte, cartes)
     while True:
         ids, clients_connectes = boucle(ids, joueurs, cartes, connexion, clients_connectes, idslibre, listecarte)
 
