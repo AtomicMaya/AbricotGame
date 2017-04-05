@@ -40,16 +40,21 @@ class Ftp_client:
         self.max_attempts = 15
         self.waiting = True
 
-    def download_file(self, act ,path, filename):
+    def download_file(self, act ,path, filename, local_path=""):
         res = ''
-        complete_path = os.path.join(path, filename)
         if not os.path.exists(path):
             try:
                 os.makedirs(path)
             except OSError as exc: # Guard against race condition
                 if exc.errno != errno.EEXIST:
                     raise
-        with open(os.path.join(act, complete_path), "w+b") as f:
+        if local_path:
+            local = os.path.join(local_path, filename)
+        else:
+            local = os.path.join(path, filename)
+        complete_path = os.path.join(path, filename)
+         
+        with open(os.path.join(act, local), "w+b") as f:
             print(f.name)
             self.ptr = f.tell()
 
