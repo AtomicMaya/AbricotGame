@@ -33,7 +33,7 @@ def findchemin(grille, xactuel, yactuel, xcible, ycible):
         if -1 < tempx < 10 and -1 < tempy < 10:
             if (tempx, tempy) not in casesvisitee and grille[tempy][tempx] == 0:
                 nouvmouvement = list(i.mouvement)
-                nouvmouvement.append(Direction.HAUT)
+                nouvmouvement.append(Direction.DROITE)
                 resultat = Chemin(tempx, tempy, nouvmouvement)
                 chemins.append(resultat)
                 casesvisitee.append((tempx, tempy))
@@ -44,7 +44,7 @@ def findchemin(grille, xactuel, yactuel, xcible, ycible):
         if -1 < tempx < 10 and -1 < tempy < 10:
             if (tempx, tempy) not in casesvisitee and grille[tempy][tempx] == 0:
                 nouvmouvement = list(i.mouvement)
-                nouvmouvement.append(Direction.BAS)
+                nouvmouvement.append(Direction.GAUCHE)
                 resultat = Chemin(tempx, tempy, nouvmouvement)
                 chemins.append(resultat)
                 casesvisitee.append((tempx, tempy))
@@ -55,7 +55,7 @@ def findchemin(grille, xactuel, yactuel, xcible, ycible):
         if -1 < tempx < 10 and -1 < tempy < 10:
             if (tempx, tempy) not in casesvisitee and grille[tempy][tempx] == 0:
                 nouvmouvement = list(i.mouvement)
-                nouvmouvement.append(Direction.DROITE)
+                nouvmouvement.append(Direction.HAUT)
                 resultat = Chemin(tempx, tempy, nouvmouvement)
                 chemins.append(resultat)
                 casesvisitee.append((tempx, tempy))
@@ -66,7 +66,7 @@ def findchemin(grille, xactuel, yactuel, xcible, ycible):
         if -1 < tempx < 10 and -1 < tempy < 10:
             if (tempx, tempy) not in casesvisitee and grille[tempy][tempx] == 0:
                 nouvmouvement = list(i.mouvement)
-                nouvmouvement.append(Direction.GAUCHE)
+                nouvmouvement.append(Direction.BAS)
                 resultat = Chemin(tempx, tempy, nouvmouvement)
                 chemins.append(resultat)
                 casesvisitee.append((tempx, tempy))
