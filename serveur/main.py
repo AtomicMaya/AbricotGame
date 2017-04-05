@@ -65,7 +65,7 @@ def boucle(ids, joueurs, cartes, connexion, clients_connectes, idslibre, listeca
                     client.send((str(cartes[(int(temp[1]), int(temp[2]))].forme)).encode())
 
                 elif temp[0] == "entitee" and len(temp) == 3:
-                    client.send((_entitee(cartes[(int(temp[1]), int(temp[2]))].entites)).encode())
+                    client.send(    (  _entitee(cartes[(int(temp[1]), int(temp[2]))].entites)  )     .encode())
 
                 elif temp[0] == "move" and len(temp) == 3:
                     joueur = joueurs[int(temp[1])]

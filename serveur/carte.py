@@ -71,7 +71,8 @@ class Carte:
     @controler_types(object, Joueur)
     def deconnexion(self, joueuractif):
         """Permet de retirer un joueur d'une carte"""
-        self.entites[joueuractif.position].remove(joueuractif)
+        if joueuractif in self.entites.keys():
+            self.entites[joueuractif.position].remove(joueuractif)
         self.joueurs -= 1
         if self.joueurs == 0 and len(self.listcombat) == 0:
             return True
@@ -100,7 +101,6 @@ class Carte:
             self.entites[joueur.position].remove(joueur)
             joueur.position = cible
             if joueur.position in self.entites.keys():
-                self.entites[joueur.position].append(joueur)
                 ennemis = [x for x in self.entites[joueur.position] if type(x) == Groupeennemi]
 
                 if len(ennemis) > 0:
@@ -111,7 +111,6 @@ class Carte:
                     self.deconnexion(joueur)
                     joueur.etat = Etatjoueur.combat
                     return Mouvementresult.COMBAT
-
             else:
                 self.entites[joueur.position] = [joueur]
             return Mouvementresult.RIEN
