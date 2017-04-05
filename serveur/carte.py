@@ -106,11 +106,12 @@ class Carte:
                 if len(ennemis) > 0:
                     if not ennemis[0].combat:
                         self.listcombat.append(Combat(self, ennemis[0]))
-                    if ennemis[0].combat.connect(joueur):
-                        self.despawn(ennemis[0])
+                    ennemis[0].combat.connect(joueur)
                     self.deconnexion(joueur)
                     joueur.etat = Etatjoueur.combat
                     return Mouvementresult.COMBAT
+                else:
+                    self.entites[joueur.position].append(joueur)
             else:
                 self.entites[joueur.position] = [joueur]
             return Mouvementresult.RIEN
@@ -121,7 +122,7 @@ class Carte:
 class Combat:
     @controler_types(object, Carte, Groupeennemi)
     def __init__(self, carte, ennemis):
-        self.ennemis = ennemis.ennemis
+        self.ennemis = ennemis
         ennemis.combat = self
         self.spawn = []
         self.ennemisspawn = []
@@ -159,6 +160,7 @@ class Combat:
             j = i and j
         if j:
             self.actif = True
+            self.carte.despawn(self.ennemis)
 
     @controler_types(object, Joueur)
     def connect(self, joueur):
@@ -179,11 +181,11 @@ class Combat:
         if self.actif:
             for i in self.joueurs:
                 resultat += ("J:" + str(i.id) + ":" + str(i.position[0]) + ":" + str(i.position[1]) + ":")
-            for i in self.ennemis:
+            for i in self.ennemis.ennemis:
                 resultat += ("E:" + str(i.nom) + ":" + str(i.position[0]) + ":" + str(i.position[1]) + ":")
         else:
             for i in self.joueurs:
                 resultat += (str(i.id) + ":" + str(self.joueurs[i]) + "\n")
-            for i in self.ennemis:
+            for i in self.ennemis.ennemis:
                 resultat += (i.nom + ":" + str(i.niveau) + "\n")
         return resultat[0:len(resultat) - 1]
