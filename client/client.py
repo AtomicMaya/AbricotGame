@@ -24,12 +24,6 @@ def affichercarte(ent, fenetre):
     pygame.display.flip()
 
 
-"""
-case_x = mouse_x // ((fond_x)*0.8)/20
-case_y = mouse_y // ((fond_y)*0.8)/15
-"""
-
-
 def affichercombat(fenetre):
     fenetre.blit(createimage("Assets/Image/UI/start.png"), (50, 50))
     pygame.display.flip()
@@ -85,7 +79,7 @@ def preparationcombat(joueur, fenetre):
         if event.type == QUIT:
             joueur.quitter()
             return False
-        if event.type==KEYDOWN:
+        if event.type==MOUSEBUTTONDOWN:
             if 50<event.pos[0]<150 and 50<event.pos[1]<100:
                 joueur.start()
     affichercombat(fenetre)
