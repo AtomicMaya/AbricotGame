@@ -19,7 +19,7 @@ def demarage():
     listecarte = {}
     with open("cartes/dico") as fichier:
         for carte in fichier:
-            carte = carte.split(":")
+          #  carte = carte.split(":") YOU FKING PIECE OF SHI*
             carte[2] = carte[2].replace("\n", "")
             listecarte[(int(carte[0]), int(carte[1]))] = carte[2]
     connexion = socket.socket()
