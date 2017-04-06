@@ -6,4 +6,14 @@ MAP :
 MOTEUR :
 	- Chaque instance d'acteur (Joueur, Mob ou NPC) doit avoir un up(), down(), left() et right() fonctionnel !!!
 	
+Pour l'uplauncher : 
+Client : 
+	- Envoi version actuelle si version act =/= version client 
+Serveur : 
+	- Récupère Liste versions via API API/versions.html [plus récente à plus ancienne (ex: [1.1, 1.0, 0.8, 0.3])]
+	- Genère la table des fichiers en combinant celles entre la version demandée et la version actuelle
+	- Envoi message au client comme quoi la table est dispo (son nom)
+Client  :
+	- Télécharge avec le client ftp
+	- Parcours la table, hash les fichier locaux si existants, si hash =/=, télécharge. Si fichier local n'existe pas, télécharge. Si action == "DEL", supprime le fichier local.
 	
