@@ -7,20 +7,20 @@ from pygame.locals import *
 @controler_types(dict, object)
 def affichercarte(ent, fenetre):
     fond = pygame.image.load("Assets/Image/Monde/Sol1.png").convert()
-    fond = pygame.transform.scale(fond, (640, 480))
+    fond = pygame.transform.scale(fond, (1000, 725))
     character = createimage("Assets/Image/Classes/Archer/archer4.png")
     character = pygame.transform.scale(character, (50, 50))
-    fenetre.blit(fond, (0, 0))
-    enm = createimage("Assets/Image/Classes/Démoniste/démo3.png", (129, 139, 139))
-    enm = pygame.transform.scale(enm, (50, 50))
+    fenetre.blit(fond, (100, 0))
+    enm = createimage("Assets/Image/Classes/Démoniste/démo3.png")
+    #enm = pygame.transform.scale(enm, (50, 50))
     for i in ent:
         if ent[i] == "J":
-            fenetre.blit(character, (i[0] * 50, i[1] * 50))
+            fenetre.blit(character, (i[0] * 50+100, i[1] * 50))
         else:
-            fenetre.blit(enm, (i[0] * 50, i[1] * 50))
-    for i in range(10):
-        for j in range(10):
-            pygame.draw.rect(fenetre, (0, 0, 0), (i * 50, j * 50, 51, 51), 1)
+            fenetre.blit(enm, (i[0] * 50+10+100, i[1] * 50))
+    for i in range(20):
+        for j in range(15):
+            pygame.draw.rect(fenetre, (0, 0, 0), (i * 50+100, j * 50, 51, 51), 1)
     pygame.display.flip()
 
 
@@ -36,7 +36,7 @@ def boucle(joueur, fenetre):
     while True:
         entitee = joueur.lireentitee()
         affichercarte(entitee, fenetre)
-        if (time.time() > time_actuel + 0.25) and len(chemin) != 0:
+        if (time.time() > time_actuel + 0.5) and len(chemin) != 0:
             joueur.move(chemin[0])
             del chemin[0]
             time_actuel = time.time()
@@ -54,6 +54,7 @@ def boucle(joueur, fenetre):
                 elif event.key == K_LEFT:
                     joueur.move(Direction.GAUCHE)
             if event.type == MOUSEBUTTONDOWN:
+                event.pos=event.pos[0]-100,event.pos[1]
                 if event.pos[0] // 50 < 10 and event.pos[1] // 50 < 10:
                     chemin = joueur.moveto(event.pos[0] // 50, event.pos[1] // 50)
         yield True
@@ -91,9 +92,8 @@ def main():
     pygame.init()
     joueur = Joueur()
     actif = True
-    fenetre = pygame.display.set_mode((640, 480))
-    pygame.display.set_icon(
-        pygame.transform.scale(pygame.image.load("Assets/Image/UI/icone.png").convert_alpha(), (30, 30)))
+    fenetre = pygame.display.set_mode((1200, 700))
+    pygame.display.set_icon(pygame.transform.scale(pygame.image.load("Assets/Image/UI/icone.png").convert_alpha(), (30, 30)))
     pygame.display.set_caption("Abricot game")
     principale = boucle(joueur, fenetre)
     while actif:
@@ -104,7 +104,7 @@ def main():
         elif joueur.etat == Etat.PREPARATIONCOMBAT:
             actif = preparationcombat(joueur, fenetre)
         pygame.time.Clock().tick(30)
-    pygame.quit()
 
 
 main()
+pygame.quit()
