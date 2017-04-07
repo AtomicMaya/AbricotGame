@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from serveur.controlleur import controler_types
+from controlleur import controler_types
 import enum
 
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from serveur.entitee import *
+from entitee import *
 
 
 class Direction(enum.Enum):
@@ -20,12 +20,6 @@ class Mouvementresult(enum.Enum):
 
 class Carte:
     """Classe représentant une carte et toute les entitee qu'elle contient"""
-
-    @controler_types(object, tuple, EntiteeCarte)
-    def enlever(self, position, valeur):
-        self.entites[position].remove(valeur)
-        if len(self.entites[position]) == 0:
-            del self.entites[position]
 
     @controler_types(object, str)
     def __init__(self, fichier):
@@ -72,13 +66,13 @@ class Carte:
 
     @controler_types(object, Groupeennemi)
     def despawn(self, entiteeactive):
-        self.enlever(entiteeactive.position, entiteeactive)
+        self.entites[entiteeactive.position].remove(entiteeactive)
 
     @controler_types(object, Joueur)
     def deconnexion(self, joueuractif):
         """Permet de retirer un joueur d'une carte"""
-        if joueuractif.position in self.entites.keys():
-            self.enlever(joueuractif.position, joueuractif)
+        if joueuractif in self.entites.keys():
+            self.entites[joueuractif.position].remove(joueuractif)
         self.joueurs -= 1
         if self.joueurs == 0 and len(self.listcombat) == 0:
             return True
@@ -104,7 +98,7 @@ class Carte:
             cible = joueur.position
 
         if self.forme[cible[1]][cible[0]] == 0:
-            self.enlever(joueur.position, joueur)
+            self.entites[joueur.position].remove(joueur)
             joueur.position = cible
             if joueur.position in self.entites.keys():
                 ennemis = [x for x in self.entites[joueur.position] if type(x) == Groupeennemi]
@@ -180,7 +174,8 @@ class Combat:
         return False
 
     def actualiser(self):
-        print("Go", self)
+        pass
+        """print("Go", self)"""
 
     def afficher(self):
         resultat = ""
