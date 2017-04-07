@@ -36,7 +36,7 @@ def boucle(joueur, fenetre):
     while True:
         entitee = joueur.lireentitee()
         affichercarte(entitee, fenetre)
-        if (time.time() > time_actuel + 0.5) and len(chemin) != 0:
+        if (time.time() > time_actuel + 0.25) and len(chemin) != 0:
             joueur.move(chemin[0])
             del chemin[0]
             time_actuel = time.time()
@@ -92,7 +92,8 @@ def main():
     joueur = Joueur()
     actif = True
     fenetre = pygame.display.set_mode((640, 480))
-    pygame.display.set_icon(pygame.transform.scale(pygame.image.load("Assets/Image/UI/icone.png").convert_alpha(), (30, 30)))
+    pygame.display.set_icon(
+        pygame.transform.scale(pygame.image.load("Assets/Image/UI/icone.png").convert_alpha(), (30, 30)))
     pygame.display.set_caption("Abricot game")
     principale = boucle(joueur, fenetre)
     while actif:
@@ -103,6 +104,7 @@ def main():
         elif joueur.etat == Etat.PREPARATIONCOMBAT:
             actif = preparationcombat(joueur, fenetre)
         pygame.time.Clock().tick(30)
+    pygame.quit()
 
 
 main()
