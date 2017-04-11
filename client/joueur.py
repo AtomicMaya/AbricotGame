@@ -103,7 +103,7 @@ class Joueur:
             cibley = self.position[1]
             direct = ":nul"
 
-        if -1 < ciblex < 10 and -1 < cibley < 10:
+        if -1 < ciblex < 20 and -1 < cibley < 15:
             if self.forme[cibley][ciblex] == 0:
                 tempmove = demande("carte:move:" + str(self.id) + direct)
                 if tempmove == "True":
@@ -119,7 +119,7 @@ class Joueur:
 
             elif direction == Direction.GAUCHE:
                 self.carte = (self.carte[0] - 1, self.carte[1])
-                self.position = (9, cibley)
+                self.position = (19, cibley)
 
             elif direction == Direction.HAUT:
                 self.carte = (self.carte[0], self.carte[1] + 1)
@@ -127,7 +127,7 @@ class Joueur:
 
             elif direction == Direction.BAS:
                 self.carte = (self.carte[0], self.carte[1] - 1)
-                self.position = (ciblex, 9)
+                self.position = (ciblex, 14)
             self.forme = _forme(self.carte)
 
     def quitter(self):

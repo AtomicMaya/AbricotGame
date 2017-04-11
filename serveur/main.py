@@ -73,7 +73,7 @@ def boucle(ids, joueurs, cartes, connexion, clients_connectes, idslibre, listeca
                         if temp[2] == "right":
                             directionmouv = Direction.DROITE
 
-                            if joueur.position[0] == 9:
+                            if joueur.position[0] == 19:
                                 directionmouv = Direction.CARTE
                                 if cartes[joueur.carte].deconnexion(joueur):
                                     del cartes[joueur.carte]
@@ -92,7 +92,7 @@ def boucle(ids, joueurs, cartes, connexion, clients_connectes, idslibre, listeca
                                 if cartes[joueur.carte].deconnexion(joueur):
                                     del cartes[joueur.carte]
                                 joueur.carte = (joueur.carte[0] - 1, joueur.carte[1])
-                                joueur.position = (9, joueur.position[1])
+                                joueur.position = (19, joueur.position[1])
                                 if joueur.carte not in cartes.keys():
                                     cartes[joueur.carte] = Carte("cartes/" + listecarte[joueur.carte])
                                 cartes[joueur.carte].connexion(joueur)
@@ -106,7 +106,7 @@ def boucle(ids, joueurs, cartes, connexion, clients_connectes, idslibre, listeca
                                 if cartes[joueur.carte].deconnexion(joueur):
                                     del cartes[joueur.carte]
                                 joueur.carte = (joueur.carte[0], joueur.carte[1] - 1)
-                                joueur.position = (joueur.position[0], 9)
+                                joueur.position = (joueur.position[0], 14)
                                 if joueur.carte not in cartes.keys():
                                     cartes[joueur.carte] = Carte("cartes/" + listecarte[joueur.carte])
                                 cartes[joueur.carte].connexion(joueur)
@@ -115,7 +115,7 @@ def boucle(ids, joueurs, cartes, connexion, clients_connectes, idslibre, listeca
                         elif temp[2] == "up":
                             directionmouv = Direction.HAUT
 
-                            if joueur.position[1] == 9:
+                            if joueur.position[1] == 14:
                                 directionmouv = Direction.CARTE
                                 if cartes[joueur.carte].deconnexion(joueur):
                                     del cartes[joueur.carte]
