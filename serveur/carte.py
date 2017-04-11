@@ -134,7 +134,7 @@ class Combat:
         self.actif = False
         self.forme = []
         with open(carte.fichier) as fichier:
-            for i in range(12):
+            for i in range(17):
                 temp = fichier.readline()
                 while temp[0] == "#":
                     temp = fichier.readline()
