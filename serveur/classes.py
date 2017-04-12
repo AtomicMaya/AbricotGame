@@ -1,5 +1,5 @@
 # coding=utf-8
-from serveur.controlleur import *
+from controlleur import *
 
 class AbstractClassError(Exception):
 

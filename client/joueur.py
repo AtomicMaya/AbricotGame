@@ -142,7 +142,6 @@ class Joueur:
         return temp
 
     def start(self):
-        # noinspection PyStatementEffect
         self.etat == Etat.COMBAT
         commande("combat:start:" + str(self.id))
 
