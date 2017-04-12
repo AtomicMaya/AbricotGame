@@ -30,7 +30,7 @@ def findchemin(grille, xactuel, yactuel, xcible, ycible):
     for i in chemins:
         tempx = i.actuel[0] + 1
         tempy = i.actuel[1]
-        if -1 < tempx < 10 and -1 < tempy < 10:
+        if -1 < tempx < 20 and -1 < tempy < 15:
             if (tempx, tempy) not in casesvisitee and grille[tempy][tempx] == 0:
                 nouvmouvement = list(i.mouvement)
                 nouvmouvement.append(Direction.DROITE)
@@ -41,7 +41,7 @@ def findchemin(grille, xactuel, yactuel, xcible, ycible):
                     break
         tempx = i.actuel[0] - 1
         tempy = i.actuel[1]
-        if -1 < tempx < 10 and -1 < tempy < 10:
+        if -1 < tempx < 20 and -1 < tempy < 15:
             if (tempx, tempy) not in casesvisitee and grille[tempy][tempx] == 0:
                 nouvmouvement = list(i.mouvement)
                 nouvmouvement.append(Direction.GAUCHE)
@@ -52,7 +52,7 @@ def findchemin(grille, xactuel, yactuel, xcible, ycible):
                     break
         tempx = i.actuel[0]
         tempy = i.actuel[1] + 1
-        if -1 < tempx < 10 and -1 < tempy < 10:
+        if -1 < tempx < 20 and -1 < tempy < 15:
             if (tempx, tempy) not in casesvisitee and grille[tempy][tempx] == 0:
                 nouvmouvement = list(i.mouvement)
                 nouvmouvement.append(Direction.HAUT)
@@ -63,7 +63,7 @@ def findchemin(grille, xactuel, yactuel, xcible, ycible):
                     break
         tempx = i.actuel[0]
         tempy = i.actuel[1] - 1
-        if -1 < tempx < 10 and -1 < tempy < 10:
+        if -1 < tempx < 20 and -1 < tempy < 15:
             if (tempx, tempy) not in casesvisitee and grille[tempy][tempx] == 0:
                 nouvmouvement = list(i.mouvement)
                 nouvmouvement.append(Direction.BAS)

@@ -27,6 +27,7 @@ class Carte:
         self.joueurs = 0
         self.fichier = fichier
         self.listcombat = []
+        self.forme = []
         with open(fichier) as carte:
             temp = carte.readline()
             while temp[0] == "#":
@@ -36,16 +37,12 @@ class Carte:
             temp = carte.readline()
             while temp[0] == "#":
                 temp = carte.readline()
-            tempforme = []
-            for i in range(10):
+            for i in range(15):
                 temp = carte.readline()
                 while temp[0] == "#":
                     temp = carte.readline()
                 temp = temp.replace(" ", "")
-                tempforme.append([int(x) for x in temp.split(":")])
-        self.forme = []
-        for i in range(len(tempforme) - 1, -1, -1):
-            self.forme.append(tempforme[i])
+                self.forme.append([int(x) for x in temp.split(":")])
 
     @controler_types(object, Joueur)
     def connexion(self, joueuractif):
@@ -129,28 +126,26 @@ class Combat:
         self.joueurs = {}
         self.carte = carte
         self.actif = False
+        self.forme = []
         with open(carte.fichier) as fichier:
-            for i in range(12):
+            for i in range(17):
                 temp = fichier.readline()
                 while temp[0] == "#":
                     temp = fichier.readline()
-            tempforme = []
-            for i in range(10):
+            self.temp = []
+            for i in range(15):
                 temp = fichier.readline()
                 while temp[0] == "#":
                     temp = fichier.readline()
                 temp = temp.replace(" ", "")
-                for j in range(10):
+                for j in range(20):
                     tempcases = [int(x) for x in temp.split(":")]
                     for k in tempcases:
                         if k == 2:
                             self.spawn.append((i, j))
                         elif k == 3:
                             self.ennemisspawn.append((i, j))
-                tempforme.append(temp)
-        self.forme = []
-        for i in range(len(tempforme) - 1, -1, -1):
-            self.forme.append(tempforme[i])
+                self.forme.append(temp)
         for i in range(len(ennemis.ennemis)):
             ennemis.ennemis[i].position = self.ennemisspawn[i]
 

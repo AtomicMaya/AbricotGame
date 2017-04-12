@@ -55,7 +55,7 @@ def boucle(joueur, fenetre):
                     joueur.move(Direction.GAUCHE)
             if event.type == MOUSEBUTTONDOWN:
                 event.pos=event.pos[0]-100,event.pos[1]
-                if event.pos[0] // 50 < 10 and event.pos[1] // 50 < 10:
+                if event.pos[0] // 50 < 20 and event.pos[1] // 50 < 15:
                     chemin = joueur.moveto(event.pos[0] // 50, event.pos[1] // 50)
         yield True
 
