@@ -1,9 +1,9 @@
 # coding=utf-8
 import select
 import socket
-from carte import *
-from entitee import *
-from controlleur import controler_types
+from serveur.carte import *
+from serveur.entitee import *
+from serveur.controlleur import controler_types
 
 
 def tempspawnentitee(listecarte, cartes):
