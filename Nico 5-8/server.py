@@ -316,14 +316,14 @@ class Spell:
 class Spells:
     def __init__(self):
         json_file = c_open("spells.json", 'r', 'utf-8')
-        self.file_spells = load(json_file)
+        file_spells = load(json_file)
         json_file.close()
         self.spells = {}
-        for id in self.file_spells:
+        for id in file_spells:
             if id != '_template':
-                self.spells[id] = Spell(self.file_spells[id]['NAME'], self.file_spells[id]['DAMAGE'], self.file_spells[id]['COST'], self.file_spells[id]['SHAPE'], self.file_spells[id]['TYPE'], self.file_spells[id]['ATTACKMAXRANGE'],
-                         self.file_spells[id]['ATTACKMINRANGE'], self.file_spells[id]['RELOAD'], self.file_spells[id]['AOE'], self.file_spells[id]['AOERANGE'], self.file_spells[id]['AOESHAPE'],
-                         self.file_spells[id]['EFFECTS'], self.file_spells[id]['SELFCAST'])
+                self.spells[id] = Spell(file_spells[id]['NAME'], file_spells[id]['DAMAGE'], file_spells[id]['COST'], file_spells[id]['SHAPE'], file_spells[id]['TYPE'], file_spells[id]['ATTACKMAXRANGE'],
+                        file_spells[id]['ATTACKMINRANGE'], file_spells[id]['RELOAD'], file_spells[id]['AOE'], file_spells[id]['AOERANGE'], file_spells[id]['AOESHAPE'],
+                         file_spells[id]['EFFECTS'], file_spells[id]['SELFCAST'])
 
     def get(self, spell_id : str):
         return self.spells[spell_id]
@@ -349,12 +349,12 @@ class Maps:
     def __init__(self):
         self.size = (32, 18)
         json_file = open("maps.json")
-        self.file_maps = load(json_file)
+        file_maps = load(json_file)
         json_file.close()
         self.maps = {}
-        for id in self.file_maps:
+        for id in file_maps:
             if id != '_template':
-                self.maps[id] = Map(self.file_maps[id])
+                self.maps[id] = Map(file_maps[id])
 
     def get(self, map_id : str):
         return self.maps[map_id]
