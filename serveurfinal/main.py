@@ -9,6 +9,19 @@ import copy
 import select
 from heapq import heapify, heappush, heappop
 import pygame
+import enum
+
+taille_map_x = 32
+taille_map_y = 18
+
+
+class Mouvements(enum.Enum):
+    """Cette enumeration represente les differents mouvements qui peuvent être fait"""
+    HAUT = enum.auto(),
+    BAS = enum.auto(),
+    GAUCHE = enum.auto(),
+    DROITE = enum.auto(),
+    ERREUR = enum.auto()
 
 
 def lire_message():
@@ -163,24 +176,34 @@ def calculate_movement(start, end, obstacles):
     return linearize(path, obstacles)
 
 
-def mouvement(idjoueur, direction):
-    pass
+def mouvement(idjoueur, direction, joueurs, MAPS, combat):
+    """Cette fonction permet a un joueur de se déplacer"""
+    joueur = joueurs[idjoueur]
+    if not joueur.en_combat:
+        if direction == "right":
+            directionmouv = Mouvements.DROITE
+        elif direction == "left":
+            directionmouv = Mouvements.GAUCHE
+        elif direction == "up":
+            directionmouv = Mouvements.HAUT
+        elif direction == "down":
+            directionmouv = Mouvements.BAS
+        else:
+            return False
+        return MAPS.get(joueur.map).move(joueur, directionmouv, combat)
 
 
-def commandecarte(message, client, ids, joueurs, MAPS):
+def commandecarte(message, client, ids, joueurs, combats, MAPS):
     """Cette fonction effectue toute le commandes liés a la carte (mouvement,objets a affichager,...)"""
     if message[0] == "move" and len(message) == 3:
-        mouvement(message[1], message[2])
+        client.send(mouvement(message[1], message[2], joueurs, MAPS, combats))
     elif message[0] == "connect" and len(message) == 1:
         client.send((str(ids)).encode())
         joueurs[ids] = Joueur()
+        map = MAPS.get(joueurs[ids].map)
+        map.actif = True
         ids += 1
-        """
-        temp = Joueur(tempid)
-        joueurs[tempid] = temp
-        if temp.carte not in cartes.keys():
-            cartes[temp.carte] = Carte("cartes/" + listecarte[temp.carte])
-        cartes[temp.carte].connexion(temp)"""
+        map.joueurs[ids] = joueurs[ids]
     return ids, joueurs
 
 
@@ -412,8 +435,8 @@ class Mobgroup:
     """Cette classe représente un groupe de mobs """
 
     def __init__(self, map, MOBS):
-        group_coords = choice(map.free)
-        self.mobgroup = [MOBS.get(choice(map.mobs), randint(map.levelmin, map.levelmax), group_coords) for _ in
+        self.group_coords = choice(map.free)
+        self.mobgroup = [MOBS.get(choice(map.mobs), randint(map.levelmin, map.levelmax), self.group_coords) for _ in
                          range(randint(2, 8))]
         self.level = 0
         for mob in self.mobgroup:
@@ -424,7 +447,7 @@ class Mobgroup:
         """Cette fonction fait bouger tout les mobs d'un groupe"""
         self.timer = randint(42 * 10, 42 * 30)
         for mob in self.mobgroup[1:]:  # Leader does not move
-            action = choice(['UP', 'LEFT', 'DOWN', 'RIGHT', 'NONE', 'NONE'])
+            action = choice([Mouvements.HAUT, Mouvements.GAUCHE, Mouvements.BAS, Mouvements.DROITE, 'NONE', 'NONE'])
             if action != 'NONE':
                 map.move(mob, action)
 
@@ -441,6 +464,7 @@ class Map:
         self.levelmax = data['LEVELMAX']
         self.levelmin = data['LEVELMIN']
         self.mobsgroups = []
+        self.joueurs = {}
         for y in range(len(data["MAP"])):
             for x in range(len(data["MAP"][y])):
                 if data["MAP"][y][x] == 1:
@@ -462,8 +486,30 @@ class Map:
         if len(self.mobsgroups) < 3 and len(self.mobs) != 0:
             self.mobsgroups.append(Mobgroup(self, MOBS))
 
-    def move(self, entitee, direction):
-        print("fonction non finie,move")
+    def move(self, entitee, direction, combat):
+        """Cette fonction permet de déplacer une entitée sur la carte"""
+        coord = entitee.mapcoords
+        if direction == Mouvements.HAUT and coord[1] != 0:
+            cible = (coord[0], coord[1] - 1)
+        elif direction == Mouvements.BAS and coord[1] != taille_map_y:
+            cible = (coord[0], coord[1] + 1)
+        elif direction == Mouvements.GAUCHE and coord[0] != 0:
+            cible = (coord[0] - 1, coord[1])
+        elif direction == Mouvements.DROITE and coord[0] != taille_map_x:
+            cible = (coord[0] + 1, coord[1])
+        else:
+            cible = (coord[0], coord[1])
+
+        if cible not in self.obstacles:
+            entitee.mapcoords = cible
+            if entitee not in self.mobs:
+                for i in self.mobsgroups:
+                    if i.group_coords == cible:
+                        i.group_coords = (-1, -1)
+                        entitee.en_combat=True
+                        Battle(entitee, i, self, combat)
+                        return True
+            return False
 
 
 class Maps:
@@ -514,10 +560,19 @@ class Type_Mob:
         self.xcaracteristiques = caracteristiques(data['XHP'], 0, 0)
 
 
-class Mob:
+class Entitee:
+    """Cette classe représente toute les entitée qui peuvent se déplacer szr la carte. Elle est héritée par joueur et
+    par mob"""
+
+    def __init__(self, position):
+        self.mapcoords = position
+
+
+class Mob(Entitee):
     """Classe représanatant un mob"""
 
     def __init__(self, typemob, level, position):
+        super().__init__(position)
         self.name = typemob.name
         self.spells = typemob.spells
         self.maxcaracteristiques = typemob.caracteristiques + typemob.xcaracteristiques * level
@@ -526,7 +581,6 @@ class Mob:
         self.attack_anim = typemob.attack_anim
         self.mouvement_anim = typemob.mouvement_anim
         self.level = level
-        self.mapcoords = position
 
 
 class Mobs:
@@ -587,16 +641,18 @@ class Battle:
             print("fonction non finie,Battle.update")
 
 
-class Joueur:
+class Joueur(Entitee):
     """Cette classe représente un joueur connecté au jeu"""
 
     def __init__(self):
+        super().__init__((0, 0))
         self.name = ""
         self.spells = []
         self.maxcaracteristiques = caracteristiques(0, 0, 0)
         self.actuelcaracterisiques = copy.deepcopy(self.maxcaracteristiques)
         self.level = 0
-        self.mapcoords = (0, 0)
+        self.map = "(0,0)"
+        self.en_combat = False
 
 
 def start_server():
@@ -613,10 +669,9 @@ def boucle(commandes, MAPS, MOBS, combats, ids, joueurs):
     for demande in messages:
         text = demande[0]
         text = text.split(":")
-        print("fonction non finie,boucle")
         if len(text) > 2:
             if text[0] == "carte":
-                ids, joueurs = commandecarte(text[1:len(text)], demande[1], ids, joueurs, MAPS)
+                ids, joueurs = commandecarte(text[1:len(text)], demande[1], ids, joueurs, combats, MAPS)
             # if temp[0] == "carte" and len(temp) == 3:
             #         client.send((str(cartes[(int(temp[1]), int(temp[2]))].forme)).encode())
             #
