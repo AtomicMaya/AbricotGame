@@ -178,19 +178,20 @@ def calculate_movement(start, end, obstacles):
 
 def mouvement(idjoueur, direction, joueurs, MAPS, combat):
     """Cette fonction permet a un joueur de se déplacer"""
-    joueur = joueurs[idjoueur]
-    if not joueur.en_combat:
-        if direction == "right":
-            directionmouv = Mouvements.DROITE
-        elif direction == "left":
-            directionmouv = Mouvements.GAUCHE
-        elif direction == "up":
-            directionmouv = Mouvements.HAUT
-        elif direction == "down":
-            directionmouv = Mouvements.BAS
-        else:
-            return False
-        return MAPS.get(joueur.map).move(joueur, directionmouv, combat)
+    if idjoueur in joueurs:
+        joueur = joueurs[idjoueur]
+        if not joueur.en_combat:
+            if direction == "right":
+                directionmouv = Mouvements.DROITE
+            elif direction == "left":
+                directionmouv = Mouvements.GAUCHE
+            elif direction == "up":
+                directionmouv = Mouvements.HAUT
+            elif direction == "down":
+                directionmouv = Mouvements.BAS
+            else:
+                return False
+            return MAPS.get(joueur.map).move(joueur, directionmouv, combat)
 
 
 def commandecarte(message, client, ids, joueurs, combats, MAPS):
@@ -199,11 +200,17 @@ def commandecarte(message, client, ids, joueurs, combats, MAPS):
         client.send(mouvement(message[1], message[2], joueurs, MAPS, combats))
     elif message[0] == "connect" and len(message) == 1:
         client.send((str(ids)).encode())
-        joueurs[ids] = Joueur()
+        joueurs[ids] = Joueur(ids)
         map = MAPS.get(joueurs[ids].map)
         map.actif = True
         ids += 1
         map.joueurs[ids] = joueurs[ids]
+    elif message[0] == "quitter" and len(message) == 2:
+        if message[1] in joueurs:
+            joueur = message[1]
+            if not joueur.en_combat:
+                del MAPS.get(joueur.map).joueurs[joueur.id]
+
     return ids, joueurs
 
 
@@ -435,7 +442,13 @@ class Mobgroup:
     """Cette classe représente un groupe de mobs """
 
     def __init__(self, map, MOBS):
-        self.group_coords = choice(map.free)
+        valide = False
+        while not valide:
+            self.group_coords = choice(map.free)
+            for i in map.mobsgroupe:
+                if i.group_coords != self.group_coords:
+                    valide = True
+
         self.mobgroup = [MOBS.get(choice(map.mobs), randint(map.levelmin, map.levelmax), self.group_coords) for _ in
                          range(randint(2, 8))]
         self.level = 0
@@ -485,6 +498,10 @@ class Map:
                 mobgroup.timer -= 1
         if len(self.mobsgroups) < 3 and len(self.mobs) != 0:
             self.mobsgroups.append(Mobgroup(self, MOBS))
+        if len(self.joueurs) == 0:
+            self.actif = False
+            for mobgroup in self.mobsgroups:
+                mobgroup.move(self)
 
     def move(self, entitee, direction, combat):
         """Cette fonction permet de déplacer une entitée sur la carte"""
@@ -505,8 +522,9 @@ class Map:
             if entitee not in self.mobs:
                 for i in self.mobsgroups:
                     if i.group_coords == cible:
-                        i.group_coords = (-1, -1)
-                        entitee.en_combat=True
+                        self.mobsgroups.remove(i)
+                        del self.joueurs[entitee.id]
+                        entitee.en_combat = True
                         Battle(entitee, i, self, combat)
                         return True
             return False
@@ -644,7 +662,7 @@ class Battle:
 class Joueur(Entitee):
     """Cette classe représente un joueur connecté au jeu"""
 
-    def __init__(self):
+    def __init__(self, id):
         super().__init__((0, 0))
         self.name = ""
         self.spells = []
@@ -653,6 +671,7 @@ class Joueur(Entitee):
         self.level = 0
         self.map = "(0,0)"
         self.en_combat = False
+        self.id = id
 
 
 def start_server():
@@ -677,114 +696,8 @@ def boucle(commandes, MAPS, MOBS, combats, ids, joueurs):
             #
             #     elif temp[0] == "entitee" and len(temp) == 3:
             #         client.send((_entitee(cartes[(int(temp[1]), int(temp[2]))].entites)).encode())
-            #
-            #     elif temp[0] == "move" and len(temp) == 3:
-            #         joueur = joueurs[int(temp[1])]
-            #         if joueur.etat == Etatjoueur.normal:
-            #             if temp[2] == "right":
-            #                 directionmouv = Direction.DROITE
-            #
-            #                 if joueur.position[0] == 19:
-            #                     directionmouv = Direction.CARTE
-            #                     if cartes[joueur.carte].deconnexion(joueur):
-            #                         del cartes[joueur.carte]
-            #                     joueur.carte = (joueur.carte[0] + 1, joueur.carte[1])
-            #                     joueur.position = (0, joueur.position[1])
-            #                     if joueur.carte not in cartes.keys():
-            #                         cartes[joueur.carte] = Carte("cartes/" + listecarte[joueur.carte])
-            #                     cartes[joueur.carte].connexion(joueur)
-            #                     client.send(b"True")
-            #
-            #             elif temp[2] == "left":
-            #                 directionmouv = Direction.GAUCHE
-            #
-            #                 if joueur.position[0] == 0:
-            #                     directionmouv = Direction.CARTE
-            #                     if cartes[joueur.carte].deconnexion(joueur):
-            #                         del cartes[joueur.carte]
-            #                     joueur.carte = (joueur.carte[0] - 1, joueur.carte[1])
-            #                     joueur.position = (19, joueur.position[1])
-            #                     if joueur.carte not in cartes.keys():
-            #                         cartes[joueur.carte] = Carte("cartes/" + listecarte[joueur.carte])
-            #                     cartes[joueur.carte].connexion(joueur)
-            #                     client.send(b"True")
-            #
-            #             elif temp[2] == "down":
-            #                 directionmouv = Direction.BAS
-            #
-            #                 if joueur.position[1] == 0:
-            #                     directionmouv = Direction.CARTE
-            #                     if cartes[joueur.carte].deconnexion(joueur):
-            #                         del cartes[joueur.carte]
-            #                     joueur.carte = (joueur.carte[0], joueur.carte[1] - 1)
-            #                     joueur.position = (joueur.position[0], 14)
-            #                     if joueur.carte not in cartes.keys():
-            #                         cartes[joueur.carte] = Carte("cartes/" + listecarte[joueur.carte])
-            #                     cartes[joueur.carte].connexion(joueur)
-            #                     client.send(b"True")
-            #
-            #             elif temp[2] == "up":
-            #                 directionmouv = Direction.HAUT
-            #
-            #                 if joueur.position[1] == 14:
-            #                     directionmouv = Direction.CARTE
-            #                     if cartes[joueur.carte].deconnexion(joueur):
-            #                         del cartes[joueur.carte]
-            #                     joueur.carte = (joueur.carte[0], joueur.carte[1] + 1)
-            #                     joueur.position = (joueur.position[0], 0)
-            #                     if joueur.carte not in cartes.keys():
-            #                         cartes[joueur.carte] = Carte("cartes/" + listecarte[joueur.carte])
-            #                     cartes[joueur.carte].connexion(joueur)
-            #                     client.send(b"True")
-            #
-            #             else:
-            #                 directionmouv = Direction.ERREUR
-            #             if directionmouv != Direction.CARTE:
-            #                 tempmove = cartes[joueur.carte].move(joueur, directionmouv)
-            #                 if tempmove == Mouvementresult.ERREUR:
-            #                     client.send(b"False")
-            #                 elif tempmove == Mouvementresult.COMBAT:
-            #                     client.send(b"Combat")
-            #                 else:
-            #                     client.send(b"True")
-            #         else:
-            #             client.send(b"False")
-            #
-            #     elif temp[0] == "connect" and len(temp) == 1:
-            #         if len(idslibre) == 0:
-            #             tempid = ids
-            #             ids += 1
-            #         else:
-            #             tempid = idslibre[0]
-            #             del idslibre[0]
-            #         client.send((str(tempid)).encode())
-            #         temp = Joueur(tempid)
-            #         joueurs[tempid] = temp
-            #
-            #         if temp.carte not in cartes.keys():
-            #             cartes[temp.carte] = Carte("cartes/" + listecarte[temp.carte])
-            #         cartes[temp.carte].connexion(temp)
-            #
-            #     elif temp[0] == "quitter" and len(temp) == 2:
-            #         tempid = int(temp[1])
-            #         idslibre.append(tempid)
-            #         while (ids - 1) in idslibre:
-            #             ids -= 1
-            #             idslibre.remove(ids)
-            #         if cartes[joueurs[tempid].carte].deconnexion(joueurs[tempid]):
-            #             del cartes[joueurs[tempid].carte]
-            #         del joueurs[tempid]
-            #
             elif text[0] == "combat":
                 commandecombat(text[1:len(text)])
-                #     if temp[1] == "start":
-                #         if not joueurs[int(temp[2])].combat.actif:
-                #             joueurs[int(temp[2])].combat.joueurs[joueurs[int(temp[2])]] = True
-                #             joueurs[int(temp[2])].combat.start()
-                #     elif temp[1] == "entitee":
-                #         client.send((joueurs[int(temp[2])].combat.afficher()).encode())
-                #     elif temp[1] == "sort":
-                #         print("sortlance")
 
     for i in MAPS.maps.values():
         if i.actif:
