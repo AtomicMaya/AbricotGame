@@ -696,26 +696,9 @@ def boucle(commandes, MAPS, MOBS, combats):
         i.update()
 
 
-class Player:
-    def __init__(self, SPELLS, spells, hp, mp, ap, level, coords):
-        self.spells = [SPELLS.get(spell_id) for spell_id in spells]
-        self.maxhp = hp
-        self.hp = self.maxhp
-        self.maxmp = mp
-        self.mp = self.maxmp
-        self.maxap = ap
-        self.ap = self.maxap
-        self.level = level
-        self.mapcoords = coords
-
-
 def main():
     """Fonction principale du programme"""
     commandes, MAPS, SPELLS, MOBS, combats = start_server()
-    MAPS.get("(0,0)").actif = True
-    _map = MAPS.get('(0,0)')
-    Battle([Player(SPELLS, ['001', '002'], 200, 100, 3, 6, (10, 10)),
-            Player(SPELLS, ['001', '002'], 180, 100, 3, 5, (31, 14))], Mobgroup(_map, MOBS), _map, combats)
     while True:
         boucle(commandes, MAPS, MOBS, combats)
 
