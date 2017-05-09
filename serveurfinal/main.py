@@ -18,12 +18,10 @@ def lire_message():
         for c in connexions_demandees:
             connexion_avec_client, infos_connexion = c.accept()
             clients_connectes.append(connexion_avec_client)
-        try:
+
+        if len(clients_connectes)>0:
             clients_a_lire, wlist, xlist = select.select(clients_connectes, [], [], 0.05)
             clients_connectes = clients_connectes[-5:]
-        except select.error:
-            print("Erreur de lecture")
-        else:
             for client in clients_a_lire:
                 temp = client.recv(1024)
                 temp = temp.decode()
