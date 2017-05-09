@@ -22,7 +22,7 @@
 	"MOVEMENT" : [null]
 	},
 "002":{
-	"NAME" : "Grand Moutonnet",
+	"NAME" : "Grand_Moutonnet",
 	"SPELLS" : ["001", "002"],
 	"BASEHP" : 100,
 	"XHP" : 10,
@@ -33,7 +33,7 @@
 	"MOVEMENT" : [null]
 	},
 "003":{
-	"NAME" : "Moutonnet de Guerre",
+	"NAME" : "Moutonnet_de_Guerre",
 	"SPELLS" : ["002", "003"],
 	"BASEHP" : 120,
 	"XHP" : 12,

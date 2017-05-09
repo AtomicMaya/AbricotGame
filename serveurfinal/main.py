@@ -19,7 +19,7 @@ def lire_message():
             connexion_avec_client, infos_connexion = c.accept()
             clients_connectes.append(connexion_avec_client)
 
-        if len(clients_connectes)>0:
+        if len(clients_connectes) > 0:
             clients_a_lire, wlist, xlist = select.select(clients_connectes, [], [], 0.05)
             clients_connectes = clients_connectes[-5:]
             for client in clients_a_lire:
