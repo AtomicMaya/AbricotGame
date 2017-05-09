@@ -28,9 +28,10 @@ class Mobgroup:
         valide = False
         while not valide:
             self.group_coords = choice(map.free)
-            for i in map.mobsgroupe:
+            valide=True
+            for i in map.mobsgroups:
                 if i.group_coords != self.group_coords:
-                    valide = True
+                    valide = False
 
         self.mobgroup = [MOBS.get(choice(map.mobs), randint(map.levelmin, map.levelmax), self.group_coords) for _ in
                          range(randint(2, 8))]
@@ -39,13 +40,13 @@ class Mobgroup:
             self.level += mob.level
         self.timer = 0
 
-    def move(self, map):
+    def move(self, map,combat):
         """Cette fonction fait bouger tout les mobs d'un groupe"""
         self.timer = randint(42 * 10, 42 * 30)
         for mob in self.mobgroup[1:]:  # Leader does not move
             action = choice([Mouvements.HAUT, Mouvements.GAUCHE, Mouvements.BAS, Mouvements.DROITE, 'NONE', 'NONE'])
             if action != 'NONE':
-                map.move(mob, action)
+                map.move(mob, action,combat)
 
 
 class Battle:
@@ -112,12 +113,12 @@ class Map:
                     self.free.append((x, y))
         self.obstacles = self.semiobs + self.fullobs
 
-    def update(self):
+    def update(self,combats):
         """Fonction appellée a chaque tick qui sert a faire bouger les entitées, a rafraichir les combats et a faire
         apparaitre de nouveaux ennemis"""
         for mobgroup in self.mobsgroups:
             if mobgroup.timer == 0:
-                mobgroup.move(self)
+                mobgroup.move(self,combats)
             else:
                 mobgroup.timer -= 1
         if len(self.mobsgroups) < 3 and len(self.mobs) != 0:
@@ -125,7 +126,7 @@ class Map:
         if len(self.joueurs) == 0:
             self.actif = False
             for mobgroup in self.mobsgroups:
-                mobgroup.move(self)
+                mobgroup.move(self,combats)
 
     def move(self, entitee, direction, combat):
         """Cette fonction permet de déplacer une entitée sur la carte"""

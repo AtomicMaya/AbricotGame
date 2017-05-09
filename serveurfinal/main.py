@@ -22,7 +22,7 @@ def lire_message():
             clients_a_lire, wlist, xlist = select.select(clients_connectes, [], [], 0.05)
             clients_connectes = clients_connectes[-5:]
         except select.error:
-            pass
+            print("Erreur de lecture")
         else:
             for client in clients_a_lire:
                 temp = client.recv(1024)
@@ -37,7 +37,7 @@ def boucle(commandes, combats, ids, joueurs):
     for demande in messages:
         text = demande[0]
         text = text.split(":")
-        if len(text) > 2:
+        if len(text) > 1:
             if text[0] == "carte":
                 ids, joueurs = commandecarte(text[1:len(text)], demande[1], ids, joueurs, combats)
             # if temp[0] == "carte" and len(temp) == 3:
@@ -50,7 +50,7 @@ def boucle(commandes, combats, ids, joueurs):
 
     for i in MAPS.maps.values():
         if i.actif:
-            i.update()
+            i.update(combats)
     for i in combats:
         i.update()
 

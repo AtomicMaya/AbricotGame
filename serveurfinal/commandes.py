@@ -21,17 +21,23 @@ def mouvement(idjoueur, direction, joueurs, combat):
             return MAPS.get(joueur.map).move(joueur, directionmouv, combat)
 
 
+def connexion(client, ids, joueurs):
+    """Cette fonction est appellée quand un joueur se connecte"""
+    client.send((str(ids)).encode())
+    joueurs[ids] = Joueur(ids)
+    map = MAPS.get(joueurs[ids].map)
+    map.actif = True
+    map.joueurs[ids] = joueurs[ids]
+    ids += 1
+    return ids, joueurs
+
+
 def commandecarte(message, client, ids, joueurs, combats):
     """Cette fonction effectue toute le commandes liés a la carte (mouvement,objets a affichager,...)"""
     if message[0] == "move" and len(message) == 3:
         client.send(mouvement(message[1], message[2], joueurs, combats))
     elif message[0] == "connect" and len(message) == 1:
-        client.send((str(ids)).encode())
-        joueurs[ids] = Joueur(ids)
-        map = MAPS.get(joueurs[ids].map)
-        map.actif = True
-        ids += 1
-        map.joueurs[ids] = joueurs[ids]
+        ids, joueurs = connexion(client, ids, joueurs)
     elif message[0] == "quitter" and len(message) == 2:
         if message[1] in joueurs:
             joueur = message[1]
