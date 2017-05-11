@@ -59,6 +59,10 @@ class RendererController:
 
     def __init__(self):
         self.fenetre = pygame.display.set_mode((1280, 720))
+        pygame.display.set_caption("Abricot game")
+        pygame.font.init()
+        pygame.display.set_icon(
+            pygame.transform.scale(pygame.image.load("assets/images/icone.png").convert_alpha(), (30, 30)))
         self.fond = None
         self.textures_mobs = {}
         self.textures_classes = {"001": pygame.image.load("assets/images/classes/archer/archer1.png")}
@@ -77,6 +81,7 @@ class RendererController:
     def afficher_carte(self, joueur):
         """Cette fonction sert afficher la carte"""
 
+        self.fenetre.fill((0, 0, 0))
         self.fenetre.blit(self.fond, (128, 0))
         for i in range(0, 32):
             for j in range(18):
@@ -92,7 +97,7 @@ class RendererController:
                         n = 0
                         for k in j[0]:
                             # str(j[1])
-                            txt = f.render(k[0], 0, (0, 0, 0))
+                            txt = f.render(k[0], 0, (255, 255, 255))
                             x, y = pygame.mouse.get_pos()
                             self.fenetre.blit(txt, (x, y + 20 * n))
                             n += 1
@@ -187,12 +192,13 @@ def boucle(fenetre: RendererController, joueur: Playercontroller) -> bool:
 def main():
     """Cette fonction est la fonction principale du client"""
     pygame.init()
-    pygame.font.init()
     actif = True
     fenetre = RendererController()
     joueur = Playercontroller(fenetre)
     while actif:
         actif = boucle(fenetre, joueur)
+        pygame.time.Clock().tick(21)
 
 
 main()
+pygame.quit()

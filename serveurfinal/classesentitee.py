@@ -7,6 +7,7 @@ from random import choice, randint, shuffle
 from codecs import open as c_open
 from pathfinding import *
 from copy import deepcopy
+from itertools import chain
 
 taille_map_x = 32
 taille_map_y = 18
@@ -30,7 +31,7 @@ class Mobgroup:
             self.group_coords = choice(map.free)
             valide = True
             for i in map.mobsgroups:
-                if i.group_coords != self.group_coords:
+                if i.group_coords == self.group_coords:
                     valide = False
 
         self.mobgroup = [MOBS.get(choice(map.mobs), randint(map.levelmin, map.levelmax), self.group_coords) for _ in
@@ -42,7 +43,7 @@ class Mobgroup:
 
     def move(self, map, combat):
         """Cette fonction fait bouger tout les mobs d'un groupe"""
-        self.timer = randint(42 * 10, 42 * 30)
+        self.timer = randint(42 * 1, 42 * 10)
         for mob in self.mobgroup[1:]:  # Leader does not move
             action = choice([Mouvements.HAUT, Mouvements.GAUCHE, Mouvements.BAS, Mouvements.DROITE, 'NONE', 'NONE'])
             if action != 'NONE':
@@ -144,7 +145,7 @@ class Map:
 
         if cible not in self.obstacles:
             entitee.mapcoords = cible
-            if entitee not in self.mobs:
+            if entitee not in list(chain.from_iterable([x.mobgroup for x in self.mobsgroups])):
                 for i in self.mobsgroups:
                     if i.group_coords == cible:
                         self.mobsgroups.remove(i)
