@@ -5,6 +5,7 @@ from pygame.locals import *
 import socket
 from json import loads, load
 from typing import Dict, Tuple
+from pathfinding import calculate_movement
 
 
 def convert_image(chemin: str, couleurfond=(255, 255, 255)):
@@ -19,18 +20,14 @@ class Map:
 
     def __init__(self, data: Dict):
         self.mobs = data["MOBS"]
-        self.semiobs = []
-        self.fullobs = []
+        self.obstacle = []
         self.free = []
         for y in range(len(data["MAP"])):
             for x in range(len(data["MAP"][y])):
                 if data["MAP"][y][x] == 1:
-                    self.fullobs.append((x, y))
-                elif data["MAP"][y][x] == 2:
-                    self.semiobs.append((x, y))
+                    self.obstacle.append((x, y))
                 else:
                     self.free.append((x, y))
-        self.obstacles = self.semiobs + self.fullobs
 
 
 class Maps:
@@ -110,7 +107,10 @@ class Playercontroller:
     """Cette classe contient toute les informations liée au joueur"""
 
     def __init__(self, fenetre: RendererController):
-        self.id = demande("carte:connect")
+        temp = demande("carte:connect")
+        temp = temp.split(":")
+        self.id = int(temp[0])
+        self.position = (int(temp[1]), int(temp[2]))
         self.carte_id = (0, 0)
         self.carte_mobs = []
         self.carte_joueurs = []
@@ -139,11 +139,13 @@ class Playercontroller:
 
     def clic(self):
         """Cette fonction est appellée quand le joueur fait un clic de souris"""
-        self.move_to(pygame.mouse.get_pos())
+        case = decalage_inverse(pygame.mouse.get_pos())
+        if 0 < case[0] < 18 and 0 < case[1] < 32:
+            self.move_to(case)
 
-    def move_to(self, mouse):
+    def move_to(self, case: Tuple[int, int]):
         """Cette fonction calcule le chemin qu'il faut faire pour aller jusqu'a la case pointé par la souris"""
-        pass
+        calculate_movement(self.position, case, MAPS.get(self.carte_id).obstacle)
 
     def actualise(self):
         """En attandant d'avoir un vrai systeme"""
