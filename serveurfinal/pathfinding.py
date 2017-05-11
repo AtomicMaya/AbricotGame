@@ -2,57 +2,76 @@
 """Ce fichier contient tout les éléments liés au calcul de chemin"""
 from itertools import filterfalse
 from heapq import heapify, heappush, heappop
+from typing import Tuple, List
 
 
-def unique_everseen(iterable, key=None):
-    """Nicolass ?"""
-    elem_vus = set()
-    seen_add = elem_vus.add
+def tuple_add(tuple1: Tuple, tuple2: Tuple):
+    return tuple([x+y for x, y in zip(tuple1, tuple2)])
+
+
+def remove_duplicates(iterable, key=None):
+    """
+    Renvoie un generateur sur un iterable qui enleve tous les elements en double dans une liste, conservant l'ordre.
+    :param iterable:
+    :param key:
+    :return:
+    """
+    seen = set()
+    seen_add = seen.add
     if key is None:
-        for element in filterfalse(elem_vus.__contains__, iterable):
+        for element in filterfalse(seen.__contains__, iterable):
             seen_add(element)
             yield element
     else:
         for element in iterable:
             k = key(element)
-            if k not in elem_vus:
+            if k not in seen:
                 seen_add(k)
                 yield element
 
 
-def linearize(alist, obstacles):
-    """nicolass ?"""
-    y_dir = 1 if alist[0][0] - alist[-1][0] > 0 else -1
-    x_dir = 1 if alist[0][1] - alist[-1][1] > 0 else -1
-    for i in range(1, len(alist) * 2 - 2):
+def linearize(path: List, obstacles: List[Tuple]):
+    """
+    Remplit l'espace entre deux cases non consecutives
+    :param path: -> Liste de coordonnees du chemin
+    :param obstacles: -> Liste de coordonnees des obstacles
+    :return: -> Une liste linearisee
+    """
+    y_dir = 1 if path[0][1] < path[-1][1] else -1
+    x_dir = 1 if path[0][0] < path[-1][0] else -1
+    list2 = []
+    for i in range(1, len(path) + 1):
         try:
-            if alist[i - 1][0] != alist[i][0] and alist[i - 1][1] != alist[i][1]:
-                alist.insert(i, (alist[i - 1][0], alist[i - 1][1] + y_dir)) \
-                    if alist[i - 1][1] + y_dir not in obstacles \
-                    else alist.insert(i, (alist[i - 1][0] + x_dir, alist[i - 1][1]))
+            list2.append(path[i-1])
+            if path[i - 1][0] != path[i][0] and path[i - 1][1] != path[i][1]:
+                if (path[i - 1][0], path[i - 1][1] + y_dir) not in obstacles:
+                    list2.append((path[i - 1][0], path[i - 1][1] + y_dir))
+                elif (path[i - 1][0] + x_dir, path[i - 1][1]) not in obstacles:
+                    list2.append((path[i - 1][0] + x_dir, path[i - 1][1]))
         except IndexError:
-            pass
+            continue
 
-    return list(unique_everseen(alist))
+    return list(remove_duplicates(list2))
 
 
-def bresenham(player, end):
+def bresenham(player: Tuple, end: Tuple):
     """ Algorithme de Bresenham
-    Indique les cases traversees par une ligne passant de l'une à l'autre
-    :param player: -> Coordonnees du joueur
-    :param end: -> Coordonnees de la destination
+    Prend en entree deux tuples de coordonnees et indique les cases traversees par une ligne passant de l'une à l'autre
+
+    :param player:
+    :param end:
     """
     x1, y1 = player
     x2, y2 = end
-    # Differences
+    # Derivees
     dx = x2 - x1
     dy = y2 - y1
 
-    # Teste l'inclinaison de pente
-    pente = abs(dy) > abs(dx)
+    # Verification de l'inclinaison de pente
+    slope = abs(dy) > abs(dx)
 
-    # Effectue une rotation de la pente si trop inclinee
-    if pente:
+    # Si trop inclinee. rotation de la pente
+    if slope:
         x1, y1 = y1, x1
         x2, y2 = y2, x2
 
@@ -63,7 +82,7 @@ def bresenham(player, end):
         y1, y2 = y2, y1
         switched = True
 
-    # Recalcul des differences
+    # Recalcul des derivees
     dx = x2 - x1
     dy = y2 - y1
 
@@ -75,7 +94,7 @@ def bresenham(player, end):
     y = y1
     crossed_points = []
     for x in range(x1, x2 + 1):
-        coord = (y, x) if pente else (x, y)
+        coord = (y, x) if slope else (x, y)
         crossed_points.append(coord)
         error -= abs(dy)
         if error < 0:
@@ -85,171 +104,56 @@ def bresenham(player, end):
     # Inversion de la liste si les points originaux ont etes inverses
     if switched:
         crossed_points.reverse()
-    return list(unique_everseen(crossed_points))
+    return list(remove_duplicates(crossed_points))
 
 
-def calculate_movement(start, end, obstacles):
-    """nicolass ?"""
-    # Find 3 consec angles, test bres, if bres, then reedit, else try bresenham 1/3 of the path leading to center angle
-    path = list(unique_everseen(AStar(start, end, obstacles).process()))
+def calculate_movement(start: Tuple, end: Tuple, obstacles: List[Tuple]):
+    """
+    Calcule le chemin entre une case de depart et une case d'arrivee, par une linearisation de l'Algorithme A*
+    :param start: -> Coordonnees de la case de depart
+    :param end: -> Coordonnees de la case d'arrivee
+    :param obstacles: -> Obstacles sur la carte
+    :return:
+    """
+    path = list(remove_duplicates(AStar(start, end, obstacles).process()))
     corners = []
     for i in range(len(path)):
         if i < len(path) - 2 and (path[i][0] != path[i + 2][0] and path[i][1] != path[i + 2][1]):
             corners.append(path[i + 1])
+    corners = [start] + corners + [end]
     ind = []
     for i in corners:
         ind.append(path.index(i))
-    ind = [0] + ind + [len(path) - 1]
     alt_paths = []
     for i in range(1, len(ind) - 1):
-        br = bresenham(path[ind[i - 1]], path[ind[i + 1]])
+        br = linearize(bresenham(path[ind[i - 1]], path[ind[i + 1]]), obstacles)
         if set(br).isdisjoint(obstacles):
-            if set(br).isdisjoint(obstacles):
-                alt_paths.append(br)
+            alt_paths.append(br)
         else:
-            index = (ind[i - 1] + int((ind[i] - ind[i - 1]) * 0.33), ind[i + 1] - int((ind[i + 1] - ind[i]) * 0.33))
+            index = (ind[i - 1] + int((ind[i] - ind[i - 1]) * 0.5), ind[i + 1] - int((ind[i + 1] - ind[i]) * 0.5))
             br = bresenham(path[index[0]], path[index[1]])
             if set(br).isdisjoint(obstacles):
-                if set(br).isdisjoint(obstacles):
-                    alt_paths.append(br)
-            else:
-                index = (ind[i - 1] + int((ind[i] - ind[i - 1]) * 0.66), ind[i + 1] - int((ind[i + 1] - ind[i]) * 0.66))
-                br = bresenham(path[index[0]], path[index[1]])
-                if set(br).isdisjoint(obstacles):
-                    if set(br).isdisjoint(obstacles):
-                        alt_paths.append(br)
+                alt_paths.append(br)
     alt_paths = sorted(alt_paths, key=len)[::-1]
     for alt in alt_paths:
         try:
-            if len(alt) > 3:
-                # noinspection PyTypeChecker
+            if len(alt) > 5:       #MODIFIED
                 line = linearize(alt, obstacles)
-                # noinspection PyUnresolvedReferences
                 path = path[0:path.index(alt[0])] + line + path[path.index(alt[-1]) + 1:]
         except ValueError:
             pass
     return linearize(path, obstacles)
 
 
-class AStar(object):
-    """
-    Permet de determiner un chemin court entre deux points (start et end) avec l'algorithme A*.
-    :param start: -> Coordonnees (x, y) de la case de depart
-    :param end: -> Coordonnees (x, y) de la case d'arrivee
-    """
-
-    def __init__(self, start, end, obstacles):
-        self.open_list = []
-        heapify(self.open_list)
-        self.closed_list = set()
-        self.all_cells = []
-
-        self.grid_height = 18
-        self.grid_width = 32
-        self.start_x, self.start_y = start
-        self.end_x, self.end_y = end
-        self.obstacles = obstacles
-        self._init_grid()
-
-    def _init_grid(self):
-        """
-        Initie la representation de la grille, avec prise en compte des obstacles
-        """
-
-        """ Parcours la carte en longueur puis en largeur """
-        for x in range(1, self.grid_width + 1):
-            for y in range(1, self.grid_height + 1):
-                not_obstacle = True if (x, y) not in self.obstacles else False
-                self.all_cells.append(GridCell(x, y, not_obstacle))
-
-        self.start = self.get_cell(self.start_x, self.start_y)
-        self.end = self.get_cell(self.end_x, self.end_y)
-
-    def calculate_h(self, cell):
-        """
-        :param cell:
-        :return: -> Distance Manhattan entre la case visitee actuellement et la case d'arrivee
-        """
-        return 10 * (abs(cell.x - self.end_x) + abs(cell.y - self.end_y))
-
-    def get_cell(self, x, y):
-        """
-        :param x: -> Coordonnee x de la case à extraire
-        :param y: -> Coordonnee y de la case à extraire
-        :return: -> La case à ces coordonnees
-        """
-        return self.all_cells[(x - 1) * self.grid_height + (y - 1)]
-
-    def get_neighbor_cells(self, cell):
-        """
-        :param cell: -> Cellule etudiee
-        :return: -> Liste de toutes les cases voisines à cette case
-        """
-        cells = []
-        if cell.x < self.grid_width - 1:
-            cells.append(self.get_cell(cell.x + 1, cell.y))
-        if cell.y > 0:
-            cells.append(self.get_cell(cell.x, cell.y - 1))
-        if cell.x > 0:
-            cells.append(self.get_cell(cell.x - 1, cell.y))
-        if cell.y < self.grid_height - 1:
-            cells.append(self.get_cell(cell.x, cell.y + 1))
-        return cells
-
-    def display_path(self):
-        """
-        :return path: -> Le chemin entre la première case et la dernière case
-        """
-        cell = self.end
-        path = [(cell.x, cell.y)]
-        while cell.parent is not self.start:
-            cell = cell.parent
-            path.append((cell.x, cell.y))
-        return [(self.start.x, self.start.y)] + path[::-1]
-
-    def update_cell(self, neighbor, cell):
-        """
-        Met a jour les valeurs de la case voisine
-        :param neighbor: -> Un voisin de cette case
-        :param cell: -> La case en question
-        """
-        neighbor.g = cell.g + 10
-        neighbor.h = self.calculate_h(neighbor)
-        neighbor.parent = cell
-        neighbor.f = neighbor.g + neighbor.h
-
-    def process(self):
-        """
-        Trouve un des plus courts chemins entre la case de depart et celle d'arrivee
-        """
-        heappush(self.open_list, (self.start.f, self.start))
-        while len(self.open_list):
-            f, cell = heappop(self.open_list)
-            self.closed_list.add(cell)
-            if cell is self.end:
-                break
-            neighbor_cells = self.get_neighbor_cells(cell)
-            for n_cell in neighbor_cells:
-                if n_cell.not_obstacle and n_cell not in self.closed_list:
-                    if (n_cell.f, n_cell) in self.open_list:
-                        if n_cell.g > cell.g + 10:
-                            self.update_cell(n_cell, cell)
-                    else:
-                        self.update_cell(n_cell, cell)
-                        heappush(self.open_list, (n_cell.f, n_cell))
-        return self.display_path()
-
-
-class GridCell:
-    """
-    Represente une case de la carte de jeu
-
-    :param x: -> Coordonnee x de la case
-    :param y: -> Coordonnee y de la case
-    :param not_obstacle: -> Si la case est traversable par un joueur (pas un mur, rivière, autre obstacle)
-    """
-
+class GridCell(object):
     def __init__(self, x, y, not_obstacle):
+        """
+        Represente une case de la carte de jeu
+
+        :param x: -> Coordonnee x de la case
+        :param y: -> Coordonnee y de la case
+        :param not_obstacle: -> Si la case est traversable par un joueur (pas un mur / riviere / tour de sauron
+        """
         self.not_obstacle = not_obstacle
         self.x = x
         self.y = y
@@ -288,3 +192,118 @@ class GridCell:
 
     def __hash__(self):
         return hash((self.x, self.y))
+
+
+class AStar(object):
+    def __init__(self, start: Tuple, end: Tuple, obstacles: List[Tuple]):
+        """
+        Permet de determiner un chemin court entre deux points (start et end) avec l'algorithme A*.
+        :param start: -> Coordonnees (x, y) de la case de depart
+        :param end: -> Coordonnees (x, y) de la case d'arrivee
+        """
+
+        self.open_list = []
+        heapify(self.open_list)
+        self.closed_list = set()
+        self.all_cells = []
+
+        self.grid_height = 18
+        self.grid_width = 32
+        self.start_x, self.start_y = start
+        self.end_x, self.end_y = end
+        self.obstacles = obstacles
+        self._init_grid()
+
+    def _init_grid(self):
+        """
+        Initie la representation de la grille, avec prise en compte des obstacles
+        """
+
+        """ Parcoure la carte en longueur puis en largeur """
+        for x in range(1, self.grid_width + 1):
+            for y in range(1, self.grid_height + 1):
+                not_obstacle = True if (x, y) not in self.obstacles else False
+                self.all_cells.append(GridCell(x, y, not_obstacle))
+
+        self.start = self.get_cell(self.start_x, self.start_y)
+        self.end = self.get_cell(self.end_x, self.end_y)
+
+    def calculate_h(self, cell: GridCell):
+        """
+        :param cell:
+        :return: -> Distance Manhattan entre la case visitee actuellement et la case d'arrivee
+        """
+        return 10 * (abs(cell.x - self.end_x) + abs(cell.y - self.end_y))
+
+    def get_cell(self, x: int, y: int):
+        """
+        :param x: -> Coordonnee x de la case à extraire
+        :param y: -> Coordonnee y de la case à extraire
+        :return: -> La case à ces coordonnees
+        """
+        return self.all_cells[(x - 1) * self.grid_height + (y - 1)]
+
+    def get_neighbor_cells(self, cell: GridCell):
+        """
+        :param cell: -> Cellule etudiee
+        :return: -> Liste de toutes les cases voisines à cette case
+        """
+        cells = []
+        if cell.x < self.grid_width:
+            cells.append(self.get_cell(cell.x + 1, cell.y))
+        if cell.y > 1:
+            cells.append(self.get_cell(cell.x, cell.y - 1))
+        if cell.x > 1:
+            cells.append(self.get_cell(cell.x - 1, cell.y))
+        if cell.y < self.grid_height:
+            cells.append(self.get_cell(cell.x, cell.y + 1))
+        return cells
+
+    def display_path(self):
+        """
+        :return path: -> Le chemin entre la premiere case et la derniere case
+        """
+        cell = self.end
+        path = [(cell.x, cell.y)]
+        while cell.parent is not self.start:
+            cell = cell.parent
+            path.append((cell.x, cell.y))
+        return [(self.start.x, self.start.y)] + path[::-1]
+
+    def update_cell(self, neighbor: GridCell, cell: GridCell):
+        """
+        Met a jour les valeurs de la case voisine
+        :param neighbor: -> Un voisin de cette case
+        :param cell: -> La case en question
+        """
+        neighbor.g = cell.g + 10
+        neighbor.h = self.calculate_h(neighbor)
+        neighbor.parent = cell
+        neighbor.f = neighbor.g + neighbor.h
+
+    def process(self):
+        """
+        Trouve un des plus courts chemins entre la case de depart et celle d'arrivee
+        """
+        heappush(self.open_list, (self.start.f, self.start))
+        while len(self.open_list):
+            f, cell = heappop(self.open_list)
+            self.closed_list.add(cell)
+            if cell is self.end:
+                break
+            neighbor_cells = self.get_neighbor_cells(cell)
+            for n_cell in neighbor_cells:
+                if n_cell.not_obstacle and n_cell not in self.closed_list:
+                    if (n_cell.f, n_cell) in self.open_list:
+                        if n_cell.g > cell.g + 10:
+                            self.update_cell(n_cell, cell)
+                    else:
+                        self.update_cell(n_cell, cell)
+                        heappush(self.open_list, (n_cell.f, n_cell))
+        return self.display_path()
+
+
+print(calculate_movement((15, 7), (25, 10), obstacles=[(20, 0), (21, 0), (22, 0), (19, 1), (20, 1), (21, 1), (18, 2), (19, 2), (20, 2), (17, 3), (18, 3), (19, 3), (16, 4), (17, 4), (18, 4), (19, 4), (20, 4), (16, 5), (17, 5), (18, 5), (19, 5), (20, 5), (17, 6), (18, 6), (19, 6), (3, 12), (4, 12), (5, 12), (2, 13), (3, 13), (4, 13), (5, 13), (6, 13), (3, 14), (4, 14), (5, 14), (26, 0), (27, 0), (28, 0), (29, 0), (30, 0), (31, 0), (27, 1), (28, 1), (29, 1), (30, 1), (31, 1), (2, 2), (3, 2), (4, 2), (5, 2), (6, 2), (7, 2), (27, 2), (28, 2), (29, 2), (30, 2), (31, 2), (2, 3), (3, 3), (4, 3), (5, 3), (6, 3), (7, 3), (28, 3), (29, 3), (30, 3), (31, 3), (2, 4), (3, 4), (4, 4), (5, 4), (6, 4), (7, 4), (28, 4), (29, 4), (30, 4), (31, 4), (2, 5), (3, 5), (4, 5), (5, 5), (6, 5), (7, 5), (29, 5), (30, 5), (31, 5), (2, 6), (3, 6), (4, 6), (5, 6), (6, 6), (7, 6), (29, 6), (30, 6), (31, 6), (30, 7), (31, 7), (30, 8), (31, 8), (31, 9), (31, 10), (17, 11), (18, 11), (19, 11), (20, 11), (21, 11), (16, 12), (17, 12), (18, 12), (19, 12), (20, 12), (21, 12), (15, 13), (16, 13), (17, 13), (18, 13), (19, 13), (20, 13), (14, 14), (15, 14), (16, 14), (17, 14), (18, 14), (19, 14), (14, 15), (15, 15), (16, 15), (17, 15), (18, 15)]))
+
+
+
