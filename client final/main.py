@@ -63,7 +63,7 @@ class RendererController:
         pygame.display.set_icon(pygame.image.load("assets/images/icone.png").convert_alpha())
         self.fond = None
         self.textures_mobs = {}
-        self.textures_classes = {"001": convert_image("assets/images/classes/archer/archer1.png")}
+        self.textures_classes = {"001": convert_image("assets/images/classes/archer/archer4.png")}
 
     def charger_textures(self, joueur):
         """Cette méthode est appellée lors d'un changement de map pour charger les textures de la nouvelle map"""

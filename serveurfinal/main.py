@@ -32,7 +32,7 @@ def lire_message():
         yield messages
 
 
-def boucle(commandes, combats, ids, joueurs):
+def boucle(commandes, combats: List, ids: int, joueurs: Dict) -> Tuple[int, Dict, List]:
     """Boucle principale du serveur"""
     messages = next(commandes)
     for demande in messages:
@@ -41,11 +41,6 @@ def boucle(commandes, combats, ids, joueurs):
         if len(text) > 1:
             if text[0] == "carte":
                 ids, joueurs = commandecarte(text[1:len(text)], demande[1], ids, joueurs, combats)
-            # if temp[0] == "carte" and len(temp) == 3:
-            #         client.send((str(cartes[(int(temp[1]), int(temp[2]))].forme)).encode())
-            #
-            #     elif temp[0] == "entitee" and len(temp) == 3:
-            #         client.send((_entitee(cartes[(int(temp[1]), int(temp[2]))].entites)).encode())
             elif text[0] == "combat":
                 commandecombat(text[1:len(text)])
 
