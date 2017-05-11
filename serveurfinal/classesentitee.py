@@ -62,12 +62,14 @@ class Battle:
         combat.append(self)
 
     # noinspection PyTypeChecker
-    def find_target(self, mob):
+    def find_target(self):
         """Permet a un mob de choisir sa cible en fonction de critères comme la vie, la distance et le niveau du
         joueur"""
         movements = []
+        pmovements = {}
         for player in self.players:
-            movement = calculate_movement(mob.mapcoords, player.mapcoords, self.map.obstacles)
+            movement = calculate_movement(self.current.mapcoords, player.mapcoords, self.map.obstacles)[:-1]
+            pmovements[player] = movement
             movements += [movement]
 
         stats = {}
@@ -79,10 +81,26 @@ class Battle:
             stats[player] *= 4 if 0 <= player.hp / player.maxhp < 0.25 else 3 \
                 if 0.25 <= player.hp / player.maxhp < 0.5 else 2 if 0.5 <= player.hp / player.maxhp < 0.75 else 1
             i += 1
-        # get player
-        print("fonction non finie,findtarget")
-        path = []
-        return path
+        player = list(stats.keys())[list(stats.values()).index(max(stats.values()))]
+        path = pmovements[player]
+        return player, path
+
+    def get_ranges(self):
+        maxs, mins = [], []
+        for spell in self.current.spells:
+            print(spell.maxRange, spell.minRange)
+            maxs += [spell.maxRange]
+            mins += [spell.minRange]
+        return min(mins), max(maxs)
+
+    def movement_phase(self, path, dist):
+        self.current.move_on_path(path, dist)
+
+    def attack_phase(self):
+        pass
+
+    def end_turn(self):
+        self.current = self.queue[(self.queue.index(self.current) + 1) % len(self.queue)]
 
     def update(self):
         """Fonction appellé a chaque tick"""
