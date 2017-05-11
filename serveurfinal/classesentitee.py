@@ -205,7 +205,7 @@ class Mobs:
         self.mobs = {}
         for ids in file_mobs:
             if ids != '_template':
-                self.mobs[ids] = Type_Mob(file_mobs[ids])
+                self.mobs[ids] = TypeMob(file_mobs[ids])
 
     def get(self, mob_id: str, level, position):
         """Permet de récuperer un mob grace a son id"""
@@ -272,7 +272,7 @@ class Spells:
         return self.spells[spell_id]
 
 
-class Type_Mob:
+class TypeMob:
     """Cette classe représente une catégorie de mob"""
 
     def __init__(self, data):
@@ -281,11 +281,11 @@ class Type_Mob:
         self.idle_anim = data['IDLE']
         self.attack_anim = data['ATTACK']
         self.mouvement_anim = data['MOVEMENT']
-        self.caracteristiques = caracteristiques(data['BASEHP'], data['MOVEMENTPOINTS'], data['ACTIONPOINTS'])
-        self.xcaracteristiques = caracteristiques(data['XHP'], 0, 0)
+        self.caracteristiques = Caracteristiques(data['BASEHP'], data['MOVEMENTPOINTS'], data['ACTIONPOINTS'])
+        self.xcaracteristiques = Caracteristiques(data['XHP'], 0, 0)
 
 
-class caracteristiques:
+class Caracteristiques:
     """Cette classe représente les caactéristiques de combat d'un mob ou d'un joueur"""
 
     def __init__(self, hp, mp, ap):
@@ -294,10 +294,10 @@ class caracteristiques:
         self.ap = ap
 
     def __add__(self, autre):
-        return caracteristiques(self.hp + autre.hp, self.mp + autre.mp, self.ap + autre.ap)
+        return Caracteristiques(self.hp + autre.hp, self.mp + autre.mp, self.ap + autre.ap)
 
     def __mul__(self, autre):
-        return caracteristiques(self.hp * autre, self.mp * autre, self.ap * autre)
+        return Caracteristiques(self.hp * autre, self.mp * autre, self.ap * autre)
 
     def __rmul__(self, autre):
         return self * autre
@@ -310,7 +310,7 @@ class Joueur(Entitee):
         super().__init__((0, 0))
         self.name = ""
         self.spells = []
-        self.maxcaracteristiques = caracteristiques(0, 0, 0)
+        self.maxcaracteristiques = Caracteristiques(0, 0, 0)
         self.actuelcaracterisiques = deepcopy(self.maxcaracteristiques)
         self.level = 0
         self.map = "(0,0)"

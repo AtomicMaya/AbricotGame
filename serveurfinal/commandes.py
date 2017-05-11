@@ -38,9 +38,9 @@ def carte(id_joueur, joueurs):
     joueur = joueurs[int(id_joueur)]
     mobgroups = []
     for mobsgroups in MAPS.get(joueur.map).mobsgroups:
-        temp = []
+        temp = {"level": mobsgroups.level, "mobs": []}
         for mob in mobsgroups.mobgroup:
-            temp.append((mob.name, mob.mapcoords))
+            temp["mobs"].append((mob.name, mob.mapcoords))
         mobgroups.append(temp)
     temp = []
     for players in MAPS.get(joueur.map).joueurs.values():
