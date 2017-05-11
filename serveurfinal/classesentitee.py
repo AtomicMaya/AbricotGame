@@ -39,7 +39,7 @@ class Mobgroup:
         self.level = 0
         for mob in self.mobgroup:
             self.level += mob.level
-        self.timer = 0
+        self.timer = 1
 
     def move(self, map, combat):
         """Cette fonction fait bouger tout les mobs d'un groupe"""
@@ -113,7 +113,6 @@ class Map:
                 else:
                     self.free.append((x, y))
         self.obstacles = self.semiobs + self.fullobs
-        print(self.obstacles)
 
     def update(self, combats):
         """Fonction appellée a chaque tick qui sert a faire bouger les entitées, a rafraichir les combats et a faire
@@ -135,18 +134,18 @@ class Map:
         coord = entitee.mapcoords
         if direction == Mouvements.HAUT and coord[1] != 0:
             cible = (coord[0], coord[1] - 1)
-        elif direction == Mouvements.BAS and coord[1] != taille_map_y-1:
+        elif direction == Mouvements.BAS and coord[1] != (taille_map_y-1):
             cible = (coord[0], coord[1] + 1)
         elif direction == Mouvements.GAUCHE and coord[0] != 0:
             cible = (coord[0] - 1, coord[1])
-        elif direction == Mouvements.DROITE and coord[0] != taille_map_x-1:
+        elif direction == Mouvements.DROITE and coord[0] != (taille_map_x-1):
             cible = (coord[0] + 1, coord[1])
         else:
             cible = (coord[0], coord[1])
 
         if cible not in self.obstacles:
             entitee.mapcoords = cible
-            if entitee not in list(chain.from_iterable([x.mobgroup for x in self.mobsgroups])):
+            if isinstance(entitee, Joueur):
                 for i in self.mobsgroups:
                     if i.group_coords == cible:
                         self.mobsgroups.remove(i)
