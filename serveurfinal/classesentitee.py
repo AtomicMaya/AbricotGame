@@ -39,7 +39,7 @@ class Mobgroup:
         self.level = 0
         for mob in self.mobgroup:
             self.level += mob.level
-        self.timer = 0
+        self.timer = 1
 
     def move(self, map, combat):
         """Cette fonction fait bouger tout les mobs d'un groupe"""
