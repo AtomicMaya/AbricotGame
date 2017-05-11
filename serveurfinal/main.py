@@ -23,12 +23,9 @@ def lire_message():
             clients_a_lire, wlist, xlist = select.select(clients_connectes, [], [], 0.05)
             clients_connectes = clients_connectes[-5:]
             for client in clients_a_lire:
-                try:
-                    temp = client.recv(1024)
-                    temp = temp.decode()
-                    messages.append((temp, client))
-                except ConnectionResetError:
-                    pass
+                temp = client.recv(1024)
+                temp = temp.decode()
+                messages.append((temp, client))
         yield messages
 
 
