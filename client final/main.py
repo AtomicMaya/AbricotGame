@@ -6,6 +6,14 @@ import socket
 from json import loads, load
 
 
+def combat():
+    pass
+
+
+def move(b):
+    pass
+
+
 class Map:
     """Cette classe représente une carte du jeu"""
 
@@ -53,6 +61,7 @@ class Playercontroller:
         self.carte_id = 0
         self.carte_mobs = []
         self.carte_joueurs = []
+        self.groupmobs = []
         self.changement_carte(fenetre)
 
     def changement_carte(self, fenetre):
@@ -61,38 +70,81 @@ class Playercontroller:
         resultat = loads(demande("carte:carte:" + str(self.id)))
         self.carte_id = eval(resultat["map"])
         self.carte_mobs = []
+        self.groupmobs=[]
         for i in resultat["mobs"]:
-            for j in i:
-                self.carte_mobs.append((j[0], (j[1][0], j[1][1])))
+            temp = []
+            for j in i["mobs"]:
+                tempp = (j[0], (j[1][0], j[1][1]))
+                self.carte_mobs.append(tempp)
+                temp.append(tempp)
+            self.groupmobs.append((temp,i["level"]))
         self.carte_joueurs = []
         for i in resultat["joueurs"]:
             self.carte_joueurs.append((i["classe"], i["position"], i["name"]))
         fenetre.charger_textures(self)
+
+    def clic(self):
+        move(pygame.mouse.get_pos())
+        for mob in self.carte_mobs:
+            if mob[1][0] == (pygame.mouse.get_pos()[0] - 128) / 32 and mob[1][1] == (pygame.mouse.get_pos()[1]) / 32:
+                combat()
+
+
+def decalage(coord):
+    new_x = coord[0] * 32 + 128
+    new_y = coord[1] * 32
+    return new_x, new_y
 
 
 class RendererController:
     """Cette classe contient toute les méthodes liée a l'affichage et au stokage des textures"""
 
     def __init__(self):
-        self.fenetre = pygame.display.set_mode((640, 480))
+        self.fenetre = pygame.display.set_mode((1280, 720))
         self.fond = None
         self.textures_mobs = {}
-        self.textures_classes = {"001": pygame.image.load("assets/images/classes/archer/archer1.png").convert()}
+        self.textures_classes = {"001": pygame.image.load("assets/images/classes/archer/archer1.png")}
+        self.textures_classes["001"].set_colorkey((255, 255, 255))
+        self.textures_classes["001"] = self.textures_classes["001"].convert_alpha()
 
     def charger_textures(self, joueur):
         """Cette méthode est appellée lors d'un changement de map pour charger les textures de la nouvelle map"""
         self.fond = pygame.image.load(
             "assets/images/maps/" + str(joueur.carte_id[0]) + "." + str(joueur.carte_id[1]) + ".png").convert()
-        self.fond = pygame.transform.scale(self.fond, (640, 480))
+        self.fond = pygame.transform.scale(self.fond, (1024, 576))
         self.textures_mobs = {}
         for mob in MAPS.get(joueur.carte_id).mobs:
             self.textures_mobs[mob] = pygame.image.load("assets/images/mobs/" + mob + ".png").convert_alpha()
 
     def afficher_carte(self, joueur):
         """Cette fonction sert afficher la carte"""
-        self.fenetre.blit(self.fond, (0, 0))
+
+        self.fenetre.blit(self.fond, (128, 0))
+        for i in range(0, 32):
+            for j in range(18):
+                if j % 2 == 0 and i % 2 == 0 or j % 2 == 1 and i % 2 == 1:
+                    pygame.draw.rect(self.fenetre, (0, 0, 0), (i*32+128, j*32, 33, 33), 1)
+
         for i in joueur.carte_mobs:
-            self.fenetre.blit(self.textures_mobs[i[0]], (i[1][0], i[1][1]))
+            self.fenetre.blit(self.textures_mobs[i[0]], decalage(i[1]))
+            if i[1][0] == (pygame.mouse.get_pos()[0] - 128) // 32 and i[1][1] == (pygame.mouse.get_pos()[1] // 32):
+                temp = ""
+                f = pygame.font.Font(None, 32)
+                for j in joueur.groupmobs:
+                    if i in j[0]:
+                        n = 0
+                        for k in j[0]:
+                            temp = str(j[1])
+                            txt = f.render(k[0], 0, (0, 0, 0))
+                            x, y = pygame.mouse.get_pos()
+                            self.fenetre.blit(txt, (x, y+32*n))
+                            n += 1
+
+
+        for i in joueur.carte_joueurs:
+            self.fenetre.blit(self.textures_classes[i[0]], decalage(i[1]))
+
+
         pygame.display.flip()
 
 
@@ -126,6 +178,8 @@ def boucle(fenetre, joueur):
         if event.type == QUIT:
             commande("carte:quitter:" + str(joueur.id))
             return False
+        if event.type == MOUSEBUTTONDOWN:
+            joueur.clic()
     fenetre.afficher_carte(joueur)
     return True
 
@@ -133,6 +187,7 @@ def boucle(fenetre, joueur):
 def main():
     """Cette fonction est la fonction principale du client"""
     pygame.init()
+    pygame.font.init()
     actif = True
     fenetre = RendererController()
     joueur = Playercontroller(fenetre)
