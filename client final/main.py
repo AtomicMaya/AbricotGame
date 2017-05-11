@@ -145,11 +145,35 @@ class Playercontroller:
         """Cette fonction calcule le chemin qu'il faut faire pour aller jusqu'a la case pointé par la souris"""
         pass
 
+    def actualise(self):
+        """En attandant d'avoir un vrai systeme"""
+        print("Cette fonction n'est pas optimisée")
+        resultat = loads(demande("carte:carte:" + str(self.id)))
+        self.carte_id = eval(resultat["map"])
+        self.carte_mobs = []
+        self.groupmobs = []
+        for i in resultat["mobs"]:
+            temp = []
+            for j in i["mobs"]:
+                tempp = (j[0], (j[1][0], j[1][1]))
+                self.carte_mobs.append(tempp)
+                temp.append(tempp)
+            self.groupmobs.append((temp, i["level"]))
+        self.carte_joueurs = []
+        for i in resultat["joueurs"]:
+            self.carte_joueurs.append((i["classe"], i["position"], i["name"]))
+
 
 def decalage(coord: Tuple[int, int]) -> Tuple[int, int]:
     """Cette fonction sert a transformer une coordonnée sur la carte en une position en pixels"""
-    new_x = coord[0] * 32 + 128
-    new_y = coord[1] * 32
+    return coord[0] * 32 + 128, coord[1] * 32
+
+
+def decalage_inverse(coord: Tuple[int, int]) -> Tuple[int, int]:
+    """Cette fonction fait l'inverse de décalage et permet de transformer une position en pixel en coordonnée sur la
+    carte"""
+    new_x = coord[0]
+    new_y = coord[1]
     return new_x, new_y
 
 
@@ -196,6 +220,7 @@ def main():
     fenetre = RendererController()
     joueur = Playercontroller(fenetre)
     while actif:
+        joueur.actualise()
         actif = boucle(fenetre, joueur)
         pygame.time.Clock().tick(21)
 
