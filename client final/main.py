@@ -7,11 +7,12 @@ from json import loads, load
 from typing import Dict, Tuple
 
 
-def convert_image(chemin: str, couleurfond=(255, 255, 255)):
-    """Cette image permet de transformer le chemin vers un fichier en image"""
-    image = pygame.image.load(chemin)
-    image.set_colorkey(couleurfond)
-    return image.convert_alpha()
+def combat():
+    pass
+
+
+def move(b):
+    pass
 
 
 class Map:
@@ -60,10 +61,13 @@ class RendererController:
         self.fenetre = pygame.display.set_mode((1280, 720))
         pygame.display.set_caption("Abricot game")
         pygame.font.init()
-        pygame.display.set_icon(pygame.image.load("assets/images/icone.png").convert_alpha())
+        pygame.display.set_icon(
+            pygame.transform.scale(pygame.image.load("assets/images/icone.png").convert_alpha(), (30, 30)))
         self.fond = None
         self.textures_mobs = {}
-        self.textures_classes = {"001": convert_image("assets/images/classes/archer/archer1.png")}
+        self.textures_classes = {"001": pygame.image.load("assets/images/classes/archer/archer1.png")}
+        self.textures_classes["001"].set_colorkey((255, 255, 255))
+        self.textures_classes["001"] = self.textures_classes["001"].convert_alpha()
 
     def charger_textures(self, joueur):
         """Cette méthode est appellée lors d'un changement de map pour charger les textures de la nouvelle map"""
@@ -74,6 +78,7 @@ class RendererController:
         for mob in MAPS.get(joueur.carte_id).mobs:
             self.textures_mobs[mob] = pygame.image.load("assets/images/mobs/" + mob + ".png").convert_alpha()
 
+    
     def afficher_carte(self, joueur):
         """Cette fonction sert afficher la carte"""
 
@@ -87,17 +92,15 @@ class RendererController:
         for i in joueur.carte_mobs:
             self.fenetre.blit(self.textures_mobs[i[0]], decalage(i[1]))
             if i[1][0] == (pygame.mouse.get_pos()[0] - 128) // 32 and i[1][1] == (pygame.mouse.get_pos()[1] // 32):
-                f = pygame.font.Font(None, 30)
+                f = pygame.font.Font(None, 20)
                 for j in joueur.groupmobs:
                     if i in j[0]:
-                        n = 1
-                        txt = f.render(str(j[1]), 0, (255, 0, 0))
-                        x, y = pygame.mouse.get_pos()
-                        self.fenetre.blit(txt, (x + 10, y))
+                        n = 0
                         for k in j[0]:
-                            txt = f.render(k[0].replace("_", " "), 0, (255, 0, 0))
+                            # str(j[1])
+                            txt = f.render(k[0], 0, (255, 255, 255))
                             x, y = pygame.mouse.get_pos()
-                            self.fenetre.blit(txt, (x + 10, y + 30 * n))
+                            self.fenetre.blit(txt, (x, y + 20 * n))
                             n += 1
 
         for i in joueur.carte_joueurs:
@@ -116,38 +119,10 @@ class Playercontroller:
         self.carte_joueurs = []
         self.groupmobs = []
         self.changement_carte(fenetre)
-        self.chemin = []
 
     def changement_carte(self, fenetre: RendererController):
         """Cette fonction est appellée quand le joueur change de carte et sert a charger les nouvelles textures et la
         forme de la carte"""
-        resultat = loads(demande("carte:carte:" + str(self.id)))
-        self.carte_id = eval(resultat["map"])
-        self.carte_mobs = []
-        self.groupmobs = []
-        for i in resultat["mobs"]:
-            temp = []
-            for j in i["mobs"]:
-                mob = (j[0], (j[1][0], j[1][1]))
-                self.carte_mobs.append(mob)
-                temp.append(mob)
-            self.groupmobs.append((temp, i["level"]))
-        self.carte_joueurs = []
-        for i in resultat["joueurs"]:
-            self.carte_joueurs.append((i["classe"], i["position"], i["name"]))
-        fenetre.charger_textures(self)
-
-    def clic(self):
-        """Cette fonction est appellée quand le joueur fait un clic de souris"""
-        self.move_to(pygame.mouse.get_pos())
-
-    def move_to(self, mouse):
-        """Cette fonction calcule le chemin qu'il faut faire pour aller jusqu'a la case pointé par la souris"""
-        pass
-
-    def actualise(self):
-        """En attandant d'avoir un vrai systeme"""
-        print("Cette fonction n'est pas optimisée")
         resultat = loads(demande("carte:carte:" + str(self.id)))
         self.carte_id = eval(resultat["map"])
         self.carte_mobs = []
@@ -162,18 +137,37 @@ class Playercontroller:
         self.carte_joueurs = []
         for i in resultat["joueurs"]:
             self.carte_joueurs.append((i["classe"], i["position"], i["name"]))
+        fenetre.charger_textures(self)
+
+    def clic(self):
+        """Cette fonction est appellée quand le joueur fait un clic de souris"""
+        move(pygame.mouse.get_pos())
+        for mob in self.carte_mobs:
+            if mob[1][0] == (pygame.mouse.get_pos()[0] - 128) / 32 and mob[1][1] == (pygame.mouse.get_pos()[1]) / 32:
+                combat()
+
+    def actualise(self):
+        resultat = loads(demande("carte:carte:" + str(self.id)))
+        self.carte_id = eval(resultat["map"])
+        self.carte_mobs = []
+        self.groupmobs = []
+        for i in resultat["mobs"]:
+            temp = []
+            for j in i["mobs"]:
+                tempp = (j[0], (j[1][0], j[1][1]))
+                self.carte_mobs.append(tempp)
+                temp.append(tempp)
+            self.groupmobs.append((temp, i["level"]))
+        self.carte_joueurs = []
+        for i in resultat["joueurs"]:
+            self.carte_joueurs.append((i["classe"], i["position"], i["name"]))
+        
 
 
 def decalage(coord: Tuple[int, int]) -> Tuple[int, int]:
     """Cette fonction sert a transformer une coordonnée sur la carte en une position en pixels"""
-    return coord[0] * 32 + 128, coord[1] * 32
-
-
-def decalage_inverse(coord: Tuple[int, int]) -> Tuple[int, int]:
-    """Cette fonction fait l'inverse de décalage et permet de transformer une position en pixel en coordonnée sur la
-    carte"""
-    new_x = coord[0]
-    new_y = coord[1]
+    new_x = coord[0] * 32 + 128
+    new_y = coord[1] * 32
     return new_x, new_y
 
 
@@ -194,7 +188,7 @@ def demande(txt: str) -> str:
             connexion_avec_serveur.connect(("localhost", 12800))
             txt = txt.encode()
             connexion_avec_serveur.send(txt)
-            r = connexion_avec_serveur.recv(8192).decode()
+            r = connexion_avec_serveur.recv(1024).decode()
             connexion_avec_serveur.close()
         except OSError:
             pass
@@ -222,7 +216,7 @@ def main():
     while actif:
         joueur.actualise()
         actif = boucle(fenetre, joueur)
-        pygame.time.Clock().tick(21)
+        pygame.time.Clock().tick(42)
 
 
 main()
