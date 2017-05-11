@@ -14,10 +14,10 @@ taille_map_y = 18
 
 class Mouvements(Enum):
     """Cette enumeration represente les differents mouvements qui peuvent être fait"""
-    HAUT = auto(),
-    BAS = auto(),
-    GAUCHE = auto(),
-    DROITE = auto(),
+    HAUT = auto()
+    BAS = auto()
+    GAUCHE = auto()
+    DROITE = auto()
     ERREUR = auto()
 
 
