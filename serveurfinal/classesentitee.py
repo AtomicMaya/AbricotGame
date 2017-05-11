@@ -216,7 +216,7 @@ class Spell:
     """Cette classe permet de définir un sort et d'appliquer ses effets"""
 
     def __init__(self, name, damage, cost, shape, spell_type, max_range, min_range, reload, aoe, aoe_range, aoe_shape,
-                 effects, onself):
+                 effects):
         self.name = name
         self.damage = int(damage)
         self.cost = int(cost)
@@ -229,7 +229,6 @@ class Spell:
         self.aoeRange = aoe_range
         self.aoeShape = aoe_shape
         self.effects = effects
-        self.on_self = True if onself == 1 else False
 
     def apply_effect(self, target):
         print("fonction non finie,applayeffect")
@@ -265,7 +264,7 @@ class Spells:
                                          file_spells[ids]['ATTACKMINRANGE'], file_spells[ids]['RELOAD'],
                                          file_spells[ids]['AOE'], file_spells[ids]['AOERANGE'],
                                          file_spells[ids]['AOESHAPE'],
-                                         file_spells[ids]['EFFECTS'], file_spells[ids]['SELFCAST'])
+                                         file_spells[ids]['EFFECTS'])
 
     def get(self, spell_id: str):
         """Cette fonction permet de réuperer un sort grace a son id"""
