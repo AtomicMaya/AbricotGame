@@ -115,33 +115,37 @@ def calculate_movement(start: Tuple, end: Tuple, obstacles: List[Tuple]):
     :return:
     """
     path = list(remove_duplicates(AStar(start, end, obstacles).process()))
-    corners = []
-    for i in range(len(path)):
-        if i < len(path) - 2 and (path[i][0] != path[i + 2][0] and path[i][1] != path[i + 2][1]):
-            corners.append(path[i + 1])
-    corners = [start] + corners + [end]
-    ind = []
-    for i in corners:
-        ind.append(path.index(i))
-    alt_paths = []
-    for i in range(1, len(ind) - 1):
-        br = linearize(bresenham(path[ind[i - 1]], path[ind[i + 1]]), obstacles)
-        if set(br).isdisjoint(obstacles):
-            alt_paths.append(br)
-        else:
-            index = (ind[i - 1] + int((ind[i] - ind[i - 1]) * 0.5), ind[i + 1] - int((ind[i + 1] - ind[i]) * 0.5))
-            br = bresenham(path[index[0]], path[index[1]])
+    try:
+        corners = []
+        for i in range(len(path)):
+            if i < len(path) - 2 and (path[i][0] != path[i + 2][0] and path[i][1] != path[i + 2][1]):
+                corners.append(path[i + 1])
+        corners = [start] + corners + [end]
+        ind = []
+        for i in corners:
+            ind.append(path.index(i))
+        alt_paths = []
+        for i in range(1, len(ind) - 1):
+            br = linearize(bresenham(path[ind[i - 1]], path[ind[i + 1]]), obstacles)
             if set(br).isdisjoint(obstacles):
                 alt_paths.append(br)
-    alt_paths = sorted(alt_paths, key=len)[::-1]
-    for alt in alt_paths:
-        try:
-            if len(alt) > 5: 
-                line = linearize(alt, obstacles)
-                path = path[0:path.index(alt[0])] + line + path[path.index(alt[-1]) + 1:]
-        except ValueError:
-            pass
-    return linearize(path, obstacles)
+            else:
+                index = (ind[i - 1] + int((ind[i] - ind[i - 1]) * 0.5), ind[i + 1] - int((ind[i + 1] - ind[i]) * 0.5))
+                br = bresenham(path[index[0]], path[index[1]])
+                if set(br).isdisjoint(obstacles):
+                    alt_paths.append(br)
+        alt_paths = sorted(alt_paths, key=len)[::-1]
+        for alt in alt_paths:
+            try:
+                if len(alt) > 5:
+                    line = linearize(alt, obstacles)
+                    path = path[0:path.index(alt[0])] + line + path[path.index(alt[-1]) + 1:]
+            except ValueError:
+                pass
+
+        return linearize(path, obstacles)
+    except ValueError:
+        return path
 
 
 class GridCell(object):
@@ -263,10 +267,13 @@ class AStar(object):
         """
         cell = self.end
         path = [(cell.x, cell.y)]
-        while cell.parent is not self.start:
-            cell = cell.parent
-            path.append((cell.x, cell.y))
-        return [(self.start.x, self.start.y)] + path[::-1]
+        if cell.parent is not None:
+            while cell.parent is not self.start:
+                cell = cell.parent
+                path.append((cell.x, cell.y))
+            return [(self.start.x, self.start.y)] + path[::-1]
+        else:
+            return []
 
     def update_cell(self, neighbor: GridCell, cell: GridCell):
         """
@@ -299,5 +306,3 @@ class AStar(object):
                         self.update_cell(n_cell, cell)
                         heappush(self.open_list, (n_cell.f, n_cell))
         return self.display_path()
-
-      
