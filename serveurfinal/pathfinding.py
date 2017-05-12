@@ -5,16 +5,25 @@ from heapq import heapify, heappush, heappop
 from typing import Tuple, List
 
 
+<<<<<<< HEAD
 def tuple_add(tuple1: Tuple, tuple2: Tuple):
     return tuple([x+y for x, y in zip(tuple1, tuple2)])
+=======
+def tuple_add(tuple1: Tuple, tuple2: Tuple) -> Tuple:
+    """Cette fonction permet d'additionner deux tuples"""
+    return tuple([x + y for x, y in zip(tuple1, tuple2)])
+>>>>>>> refs/remotes/origin/master
 
 
 def remove_duplicates(iterable, key=None):
     """
     Renvoie un generateur sur un iterable qui enleve tous les elements en double dans une liste, conservant l'ordre.
+<<<<<<< HEAD
     :param iterable:
     :param key:
     :return:
+=======
+>>>>>>> refs/remotes/origin/master
     """
     seen = set()
     seen_add = seen.add
@@ -30,7 +39,11 @@ def remove_duplicates(iterable, key=None):
                 yield element
 
 
+<<<<<<< HEAD
 def linearize(path: List, obstacles: List[Tuple]):
+=======
+def linearize(path: List, obstacles: List[Tuple]) ->List:
+>>>>>>> refs/remotes/origin/master
     """
     Remplit l'espace entre deux cases non consecutives
     :param path: -> Liste de coordonnees du chemin
@@ -42,7 +55,11 @@ def linearize(path: List, obstacles: List[Tuple]):
     list2 = []
     for i in range(1, len(path) + 1):
         try:
+<<<<<<< HEAD
             list2.append(path[i-1])
+=======
+            list2.append(path[i - 1])
+>>>>>>> refs/remotes/origin/master
             if path[i - 1][0] != path[i][0] and path[i - 1][1] != path[i][1]:
                 if (path[i - 1][0], path[i - 1][1] + y_dir) not in obstacles:
                     list2.append((path[i - 1][0], path[i - 1][1] + y_dir))
@@ -54,7 +71,11 @@ def linearize(path: List, obstacles: List[Tuple]):
     return list(remove_duplicates(list2))
 
 
+<<<<<<< HEAD
 def bresenham(player: Tuple, end: Tuple):
+=======
+def bresenham(player: Tuple, end: Tuple)->List:
+>>>>>>> refs/remotes/origin/master
     """ Algorithme de Bresenham
     Prend en entree deux tuples de coordonnees et indique les cases traversees par une ligne passant de l'une à l'autre
 
@@ -107,6 +128,10 @@ def bresenham(player: Tuple, end: Tuple):
     return list(remove_duplicates(crossed_points))
 
 
+<<<<<<< HEAD
+=======
+# noinspection PyUnresolvedReferences
+>>>>>>> refs/remotes/origin/master
 def calculate_movement(start: Tuple, end: Tuple, obstacles: List[Tuple]):
     """
     Calcule le chemin entre une case de depart et une case d'arrivee, par une linearisation de l'Algorithme A*
@@ -137,7 +162,11 @@ def calculate_movement(start: Tuple, end: Tuple, obstacles: List[Tuple]):
     alt_paths = sorted(alt_paths, key=len)[::-1]
     for alt in alt_paths:
         try:
+<<<<<<< HEAD
             if len(alt) > 5:       #MODIFIED
+=======
+            if len(alt) > 5:  # MODIFIED
+>>>>>>> refs/remotes/origin/master
                 line = linearize(alt, obstacles)
                 path = path[0:path.index(alt[0])] + line + path[path.index(alt[-1]) + 1:]
         except ValueError:
@@ -146,6 +175,7 @@ def calculate_movement(start: Tuple, end: Tuple, obstacles: List[Tuple]):
 
 
 class GridCell(object):
+<<<<<<< HEAD
     def __init__(self, x, y, not_obstacle):
         """
         Represente une case de la carte de jeu
@@ -154,6 +184,17 @@ class GridCell(object):
         :param y: -> Coordonnee y de la case
         :param not_obstacle: -> Si la case est traversable par un joueur (pas un mur / riviere / tour de sauron
         """
+=======
+    """
+    Represente une case de la carte de jeu
+
+    :param x: -> Coordonnee x de la case
+    :param y: -> Coordonnee y de la case
+    :param not_obstacle: -> Si la case est traversable par un joueur (pas un mur / riviere / tour de sauron
+    """
+    def __init__(self, x, y, not_obstacle):
+
+>>>>>>> refs/remotes/origin/master
         self.not_obstacle = not_obstacle
         self.x = x
         self.y = y
@@ -195,6 +236,7 @@ class GridCell(object):
 
 
 class AStar(object):
+<<<<<<< HEAD
     def __init__(self, start: Tuple, end: Tuple, obstacles: List[Tuple]):
         """
         Permet de determiner un chemin court entre deux points (start et end) avec l'algorithme A*.
@@ -202,6 +244,14 @@ class AStar(object):
         :param end: -> Coordonnees (x, y) de la case d'arrivee
         """
 
+=======
+    """
+    Permet de determiner un chemin court entre deux points (start et end) avec l'algorithme A*.
+    :param start: -> Coordonnees (x, y) de la case de depart
+    :param end: -> Coordonnees (x, y) de la case d'arrivee
+    """
+    def __init__(self, start: Tuple, end: Tuple, obstacles: List[Tuple]):
+>>>>>>> refs/remotes/origin/master
         self.open_list = []
         heapify(self.open_list)
         self.closed_list = set()
@@ -301,5 +351,8 @@ class AStar(object):
                         self.update_cell(n_cell, cell)
                         heappush(self.open_list, (n_cell.f, n_cell))
         return self.display_path()
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> refs/remotes/origin/master
