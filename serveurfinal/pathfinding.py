@@ -5,6 +5,7 @@ from heapq import heapify, heappush, heappop
 from typing import Tuple, List
 
 
+
 def tuple_add(tuple1: Tuple, tuple2: Tuple) -> Tuple:
     """Cette fonction permet d'additionner deux tuples"""
     return tuple([x + y for x, y in zip(tuple1, tuple2)])
@@ -12,8 +13,7 @@ def tuple_add(tuple1: Tuple, tuple2: Tuple) -> Tuple:
 
 def remove_duplicates(iterable, key=None):
     """
-    Renvoie un generateur sur un iterable qui enleve tous les elements en double dans une liste, conservant l'ordre.
-    """
+    Renvoie un generateur sur un iterable qui enleve tous les elements en double dans une liste, conservant l'ordre."""
     seen = set()
     seen_add = seen.add
     if key is None:
@@ -50,6 +50,7 @@ def linearize(path: List, obstacles: List[Tuple]) ->List:
             continue
 
     return list(remove_duplicates(list2))
+
 
 
 def bresenham(player: Tuple, end: Tuple)->List:
@@ -105,7 +106,6 @@ def bresenham(player: Tuple, end: Tuple)->List:
     return list(remove_duplicates(crossed_points))
 
 
-# noinspection PyUnresolvedReferences
 def calculate_movement(start: Tuple, end: Tuple, obstacles: List[Tuple]):
     """
     Calcule le chemin entre une case de depart et une case d'arrivee, par une linearisation de l'Algorithme A*
@@ -136,7 +136,7 @@ def calculate_movement(start: Tuple, end: Tuple, obstacles: List[Tuple]):
     alt_paths = sorted(alt_paths, key=len)[::-1]
     for alt in alt_paths:
         try:
-            if len(alt) > 5:  # MODIFIED
+            if len(alt) > 5: 
                 line = linearize(alt, obstacles)
                 path = path[0:path.index(alt[0])] + line + path[path.index(alt[-1]) + 1:]
         except ValueError:
@@ -153,7 +153,6 @@ class GridCell(object):
     :param not_obstacle: -> Si la case est traversable par un joueur (pas un mur / riviere / tour de sauron
     """
     def __init__(self, x, y, not_obstacle):
-
         self.not_obstacle = not_obstacle
         self.x = x
         self.y = y
@@ -300,3 +299,5 @@ class AStar(object):
                         self.update_cell(n_cell, cell)
                         heappush(self.open_list, (n_cell.f, n_cell))
         return self.display_path()
+
+      
