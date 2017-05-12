@@ -149,7 +149,6 @@ class Playercontroller:
 
     def actualise(self):
         """En attandant d'avoir un vrai systeme"""
-        print("Cette fonction n'est pas optimisée")
         resultat = loads(demande("carte:carte:" + str(self.id)))
         self.carte_id = eval(resultat["map"])
         self.carte_mobs = []
