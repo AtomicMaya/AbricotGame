@@ -295,6 +295,14 @@ class Spells:
                                          file_spells[ids]['AOESHAPE'],
                                          file_spells[ids]['EFFECTS'])
 
+    def get(self, spell_id: str):
+        """
+        Cette fonction permet de recuperer un sort grace a son id
+        :param spell_id: -> Identifiant de sort
+        :return: -> Le sort
+        """
+        return self.spells[spell_id]
+
 class Caracteristiques:
     """Cette classe représente les caactéristiques de combat d'un mob ou d'un joueur"""
 
