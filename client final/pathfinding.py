@@ -1,147 +1,7 @@
 # coding=utf-8
 """Ce fichier contient tout les éléments liés au calcul de chemin"""
-from itertools import filterfalse
 from heapq import heapify, heappush, heappop
 from typing import Tuple, List
-
-
-
-def tuple_add(tuple1: Tuple, tuple2: Tuple) -> Tuple:
-    """Cette fonction permet d'additionner deux tuples"""
-    return tuple([x + y for x, y in zip(tuple1, tuple2)])
-
-
-def remove_duplicates(iterable, key=None):
-    """
-    Renvoie un generateur sur un iterable qui enleve tous les elements en double dans une liste, conservant l'ordre."""
-    seen = set()
-    seen_add = seen.add
-    if key is None:
-        for element in filterfalse(seen.__contains__, iterable):
-            seen_add(element)
-            yield element
-    else:
-        for element in iterable:
-            k = key(element)
-            if k not in seen:
-                seen_add(k)
-                yield element
-
-
-def linearize(path: List, obstacles: List[Tuple]) ->List:
-    """
-    Remplit l'espace entre deux cases non consecutives
-    :param path: -> Liste de coordonnees du chemin
-    :param obstacles: -> Liste de coordonnees des obstacles
-    :return: -> Une liste linearisee
-    """
-    y_dir = 1 if path[0][1] < path[-1][1] else -1
-    x_dir = 1 if path[0][0] < path[-1][0] else -1
-    list2 = []
-    for i in range(1, len(path) + 1):
-        try:
-            list2.append(path[i - 1])
-            if path[i - 1][0] != path[i][0] and path[i - 1][1] != path[i][1]:
-                if (path[i - 1][0], path[i - 1][1] + y_dir) not in obstacles:
-                    list2.append((path[i - 1][0], path[i - 1][1] + y_dir))
-                elif (path[i - 1][0] + x_dir, path[i - 1][1]) not in obstacles:
-                    list2.append((path[i - 1][0] + x_dir, path[i - 1][1]))
-        except IndexError:
-            continue
-
-    return list(remove_duplicates(list2))
-
-
-
-def bresenham(player: Tuple, end: Tuple)->List:
-    """ Algorithme de Bresenham
-    Prend en entree deux tuples de coordonnees et indique les cases traversees par une ligne passant de l'une à l'autre
-
-    :param player:
-    :param end:
-    """
-    x1, y1 = player
-    x2, y2 = end
-    # Derivees
-    dx = x2 - x1
-    dy = y2 - y1
-
-    # Verification de l'inclinaison de pente
-    slope = abs(dy) > abs(dx)
-
-    # Si trop inclinee. rotation de la pente
-    if slope:
-        x1, y1 = y1, x1
-        x2, y2 = y2, x2
-
-    # Inverse les coordonnees en x et y si necessaire
-    switched = False
-    if x1 > x2:
-        x1, x2 = x2, x1
-        y1, y2 = y2, y1
-        switched = True
-
-    # Recalcul des derivees
-    dx = x2 - x1
-    dy = y2 - y1
-
-    # Calcul de l'erreur
-    error = int(dx / 2.0)
-    y_step = 1 if y1 < y2 else -1
-
-    # Itere par dessus les cases generant les points traverses entre le joueur et la fin de sa visibilite
-    y = y1
-    crossed_points = []
-    for x in range(x1, x2 + 1):
-        coord = (y, x) if slope else (x, y)
-        crossed_points.append(coord)
-        error -= abs(dy)
-        if error < 0:
-            y += y_step
-            error += dx
-
-    # Inversion de la liste si les points originaux ont etes inverses
-    if switched:
-        crossed_points.reverse()
-    return list(remove_duplicates(crossed_points))
-
-
-def calculate_movement(start: Tuple, end: Tuple, obstacles: List[Tuple]):
-    """
-    Calcule le chemin entre une case de depart et une case d'arrivee, par une linearisation de l'Algorithme A*
-    :param start: -> Coordonnees de la case de depart
-    :param end: -> Coordonnees de la case d'arrivee
-    :param obstacles: -> Obstacles sur la carte
-    :return:
-    """
-    path = list(remove_duplicates(AStar(start, end, obstacles).process()))
-    corners = []
-    for i in range(len(path)):
-        if i < len(path) - 2 and (path[i][0] != path[i + 2][0] and path[i][1] != path[i + 2][1]):
-            corners.append(path[i + 1])
-    corners = [start] + corners + [end]
-    ind = []
-    for i in corners:
-        ind.append(path.index(i))
-    alt_paths = []
-    for i in range(1, len(ind) - 1):
-        br = linearize(bresenham(path[ind[i - 1]], path[ind[i + 1]]), obstacles)
-        if set(br).isdisjoint(obstacles):
-            alt_paths.append(br)
-        else:
-            index = (ind[i - 1] + int((ind[i] - ind[i - 1]) * 0.5), ind[i + 1] - int((ind[i + 1] - ind[i]) * 0.5))
-            br = bresenham(path[index[0]], path[index[1]])
-            if set(br).isdisjoint(obstacles):
-                alt_paths.append(br)
-    alt_paths = sorted(alt_paths, key=len)[::-1]
-    for alt in alt_paths:
-        try:
-            if len(alt) > 5: 
-                line = linearize(alt, obstacles)
-                path = path[0:path.index(alt[0])] + line + path[path.index(alt[-1]) + 1:]
-        except ValueError:
-            pass
-    return linearize(path, obstacles)
 
 
 class GridCell(object):
@@ -152,6 +12,7 @@ class GridCell(object):
     :param y: -> Coordonnee y de la case
     :param not_obstacle: -> Si la case est traversable par un joueur (pas un mur / riviere / tour de sauron
     """
+
     def __init__(self, x, y, not_obstacle):
         self.not_obstacle = not_obstacle
         self.x = x
@@ -199,6 +60,7 @@ class AStar(object):
     :param start: -> Coordonnees (x, y) de la case de depart
     :param end: -> Coordonnees (x, y) de la case d'arrivee
     """
+
     def __init__(self, start: Tuple, end: Tuple, obstacles: List[Tuple]):
         self.open_list = []
         heapify(self.open_list)
@@ -300,4 +162,41 @@ class AStar(object):
                         heappush(self.open_list, (n_cell.f, n_cell))
         return self.display_path()
 
-      
+
+# noinspection PyUnresolvedReferences
+def calculate_movement(start: Tuple, end: Tuple, obstacles: List[Tuple]):
+    """
+    Calcule le chemin entre une case de depart et une case d'arrivee, par une linearisation de l'Algorithme A*
+    :param start: -> Coordonnees de la case de depart
+    :param end: -> Coordonnees de la case d'arrivee
+    :param obstacles: -> Obstacles sur la carte
+    :return:
+    """
+    path = list(remove_duplicates(AStar(start, end, obstacles).process()))
+    corners = []
+    for i in range(len(path)):
+        if i < len(path) - 2 and (path[i][0] != path[i + 2][0] and path[i][1] != path[i + 2][1]):
+            corners.append(path[i + 1])
+    corners = [start] + corners + [end]
+    ind = []
+    for i in corners:
+        ind.append(path.index(i))
+    alt_paths = []
+    for i in range(1, len(ind) - 1):
+        br = linearize(bresenham(path[ind[i - 1]], path[ind[i + 1]]), obstacles)
+        if set(br).isdisjoint(obstacles):
+            alt_paths.append(br)
+        else:
+            index = (ind[i - 1] + int((ind[i] - ind[i - 1]) * 0.5), ind[i + 1] - int((ind[i + 1] - ind[i]) * 0.5))
+            br = bresenham(path[index[0]], path[index[1]])
+            if set(br).isdisjoint(obstacles):
+                alt_paths.append(br)
+    alt_paths = sorted(alt_paths, key=len)[::-1]
+    for alt in alt_paths:
+        try:
+            if len(alt) > 5:  # MODIFIED
+                line = linearize(alt, obstacles)
+                path = path[0:path.index(alt[0])] + line + path[path.index(alt[-1]) + 1:]
+        except ValueError:
+            pass
+    return linearize(path, obstacles)

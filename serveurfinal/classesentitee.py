@@ -7,11 +7,7 @@ from random import choice, randint, shuffle
 from codecs import open as c_open
 from pathfinding import *
 from copy import deepcopy
-<<<<<<< HEAD
-from typing import List
-=======
-from typing import Dict
->>>>>>> refs/remotes/origin/master
+from typing import Dict, List
 
 taille_map_x = 32
 taille_map_y = 18
@@ -24,35 +20,6 @@ class Mouvements(Enum):
     GAUCHE = auto()
     DROITE = auto()
     ERREUR = auto()
-
-
-<<<<<<< HEAD
-class Mobgroup:
-    """Cette classe represente un groupe de mobs """
-
-    def __init__(self, map):
-        valide = False
-        while not valide:
-            self.group_coords = choice(map.free)
-            valide = True
-            for i in map.mobsgroups:
-                if i.group_coords != self.group_coords:
-                    valide = False
-
-        self.mobgroup = [MOBS.get(choice(map.mobs), randint(map.levelmin, map.levelmax), self.group_coords) for _ in
-                         range(randint(2, 8))]
-        self.level = 0
-        for mob in self.mobgroup:
-            self.level += mob.level
-        self.timer = 0
-
-    def move(self, map, combat):
-        """Cette fonction fait bouger tout les mobs d'un groupe"""
-        self.timer = randint(42 * 10, 42 * 30)
-        for mob in self.mobgroup[1:]:  # Leader does not move
-            action = choice([Mouvements.HAUT, Mouvements.GAUCHE, Mouvements.BAS, Mouvements.DROITE, 'NONE', 'NONE'])
-            if action != 'NONE':
-                map.move(mob, action, combat)
 
 
 class Battle:
@@ -111,14 +78,13 @@ class Battle:
             battle.movement_phase(path, int(sum(battle.get_ranges()) / 2))
             battle.attack_phase()
             battle.end_turn()
-=======
+            
 class Entitee:
     """Cette classe représente toute les entitée qui peuvent se déplacer szr la carte. Elle est héritée par joueur et
     par mob"""
 
     def __init__(self, position: Tuple[int, int]):
         self.mapcoords = position
->>>>>>> refs/remotes/origin/master
 
 
 class Map:
@@ -143,14 +109,8 @@ class Map:
                 else:
                     self.free.append((x, y))
         self.obstacles = self.semiobs + self.fullobs
-
-<<<<<<< HEAD
-    def update(self, combats):
-        """Fonction appellee a chaque tick qui sert a faire bouger les entitees, a rafraichir les combats et a faire
-=======
     def update(self, combats: List):
         """Fonction appellée a chaque tick qui sert a faire bouger les entitées, a rafraichir les combats et a faire
->>>>>>> refs/remotes/origin/master
         apparaitre de nouveaux ennemis"""
         for mobgroup in self.mobsgroups:
             if mobgroup.timer == 0:
@@ -163,14 +123,9 @@ class Map:
             self.actif = False
             for mobgroup in self.mobsgroups:
                 mobgroup.move(self, combats)
-
-<<<<<<< HEAD
-    def move(self, entitee, direction, combat):
-        """Cette fonction permet de deplacer une entitee sur la carte"""
-=======
+                
     def move(self, entitee: Entitee, direction: Mouvements, combat: List) -> bool:
         """Cette fonction permet de déplacer une entitée sur la carte"""
->>>>>>> refs/remotes/origin/master
         coord = entitee.mapcoords
         if direction == Mouvements.HAUT and coord[1] != 0:
             cible = (coord[0], coord[1] - 1)
@@ -223,13 +178,6 @@ class Mobgroup:
             if action != 'NONE':
                 map.move(mob, action, combat)
 
-<<<<<<< HEAD
-class Entitee:
-    """Cette classe represente toute les entitee qui peuvent se deplacer szr la carte. Elle est heritee par joueur et
-    par mob"""
-=======
->>>>>>> refs/remotes/origin/master
-
 class TypeMob:
     """Cette classe représente une catégorie de mob"""
 
@@ -256,49 +204,6 @@ class Mob(Entitee):
         self.attack_anim = typemob.attack_anim
         self.mouvement_anim = typemob.mouvement_anim
         self.level = level
-
-
-class Battle:
-    """Cette classe représente une instance de combat"""
-
-    def __init__(self, players: List, mobgroup: Mobgroup, map: Map, combat: List):
-        self.mobgroup = mobgroup.mobgroup
-        self.players = []
-        for i in players:
-            self.players.append(i)
-        self.map = map
-        self.queue = self.players + self.mobgroup
-        shuffle(self.queue)
-        self.current = self.queue[0]
-        combat.append(self)
-
-    # noinspection PyTypeChecker
-    def find_target(self, mob: Mob) -> List:
-        """Permet a un mob de choisir sa cible en fonction de critères comme la vie, la distance et le niveau du
-        joueur"""
-        movements = []
-        for player in self.players:
-            movement = calculate_movement(mob.mapcoords, player.mapcoords, self.map.obstacles)
-            movements += [movement]
-
-        stats = {}
-        i = 0
-        for player in self.players:
-            stats[player] = 1
-            stats[player] *= 2 if movements[i] == max(movements) else 1
-            stats[player] *= 2 if mob.level > player.level else 1
-            stats[player] *= 4 if 0 <= player.hp / player.maxhp < 0.25 else 3 \
-                if 0.25 <= player.hp / player.maxhp < 0.5 else 2 if 0.5 <= player.hp / player.maxhp < 0.75 else 1
-            i += 1
-        # get player
-        print("fonction non finie,findtarget")
-        path = []
-        return path
-
-    def update(self):
-        """Fonction appellé a chaque tick"""
-        if self.current in self.mobgroup:
-            print("fonction non finie,Battle.update")
 
 
 class Maps:
@@ -330,26 +235,19 @@ class Mobs:
             if ids != '_template':
                 self.mobs[ids] = TypeMob(file_mobs[ids])
 
-<<<<<<< HEAD
-    def get(self, mob_id: str, level, position):
-        """Permet de recuperer un mob grace a son id"""
-=======
+
     def get(self, mob_id: str, level: int, position: Tuple[int, int]) -> Mob:
         """Permet de récuperer un mob grace a son id"""
->>>>>>> refs/remotes/origin/master
         return Mob(self.mobs[mob_id], level, position)
 
 
 class Spell:
     """Cette classe permet de definir un sort et d'appliquer ses effets"""
 
-<<<<<<< HEAD
-    def __init__(self, name, damage, cost, shape, spell_type, max_range, min_range, reload, aoe, aoe_range, aoe_shape,
-                 effects):
-=======
+
     def __init__(self, name: str, damage: int, cost: int, shape: str, spell_type: str, max_range: int, min_range: int,
                  reload: int, aoe, aoe_range, aoe_shape, effects):
->>>>>>> refs/remotes/origin/master
+
         self.name = name
         self.damage = damage
         self.cost = cost
@@ -397,40 +295,8 @@ class Spells:
                                          file_spells[ids]['AOESHAPE'],
                                          file_spells[ids]['EFFECTS'])
 
-<<<<<<< HEAD
-    def get(self, spell_id: str):
-        """
-        Cette fonction permet de recuperer un sort grace a son id
-        :param spell_id: -> Identifiant de sort
-        :return: -> Le sort
-        """
-        return self.spells[spell_id]
-
-
-class Type_Mob:
-    """Cette classe represente une categorie de mob"""
-
-    def __init__(self, data):
-        self.name = data['NAME']
-        self.spells = [SPELLS.get(spell_id) for spell_id in data['SPELLS']]
-        self.idle_anim = data['IDLE']
-        self.attack_anim = data['ATTACK']
-        self.mouvement_anim = data['MOVEMENT']
-        self.caracteristiques = caracteristiques(data['BASEHP'], data['MOVEMENTPOINTS'], data['ACTIONPOINTS'])
-        self.xcaracteristiques = caracteristiques(data['XHP'], 0, 0)
-
-
-class caracteristiques:
-    """Cette classe represente les caracteristiques de combat d'un mob ou d'un joueur"""
-=======
-    def get(self, spell_id: str) -> Spell:
-        """Cette fonction permet de réuperer un sort grace a son id"""
-        return self.spells[spell_id]
-
-
 class Caracteristiques:
     """Cette classe représente les caactéristiques de combat d'un mob ou d'un joueur"""
->>>>>>> refs/remotes/origin/master
 
     def __init__(self, hp: int, mp: int, ap: int):
         self.hp = hp
