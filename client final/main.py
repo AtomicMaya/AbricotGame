@@ -96,10 +96,9 @@ class RendererController:
                             txt = f.render(k[0].replace("_", " "), 0, (255, 255, 255))
                             if txt.get_rect()[2] > max_len:
                                 max_len = txt.get_rect()[2]
-                            #pygame.draw.rect(self.fenetre, (255,0,0), (x+10,y-50,txt.get_rect()[2],txt.get_rect()[3]))
                             display.append(txt)
 
-                        txt = f.render(str(j[1]), 0, (255, 255, 255))
+                        txt = f.render('Niveau ' + str(j[1]), 0, (255, 255, 255))
                         x, y = pygame.mouse.get_pos()
                         if x + max_len > 1152:
                             x = 1152 - max_len -20
@@ -108,7 +107,7 @@ class RendererController:
 
                         box = pygame.Surface((max_len+20, (1+len(display))*30+20))
                         box.fill((50, 50, 50))
-                        box.set_alpha(128)
+                        box.set_alpha(200)
                         
                         wid = txt.get_rect()[2]
                         box.blit(txt, ((max_len-wid)//2, 10))
