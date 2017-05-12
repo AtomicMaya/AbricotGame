@@ -7,7 +7,7 @@ from random import choice, randint, shuffle
 from codecs import open as c_open
 from pathfinding import *
 from copy import deepcopy
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 taille_map_x = 32
 taille_map_y = 18
