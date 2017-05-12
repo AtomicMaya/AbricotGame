@@ -14,8 +14,9 @@
   </component>
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/AbricotGame$main.coverage" NAME="main Coverage Results" MODIFIED="1494593783913" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/serveurfinal" />
-    <SUITE FILE_PATH="coverage/AbricotGame$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1494593876328" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client final" />
+    <SUITE FILE_PATH="coverage/AbricotGame$main.coverage" NAME="main Coverage Results" MODIFIED="1494595329760" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/serveurfinal" />
+    <SUITE FILE_PATH="coverage/AbricotGame$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1494595337502" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client final" />
+    <SUITE FILE_PATH="coverage/AbricotGame$classesentitee.coverage" NAME="classesentitee Coverage Results" MODIFIED="1494595132988" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/serveurfinal" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -25,62 +26,86 @@
     <favorites_list name="AbricotGame" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/serveurfinal/main.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="26" column="36" selection-start-line="26" selection-start-column="36" selection-end-line="26" selection-end-column="36" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/client final/main.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.78807944">
-              <caret line="106" column="0" selection-start-line="106" selection-start-column="0" selection-end-line="106" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="classesentitee.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/serveurfinal/classesentitee.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-4.1034484">
-              <caret line="7" column="25" selection-start-line="7" selection-start-column="25" selection-end-line="7" selection-end-column="25" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="pathfinding.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/client final/pathfinding.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="147" column="19" selection-start-line="0" selection-start-column="0" selection-end-line="307" selection-end-column="34" />
-              <folding>
-                <element signature="e#4946#6530#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="pathfinding.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/serveurfinal/pathfinding.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="307" column="34" selection-start-line="307" selection-start-column="34" selection-end-line="307" selection-end-column="34" />
-              <folding>
-                <element signature="e#4946#6530#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <splitter split-orientation="horizontal" split-proportion="0.5013889">
+      <split-first>
+        <leaf>
+          <file leaf-file-name="classesentitee.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/serveurfinal/classesentitee.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.0">
+                  <caret line="196" column="68" selection-start-line="196" selection-start-column="68" selection-end-line="196" selection-end-column="68" />
+                  <folding>
+                    <element signature="e#176#197#0" expanded="true" />
+                    <element signature="e#468#645#0" expanded="false" />
+                    <element signature="e#666#2744#0" expanded="false" />
+                    <element signature="e#784#1014#0" expanded="false" />
+                    <element signature="e#1084#2004#0" expanded="false" />
+                    <element signature="e#2040#2211#0" expanded="false" />
+                    <element signature="e#2263#2300#0" expanded="false" />
+                    <element signature="e#2338#2342#0" expanded="false" />
+                    <element signature="e#2376#2457#0" expanded="false" />
+                    <element signature="e#2489#2744#0" expanded="false" />
+                    <element signature="e#2777#2991#0" expanded="false" />
+                    <element signature="e#2966#2991#0" expanded="false" />
+                    <element signature="e#3101#3782#0" expanded="false" />
+                    <element signature="e#3829#4423#0" expanded="false" />
+                    <element signature="e#6050#6574#0" expanded="false" />
+                    <element signature="e#6976#7479#0" expanded="false" />
+                    <element signature="e#7072#7479#0" expanded="false" />
+                    <element signature="e#7506#8065#0" expanded="false" />
+                    <element signature="e#7630#8065#0" expanded="false" />
+                    <element signature="e#8084#8566#0" expanded="false" />
+                    <element signature="e#8181#8413#0" expanded="false" />
+                    <element signature="e#8462#8566#0" expanded="false" />
+                    <element signature="e#8585#9114#0" expanded="false" />
+                    <element signature="e#8667#8923#0" expanded="false" />
+                    <element signature="e#9012#9114#0" expanded="false" />
+                    <element signature="e#9134#10383#0" expanded="false" />
+                    <element signature="e#9402#9770#0" expanded="false" />
+                    <element signature="e#9816#9856#0" expanded="false" />
+                    <element signature="e#9896#10383#0" expanded="false" />
+                    <element signature="e#10499#11340#0" expanded="false" />
+                    <element signature="e#11384#11578#0" expanded="false" />
+                    <element signature="e#11384#11541#1" expanded="false" />
+                    <element signature="e#11608#12103#0" expanded="false" />
+                    <element signature="e#11752#11806#0" expanded="false" />
+                    <element signature="e#11846#11929#0" expanded="false" />
+                    <element signature="e#11969#12043#0" expanded="false" />
+                    <element signature="e#12084#12103#0" expanded="false" />
+                    <element signature="e#12133#12567#0" expanded="false" />
+                    <element signature="e#12231#12567#0" expanded="false" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/client final/main.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.33278146">
+                  <caret line="163" column="8" selection-start-line="163" selection-start-column="8" selection-end-line="163" selection-end-column="8" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf>
+          <file leaf-file-name="server.py" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/../../AbricotGame/server.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.45181674">
+                  <caret line="404" column="0" selection-start-line="401" selection-start-column="32" selection-end-line="404" selection-end-column="0" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-second>
+    </splitter>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -88,10 +113,10 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/serveurfinal/classesentitee.py" />
         <option value="$PROJECT_DIR$/client final/pathfinding.py" />
         <option value="$PROJECT_DIR$/serveurfinal/pathfinding.py" />
         <option value="$PROJECT_DIR$/client final/main.py" />
+        <option value="$PROJECT_DIR$/serveurfinal/classesentitee.py" />
       </list>
     </option>
   </component>
@@ -220,6 +245,24 @@
       <module name="AbricotGame" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/client final/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="classesentitee" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/serveurfinal" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="AbricotGame" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/serveurfinal/classesentitee.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -412,14 +455,16 @@
       <option name="USE_KEYWORD" value="false" />
       <method />
     </configuration>
-    <list size="2">
+    <list size="3">
       <item index="0" class="java.lang.String" itemvalue="Python.main" />
       <item index="1" class="java.lang.String" itemvalue="Python.main (1)" />
+      <item index="2" class="java.lang.String" itemvalue="Python.classesentitee" />
     </list>
     <recent_temporary>
-      <list size="2">
+      <list size="3">
         <item index="0" class="java.lang.String" itemvalue="Python.main (1)" />
         <item index="1" class="java.lang.String" itemvalue="Python.main" />
+        <item index="2" class="java.lang.String" itemvalue="Python.classesentitee" />
       </list>
     </recent_temporary>
   </component>
@@ -461,7 +506,15 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager />
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/../../AbricotGame/server.py</url>
+          <line>414</line>
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="1" />
+    </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
@@ -473,11 +526,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/serveurfinal/classesentitee.py">
+    <entry file="file://$PROJECT_DIR$/serveurfinal/pathfinding.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.1034484">
-          <caret line="7" column="25" selection-start-line="7" selection-start-column="25" selection-end-line="7" selection-end-column="25" />
-          <folding />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <folding>
+            <element signature="e#4945#6529#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -491,28 +546,74 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/serveurfinal/pathfinding.py">
+    <entry file="file://$PROJECT_DIR$/serveurfinal/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="307" column="34" selection-start-line="307" selection-start-column="34" selection-end-line="307" selection-end-column="34" />
+          <caret line="9" column="22" selection-start-line="9" selection-start-column="22" selection-end-line="9" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/serveurfinal/classesentitee.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="196" column="68" selection-start-line="196" selection-start-column="68" selection-end-line="196" selection-end-column="68" />
           <folding>
-            <element signature="e#4946#6530#0" expanded="false" />
+            <element signature="e#176#197#0" expanded="true" />
+            <element signature="e#468#645#0" expanded="false" />
+            <element signature="e#666#2744#0" expanded="false" />
+            <element signature="e#784#1014#0" expanded="false" />
+            <element signature="e#1084#2004#0" expanded="false" />
+            <element signature="e#2040#2211#0" expanded="false" />
+            <element signature="e#2263#2300#0" expanded="false" />
+            <element signature="e#2338#2342#0" expanded="false" />
+            <element signature="e#2376#2457#0" expanded="false" />
+            <element signature="e#2489#2744#0" expanded="false" />
+            <element signature="e#2777#2991#0" expanded="false" />
+            <element signature="e#2966#2991#0" expanded="false" />
+            <element signature="e#3101#3782#0" expanded="false" />
+            <element signature="e#3829#4423#0" expanded="false" />
+            <element signature="e#6050#6574#0" expanded="false" />
+            <element signature="e#6976#7479#0" expanded="false" />
+            <element signature="e#7072#7479#0" expanded="false" />
+            <element signature="e#7506#8065#0" expanded="false" />
+            <element signature="e#7630#8065#0" expanded="false" />
+            <element signature="e#8084#8566#0" expanded="false" />
+            <element signature="e#8181#8413#0" expanded="false" />
+            <element signature="e#8462#8566#0" expanded="false" />
+            <element signature="e#8585#9114#0" expanded="false" />
+            <element signature="e#8667#8923#0" expanded="false" />
+            <element signature="e#9012#9114#0" expanded="false" />
+            <element signature="e#9134#10383#0" expanded="false" />
+            <element signature="e#9402#9770#0" expanded="false" />
+            <element signature="e#9816#9856#0" expanded="false" />
+            <element signature="e#9896#10383#0" expanded="false" />
+            <element signature="e#10499#11340#0" expanded="false" />
+            <element signature="e#11384#11578#0" expanded="false" />
+            <element signature="e#11384#11541#1" expanded="false" />
+            <element signature="e#11608#12103#0" expanded="false" />
+            <element signature="e#11752#11806#0" expanded="false" />
+            <element signature="e#11846#11929#0" expanded="false" />
+            <element signature="e#11969#12043#0" expanded="false" />
+            <element signature="e#12084#12103#0" expanded="false" />
+            <element signature="e#12133#12567#0" expanded="false" />
+            <element signature="e#12231#12567#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/serveurfinal/main.py">
+    <entry file="file://$PROJECT_DIR$/../../AbricotGame/server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="26" column="36" selection-start-line="26" selection-start-column="36" selection-end-line="26" selection-end-column="36" />
+        <state vertical-scroll-proportion="0.45181674">
+          <caret line="404" column="0" selection-start-line="401" selection-start-column="32" selection-end-line="404" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/client final/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.78807944">
-          <caret line="106" column="0" selection-start-line="106" selection-start-column="0" selection-end-line="106" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.33278146">
+          <caret line="163" column="8" selection-start-line="163" selection-start-column="8" selection-end-line="163" selection-end-column="8" />
           <folding />
         </state>
       </provider>

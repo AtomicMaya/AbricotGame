@@ -1,9 +1,9 @@
 # coding=utf-8
-"""Ce fichier continent toute les classe liees aux entitees, au maps ou au mobs. Il cree aussi les constantes MAPS,MOBS
+"""Ce fichier continent toute les classe liees aux entitees, au maps ou au mobs. Il cree aussi les constantes MAPS, MOBS
 et SPELLS a partir des fichiers json"""
 from json import load
 from enum import Enum, auto
-from random import choice, randint, shuffle
+from random import choice, randint, shuffle, random
 from codecs import open as c_open
 from pathfinding import *
 from copy import deepcopy
@@ -47,7 +47,7 @@ class Battle:
         for player in self.players:
             stats[player] = 1
             stats[player] *= 2 if movements[i] == max(movements) else 1
-            stats[player] *= 2 if mob.level > player.level else 1
+            stats[player] *= 2 if self.current.level > player.level else 1
             stats[player] *= 4 if 0 <= player.hp / player.maxhp < 0.25 else 3 \
                 if 0.25 <= player.hp / player.maxhp < 0.5 else 2 if 0.5 <= player.hp / player.maxhp < 0.75 else 1
             i += 1
@@ -74,10 +74,10 @@ class Battle:
     def update(self):
         """Fonction appelle a chaque tick"""
         if self.current in self.mobgroup:
-            target, path = battle.find_target()
-            battle.movement_phase(path, int(sum(battle.get_ranges()) / 2))
-            battle.attack_phase()
-            battle.end_turn()
+            target, path = self.find_target()
+            self.movement_phase(path, int(sum(self.get_ranges()) / 2))
+            self.attack_phase()
+            self.end_turn()
             
 class Entitee:
     """Cette classe représente toute les entitée qui peuvent se déplacer szr la carte. Elle est héritée par joueur et
@@ -109,6 +109,7 @@ class Map:
                 else:
                     self.free.append((x, y))
         self.obstacles = self.semiobs + self.fullobs
+
     def update(self, combats: List):
         """Fonction appellée a chaque tick qui sert a faire bouger les entitées, a rafraichir les combats et a faire
         apparaitre de nouveaux ennemis"""
@@ -124,23 +125,24 @@ class Map:
             for mobgroup in self.mobsgroups:
                 mobgroup.move(self, combats)
                 
-    def move(self, entitee: Entitee, direction: Mouvements, combat: List) -> bool:
+    def move(self, entitee: Entitee, direction: Mouvements, combat: List = [], leader = None) -> bool:
         """Cette fonction permet de déplacer une entitée sur la carte"""
         coord = entitee.mapcoords
+        coords = [(0, -1), (-1, 0), (0, 1), (1, 0)]
         if direction == Mouvements.HAUT and coord[1] != 0:
-            cible = (coord[0], coord[1] - 1)
+            cible = tuple_add(coord, coords[0])
         elif direction == Mouvements.BAS and coord[1] != (taille_map_y - 1):
-            cible = (coord[0], coord[1] + 1)
+            cible = tuple_add(coord, coords[2])
         elif direction == Mouvements.GAUCHE and coord[0] != 0:
-            cible = (coord[0] - 1, coord[1])
+            cible = tuple_add(coord, coords[1])
         elif direction == Mouvements.DROITE and coord[0] != (taille_map_x - 1):
-            cible = (coord[0] + 1, coord[1])
+            cible = tuple_add(coord, coords[3])
         else:
-            cible = (coord[0], coord[1])
+            cible = coord
 
         if cible not in self.obstacles:
-            entitee.mapcoords = cible
             if isinstance(entitee, Joueur):
+                entitee.mapcoords = cible
                 for i in self.mobsgroups:
                     if i.group_coords == cible:
                         self.mobsgroups.remove(i)
@@ -148,6 +150,10 @@ class Map:
                         entitee.en_combat = True
                         Battle([entitee], i, self, combat)
                         return True
+            elif isinstance(entitee, Mob):
+                odds = 1 / (2**(abs(leader.mapcoords[0] - cible[0]) + abs(leader.mapcoords[1] - cible[1])))
+                if odds > random():
+                    entitee.mapcoords = cible
             return False
 
 
@@ -172,11 +178,11 @@ class Mobgroup:
 
     def move(self, map: Map, combat: List):
         """Cette fonction fait bouger tout les mobs d'un groupe"""
-        self.timer = randint(42 * 1, 42 * 10)
+        self.timer = randint(42 * 5, 42 * 10)
         for mob in self.mobgroup[1:]:  # Leader does not move
-            action = choice([Mouvements.HAUT, Mouvements.GAUCHE, Mouvements.BAS, Mouvements.DROITE, 'NONE', 'NONE'])
-            if action != 'NONE':
-                map.move(mob, action, combat)
+            action = choice([Mouvements.HAUT, Mouvements.GAUCHE, Mouvements.BAS, Mouvements.DROITE])
+            map.move(mob, action, leader=self.mobgroup[0])
+
 
 class TypeMob:
     """Cette classe représente une catégorie de mob"""

@@ -161,7 +161,6 @@ class Playercontroller:
         """Cette fonction est appellée quand le joueur fait un clic de souris"""
         case = decalage_inverse(pygame.mouse.get_pos())
         if 0 < case[0] < 32 and 0 < case[1] < 18:
-            print(case)
         
             self.move_to(case)
 
