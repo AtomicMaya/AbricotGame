@@ -20,12 +20,12 @@ class Map:
 
     def __init__(self, data: Dict):
         self.mobs = data["MOBS"]
-        self.obstacle = []
+        self.obstacles = []
         self.free = []
         for y in range(len(data["MAP"])):
             for x in range(len(data["MAP"][y])):
-                if data["MAP"][y][x] == 1:
-                    self.obstacle.append((x, y))
+                if data["MAP"][y][x] > 0:
+                    self.obstacles.append((x, y))
                 else:
                     self.free.append((x, y))
 
@@ -76,29 +76,50 @@ class RendererController:
 
         self.fenetre.fill((0, 0, 0))
         self.fenetre.blit(self.fond, (128, 0))
-        for i in range(0, 32):
-            for j in range(18):
-                if j % 2 == 0 and i % 2 == 0 or j % 2 == 1 and i % 2 == 1:
-                    pygame.draw.rect(self.fenetre, (0, 0, 0), (i * 32 + 128, j * 32, 33, 33), 1)
 
+        free = MAPS.get(joueur.carte_id).free
+        for i in free:
+            pygame.draw.rect(self.fenetre, (0, 0, 0), (i[0] * 32 + 128, i[1] * 32, 33, 33), 1)
+
+        temp = False
+        box = None
         for i in joueur.carte_mobs:
             self.fenetre.blit(self.textures_mobs[i[0]], decalage(i[1]))
-            if i[1] == decalage_inverse(pygame.mouse.get_pos()):
+            if i[1] == decalage_inverse(pygame.mouse.get_pos()) and not temp:
+                temp = True
                 f = pygame.font.Font(None, 30)
                 for j in joueur.groupmobs:
                     if i in j[0]:
-                        n = 1
-                        txt = f.render(str(j[1]), 0, (255, 0, 0))
-                        x, y = pygame.mouse.get_pos()
-                        self.fenetre.blit(txt, (x + 10, y))
+                        max_len = 0
+                        display = []
                         for k in j[0]:
-                            txt = f.render(k[0].replace("_", " "), 0, (255, 0, 0))
-                            x, y = pygame.mouse.get_pos()
-                            self.fenetre.blit(txt, (x + 10, y + 30 * n))
-                            n += 1
+                            txt = f.render(k[0].replace("_", " "), 0, (255, 255, 255))
+                            if txt.get_rect()[2] > max_len:
+                                max_len = txt.get_rect()[2]
+                            #pygame.draw.rect(self.fenetre, (255,0,0), (x+10,y-50,txt.get_rect()[2],txt.get_rect()[3]))
+                            display.append(txt)
 
+                        txt = f.render(str(j[1]), 0, (255, 255, 255))
+                        x, y = pygame.mouse.get_pos()
+                        if x + max_len > 1152:
+                            x = 1152 - max_len -20
+                        if y + (len(display)+1)*30 > 576:
+                            y = 576-(1+len(display))*30
+
+                        box = pygame.Surface((max_len+20, (1+len(display))*30+20))
+                        box.fill((50, 50, 50))
+                        box.set_alpha(128)
+                        
+                        wid = txt.get_rect()[2]
+                        box.blit(txt, ((max_len-wid)//2, 10))
+                        
+                        for n in range(len(display)):
+                            box.blit(display[n], (10, 30 * (n+1) + 10))
+                        
         for i in joueur.carte_joueurs:
             self.fenetre.blit(self.textures_classes[i[0]], decalage(i[1]))
+        if box:
+            self.fenetre.blit(box, (x, y))     
 
         pygame.display.flip()
 
@@ -140,12 +161,14 @@ class Playercontroller:
     def clic(self):
         """Cette fonction est appellée quand le joueur fait un clic de souris"""
         case = decalage_inverse(pygame.mouse.get_pos())
-        if 0 < case[0] < 18 and 0 < case[1] < 32:
+        if 0 < case[0] < 32 and 0 < case[1] < 18:
+            print(case)
+        
             self.move_to(case)
 
     def move_to(self, case: Tuple[int, int]):
         """Cette fonction calcule le chemin qu'il faut faire pour aller jusqu'a la case pointé par la souris"""
-        calculate_movement(self.position, case, MAPS.get(self.carte_id).obstacle)
+        calculate_movement(self.position, case, MAPS.get(self.carte_id).obstacles)
 
     def actualise(self):
         """En attandant d'avoir un vrai systeme"""
