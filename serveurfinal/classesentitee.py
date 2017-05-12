@@ -1,5 +1,5 @@
 # coding=utf-8
-"""Ce fichier continent toute les classe liées aux entitées, au maps ou au mobs. Il crée aussi les constantes MAPS,MOBS
+"""Ce fichier continent toute les classe liees aux entitees, au maps ou au mobs. Il cree aussi les constantes MAPS,MOBS
 et SPELLS a partir des fichiers json"""
 from json import load
 from enum import Enum, auto
@@ -7,6 +7,7 @@ from random import choice, randint, shuffle
 from codecs import open as c_open
 from pathfinding import *
 from copy import deepcopy
+from typing import List
 
 taille_map_x = 32
 taille_map_y = 18
@@ -22,7 +23,7 @@ class Mouvements(Enum):
 
 
 class Mobgroup:
-    """Cette classe représente un groupe de mobs """
+    """Cette classe represente un groupe de mobs """
 
     def __init__(self, map):
         valide = False
@@ -50,7 +51,7 @@ class Mobgroup:
 
 
 class Battle:
-    """Cette classe représente une instance de combat"""
+    """Cette classe represente une instance de combat"""
 
     def __init__(self, players, mobgroup, map, combat):
         self.mobgroup = mobgroup.mobgroup
@@ -63,14 +64,11 @@ class Battle:
 
     # noinspection PyTypeChecker
     def find_target(self):
-        """Permet a un mob de choisir sa cible en fonction de critères comme la vie, la distance et le niveau du
+        """Permet a un mob de choisir sa cible en fonction de criteres comme la vie, la distance et le niveau du
         joueur"""
         movements = []
-        pmovements = {}
         for player in self.players:
-            movement = calculate_movement(self.current.mapcoords, player.mapcoords, self.map.obstacles)[:-1]
-            pmovements[player] = movement
-            movements += [movement]
+            movements += [calculate_movement(self.current.mapcoords, player.mapcoords, self.map.obstacles)[:-1]]
 
         stats = {}
         i = 0
@@ -82,13 +80,12 @@ class Battle:
                 if 0.25 <= player.hp / player.maxhp < 0.5 else 2 if 0.5 <= player.hp / player.maxhp < 0.75 else 1
             i += 1
         player = list(stats.keys())[list(stats.values()).index(max(stats.values()))]
-        path = pmovements[player]
+        path = movements[self.players.index(player)]
         return player, path
 
     def get_ranges(self):
         maxs, mins = [], []
         for spell in self.current.spells:
-            print(spell.maxRange, spell.minRange)
             maxs += [spell.maxRange]
             mins += [spell.minRange]
         return min(mins), max(maxs)
@@ -103,13 +100,16 @@ class Battle:
         self.current = self.queue[(self.queue.index(self.current) + 1) % len(self.queue)]
 
     def update(self):
-        """Fonction appellé a chaque tick"""
+        """Fonction appelle a chaque tick"""
         if self.current in self.mobgroup:
-            print("fonction non finie,Battle.update")
+            target, path = battle.find_target()
+            battle.movement_phase(path, int(sum(battle.get_ranges()) / 2))
+            battle.attack_phase()
+            battle.end_turn()
 
 
 class Map:
-    """Cette classe représente une carte du jeu"""
+    """Cette classe represente une carte du jeu"""
 
     def __init__(self, data):
         self.actif = False
@@ -132,7 +132,7 @@ class Map:
         self.obstacles = self.semiobs + self.fullobs
 
     def update(self, combats):
-        """Fonction appellée a chaque tick qui sert a faire bouger les entitées, a rafraichir les combats et a faire
+        """Fonction appellee a chaque tick qui sert a faire bouger les entitees, a rafraichir les combats et a faire
         apparaitre de nouveaux ennemis"""
         for mobgroup in self.mobsgroups:
             if mobgroup.timer == 0:
@@ -147,7 +147,7 @@ class Map:
                 mobgroup.move(self, combats)
 
     def move(self, entitee, direction, combat):
-        """Cette fonction permet de déplacer une entitée sur la carte"""
+        """Cette fonction permet de deplacer une entitee sur la carte"""
         coord = entitee.mapcoords
         if direction == Mouvements.HAUT and coord[1] != 0:
             cible = (coord[0], coord[1] - 1)
@@ -191,7 +191,7 @@ class Maps:
 
 
 class Entitee:
-    """Cette classe représente toute les entitée qui peuvent se déplacer szr la carte. Elle est héritée par joueur et
+    """Cette classe represente toute les entitee qui peuvent se deplacer szr la carte. Elle est heritee par joueur et
     par mob"""
 
     def __init__(self, position):
@@ -199,7 +199,7 @@ class Entitee:
 
 
 class Mob(Entitee):
-    """Classe représanatant un mob"""
+    """Classe represanatant un mob"""
 
     def __init__(self, typemob, level, position):
         super().__init__(position)
@@ -226,12 +226,12 @@ class Mobs:
                 self.mobs[ids] = Type_Mob(file_mobs[ids])
 
     def get(self, mob_id: str, level, position):
-        """Permet de récuperer un mob grace a son id"""
+        """Permet de recuperer un mob grace a son id"""
         return Mob(self.mobs[mob_id], level, position)
 
 
 class Spell:
-    """Cette classe permet de définir un sort et d'appliquer ses effets"""
+    """Cette classe permet de definir un sort et d'appliquer ses effets"""
 
     def __init__(self, name, damage, cost, shape, spell_type, max_range, min_range, reload, aoe, aoe_range, aoe_shape,
                  effects):
@@ -285,12 +285,16 @@ class Spells:
                                          file_spells[ids]['EFFECTS'])
 
     def get(self, spell_id: str):
-        """Cette fonction permet de réuperer un sort grace a son id"""
+        """
+        Cette fonction permet de recuperer un sort grace a son id
+        :param spell_id: -> Identifiant de sort
+        :return: -> Le sort
+        """
         return self.spells[spell_id]
 
 
 class Type_Mob:
-    """Cette classe représente une catégorie de mob"""
+    """Cette classe represente une categorie de mob"""
 
     def __init__(self, data):
         self.name = data['NAME']
@@ -303,7 +307,7 @@ class Type_Mob:
 
 
 class caracteristiques:
-    """Cette classe représente les caactéristiques de combat d'un mob ou d'un joueur"""
+    """Cette classe represente les caracteristiques de combat d'un mob ou d'un joueur"""
 
     def __init__(self, hp, mp, ap):
         self.hp = hp
@@ -321,7 +325,7 @@ class caracteristiques:
 
 
 class Joueur(Entitee):
-    """Cette classe représente un joueur connecté au jeu"""
+    """Cette classe represente un joueur connecte au jeu"""
 
     def __init__(self, id):
         super().__init__((0, 0))
