@@ -180,9 +180,9 @@ class Playercontroller:
         for i in resultat["mobs"]:
             temp = []
             for j in i["mobs"]:
-                tempp = (j[0], (j[1][0], j[1][1]))
-                self.carte_mobs.append(tempp)
-                temp.append(tempp)
+                mob = (j[0], (j[1][0], j[1][1]))
+                self.carte_mobs.append(mob)
+                temp.append(mob)
             self.groupmobs.append((temp, i["level"]))
         self.carte_joueurs = []
         for i in resultat["joueurs"]:
@@ -192,6 +192,8 @@ class Playercontroller:
 
 def decalage(coord: Tuple[int, int]) -> Tuple[int, int]:
     """Cette fonction sert a transformer une coordonnée sur la carte en une position en pixels"""
+    return coord[0] * 32 + 128, coord[1] * 32
+
 def decalage_inverse(coord: Tuple[int, int]) -> Tuple[int, int]:
     """Cette fonction fait l'inverse de décalage et permet de transformer une position en pixel en coordonnée sur la
     carte"""
