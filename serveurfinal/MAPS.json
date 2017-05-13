@@ -1,7 +1,9 @@
 {
 "_template":{"MAP":[[null]],
 	"MOBS":[null],
-	"LEVEL":0
+	"LEVELMIN":0,
+	"LEVELMAX":0,
+	"GROUP_NUMBER":3
 	},
 "(0,0)":{"MAP":[
 	[2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
@@ -25,6 +27,7 @@
 	],
 	"MOBS":["001", "002", "003"],
 	"LEVELMIN":1,
-	"LEVELMAX":6
+	"LEVELMAX":6,
+	"GROUP_NUMBER":1
 	}
 }

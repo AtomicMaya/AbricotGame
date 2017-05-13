@@ -6,6 +6,7 @@ import socket
 from json import loads, load
 from typing import Dict, Tuple
 from pathfinding import calculate_movement
+import time
 
 
 def convert_image(chemin: str, couleurfond=(255, 255, 255)):
@@ -71,6 +72,7 @@ class RendererController:
         for mob in MAPS.get(joueur.carte_id).mobs:
             self.textures_mobs[mob] = pygame.image.load("assets/images/mobs/" + mob + ".png").convert_alpha()
 
+    
     def afficher_carte(self, joueur):
         """Cette fonction sert afficher la carte"""
 
@@ -85,6 +87,7 @@ class RendererController:
         box = None
         for i in joueur.carte_mobs:
             self.fenetre.blit(self.textures_mobs[i[0]], decalage(i[1]))
+
             if i[1] == decalage_inverse(pygame.mouse.get_pos()) and not temp:
                 temp = True
                 f = pygame.font.Font(None, 30)
@@ -137,6 +140,7 @@ class Playercontroller:
         self.groupmobs = []
         self.changement_carte(fenetre)
         self.chemin = []
+        self.dernier_mouvment=0
 
     def changement_carte(self, fenetre: RendererController):
         """Cette fonction est appellée quand le joueur change de carte et sert a charger les nouvelles textures et la
@@ -161,12 +165,11 @@ class Playercontroller:
         """Cette fonction est appellée quand le joueur fait un clic de souris"""
         case = decalage_inverse(pygame.mouse.get_pos())
         if 0 < case[0] < 32 and 0 < case[1] < 18:
-        
             self.move_to(case)
 
     def move_to(self, case: Tuple[int, int]):
         """Cette fonction calcule le chemin qu'il faut faire pour aller jusqu'a la case pointé par la souris"""
-        calculate_movement(self.position, case, MAPS.get(self.carte_id).obstacles)
+        self.chemin=calculate_movement(self.position, case, MAPS.get(self.carte_id).obstacles)
 
     def actualise(self):
         """En attandant d'avoir un vrai systeme"""
@@ -177,19 +180,19 @@ class Playercontroller:
         for i in resultat["mobs"]:
             temp = []
             for j in i["mobs"]:
-                tempp = (j[0], (j[1][0], j[1][1]))
-                self.carte_mobs.append(tempp)
-                temp.append(tempp)
+                mob = (j[0], (j[1][0], j[1][1]))
+                self.carte_mobs.append(mob)
+                temp.append(mob)
             self.groupmobs.append((temp, i["level"]))
         self.carte_joueurs = []
         for i in resultat["joueurs"]:
             self.carte_joueurs.append((i["classe"], i["position"], i["name"]))
+        
 
 
 def decalage(coord: Tuple[int, int]) -> Tuple[int, int]:
     """Cette fonction sert a transformer une coordonnée sur la carte en une position en pixels"""
     return coord[0] * 32 + 128, coord[1] * 32
-
 
 def decalage_inverse(coord: Tuple[int, int]) -> Tuple[int, int]:
     """Cette fonction fait l'inverse de décalage et permet de transformer une position en pixel en coordonnée sur la
@@ -230,6 +233,9 @@ def boucle(fenetre: RendererController, joueur: Playercontroller) -> bool:
         if event.type == MOUSEBUTTONDOWN:
             joueur.clic()
     fenetre.afficher_carte(joueur)
+    if len(joueur.chemin)>0and time.time()>7+joueur.dernier_mouvment:
+        joueur.dernier_mouvment+time.time()
+        commande("carte:move:"+str(joueur.id))
     return True
 
 
@@ -242,7 +248,7 @@ def main():
     while actif:
         joueur.actualise()
         actif = boucle(fenetre, joueur)
-        pygame.time.Clock().tick(21)
+        pygame.time.Clock().tick(42)
 
 
 main()
