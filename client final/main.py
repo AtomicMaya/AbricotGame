@@ -152,9 +152,9 @@ class Playercontroller:
         for i in resultat["mobs"]:
             temp = []
             for j in i["mobs"]:
-                tempp = (j[0], (j[1][0], j[1][1]))
-                self.carte_mobs.append(tempp)
-                temp.append(tempp)
+                mob = (j[0], (j[1][0], j[1][1]))
+                self.carte_mobs.append(mob)
+                temp.append(mob)
             self.groupmobs.append((temp, i["level"]))
         self.carte_joueurs = []
         for i in resultat["joueurs"]:
@@ -217,7 +217,7 @@ def demande(txt: str) -> str:
             connexion_avec_serveur.connect(("localhost", 12800))
             txt = txt.encode()
             connexion_avec_serveur.send(txt)
-            r = connexion_avec_serveur.recv(1024).decode()
+            r = connexion_avec_serveur.recv(8192).decode()
             connexion_avec_serveur.close()
         except OSError:
             pass
