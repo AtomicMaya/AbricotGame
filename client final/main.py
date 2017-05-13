@@ -8,15 +8,6 @@ from typing import Dict, Tuple
 from pathfinding import calculate_movement
 import time
 
-
-def combat():
-    pass
-
-
-def move(b):
-    pass
-
-
 class Map:
     """Cette classe représente une carte du jeu"""
 
