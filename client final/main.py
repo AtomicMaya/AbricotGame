@@ -11,8 +11,8 @@ import time
 
 def convert_image(chemin: str, couleurfond=(255, 255, 255)):
     """Cette image permet de transformer le chemin vers un fichier en image"""
-    image = pygame.image.load(chemin)		
-    image.set_colorkey(couleurfond)		
+    image = pygame.image.load(chemin)
+    image.set_colorkey(couleurfond)
     return image.convert_alpha()
 
 
@@ -58,8 +58,7 @@ class RendererController:
         self.fenetre = pygame.display.set_mode((1280, 720))
         pygame.display.set_caption("Abricot game")
         pygame.font.init()
-        pygame.display.set_icon(
-            pygame.transform.scale(pygame.image.load("assets/images/icone.png").convert_alpha(), (30, 30)))
+        pygame.display.set_icon(pygame.image.load("assets/images/icone.png").convert_alpha())
         self.fond = None
         self.textures_mobs = {}
         self.textures_classes = {"001": convert_image("assets/images/classes/archer/archer4.png")}
