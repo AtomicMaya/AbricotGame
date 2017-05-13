@@ -9,11 +9,11 @@ from pathfinding import calculate_movement
 import time
 
 
--def convert_image(chemin: str, couleurfond=(255, 255, 255)):		
- -    """Cette image permet de transformer le chemin vers un fichier en image"""		
- -    image = pygame.image.load(chemin)		
- -    image.set_colorkey(couleurfond)		
- -    return image.convert_alpha()
+def convert_image(chemin: str, couleurfond=(255, 255, 255)):
+    """Cette image permet de transformer le chemin vers un fichier en image"""
+    image = pygame.image.load(chemin)		
+    image.set_colorkey(couleurfond)		
+    return image.convert_alpha()
 
 
 class Map:
