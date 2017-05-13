@@ -98,6 +98,7 @@ class Map:
         self.mobs = [mob_id for mob_id in data["MOBS"]]
         self.levelmax = data['LEVELMAX']
         self.levelmin = data['LEVELMIN']
+        self.group_number = data['GROUP_NUMBER']
         self.mobsgroups = []
         self.joueurs = {}
         for y in range(len(data["MAP"])):
@@ -118,7 +119,7 @@ class Map:
                 mobgroup.move(self, combats)
             else:
                 mobgroup.timer -= 1
-        if len(self.mobsgroups) < 3 and len(self.mobs) != 0:
+        if len(self.mobsgroups) < self.group_number and len(self.mobs) != 0:
             self.mobsgroups.append(Mobgroup(self))
         if len(self.joueurs) == 0:
             self.actif = False

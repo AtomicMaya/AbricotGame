@@ -72,6 +72,7 @@ class RendererController:
         for mob in MAPS.get(joueur.carte_id).mobs:
             self.textures_mobs[mob] = pygame.image.load("assets/images/mobs/" + mob + ".png").convert_alpha()
 
+    
     def afficher_carte(self, joueur):
         """Cette fonction sert afficher la carte"""
 
@@ -86,6 +87,7 @@ class RendererController:
         box = None
         for i in joueur.carte_mobs:
             self.fenetre.blit(self.textures_mobs[i[0]], decalage(i[1]))
+
             if i[1] == decalage_inverse(pygame.mouse.get_pos()) and not temp:
                 temp = True
                 f = pygame.font.Font(None, 30)
@@ -178,19 +180,19 @@ class Playercontroller:
         for i in resultat["mobs"]:
             temp = []
             for j in i["mobs"]:
-                tempp = (j[0], (j[1][0], j[1][1]))
-                self.carte_mobs.append(tempp)
-                temp.append(tempp)
+                mob = (j[0], (j[1][0], j[1][1]))
+                self.carte_mobs.append(mob)
+                temp.append(mob)
             self.groupmobs.append((temp, i["level"]))
         self.carte_joueurs = []
         for i in resultat["joueurs"]:
             self.carte_joueurs.append((i["classe"], i["position"], i["name"]))
+        
 
 
 def decalage(coord: Tuple[int, int]) -> Tuple[int, int]:
     """Cette fonction sert a transformer une coordonnée sur la carte en une position en pixels"""
     return coord[0] * 32 + 128, coord[1] * 32
-
 
 def decalage_inverse(coord: Tuple[int, int]) -> Tuple[int, int]:
     """Cette fonction fait l'inverse de décalage et permet de transformer une position en pixel en coordonnée sur la
@@ -246,7 +248,7 @@ def main():
     while actif:
         joueur.actualise()
         actif = boucle(fenetre, joueur)
-        pygame.time.Clock().tick(21)
+        pygame.time.Clock().tick(42)
 
 
 main()
