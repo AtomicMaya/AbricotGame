@@ -6,6 +6,7 @@ import socket
 from json import loads, load
 from typing import Dict, Tuple
 from pathfinding import calculate_movement
+import time
 
 
 def convert_image(chemin: str, couleurfond=(255, 255, 255)):
@@ -137,6 +138,7 @@ class Playercontroller:
         self.groupmobs = []
         self.changement_carte(fenetre)
         self.chemin = []
+        self.dernier_mouvment=0
 
     def changement_carte(self, fenetre: RendererController):
         """Cette fonction est appellée quand le joueur change de carte et sert a charger les nouvelles textures et la
@@ -161,12 +163,11 @@ class Playercontroller:
         """Cette fonction est appellée quand le joueur fait un clic de souris"""
         case = decalage_inverse(pygame.mouse.get_pos())
         if 0 < case[0] < 32 and 0 < case[1] < 18:
-        
             self.move_to(case)
 
     def move_to(self, case: Tuple[int, int]):
         """Cette fonction calcule le chemin qu'il faut faire pour aller jusqu'a la case pointé par la souris"""
-        calculate_movement(self.position, case, MAPS.get(self.carte_id).obstacles)
+        self.chemin=calculate_movement(self.position, case, MAPS.get(self.carte_id).obstacles)
 
     def actualise(self):
         """En attandant d'avoir un vrai systeme"""
@@ -230,6 +231,9 @@ def boucle(fenetre: RendererController, joueur: Playercontroller) -> bool:
         if event.type == MOUSEBUTTONDOWN:
             joueur.clic()
     fenetre.afficher_carte(joueur)
+    if len(joueur.chemin)>0and time.time()>7+joueur.dernier_mouvment:
+        joueur.dernier_mouvment+time.time()
+        commande("carte:move:"+str(joueur.id))
     return True
 
 
