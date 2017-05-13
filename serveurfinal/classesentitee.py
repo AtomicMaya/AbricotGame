@@ -152,7 +152,7 @@ class Map:
                         Battle([entitee], i, self, combat)
                         return True
             elif isinstance(entitee, Mob):
-                odds = 1 / (2**(abs(leader.mapcoords[0] - cible[0]) + abs(leader.mapcoords[1] - cible[1])))
+                odds = 1 / (2**(abs(leader.mapcoords[0] - cible[0]) + abs(leader.mapcoords[1] - cible[1]) - 1))
                 if odds > random():
                     entitee.mapcoords = cible
             return False

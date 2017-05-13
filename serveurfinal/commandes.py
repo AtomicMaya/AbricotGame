@@ -4,9 +4,9 @@ from classesentitee import *
 from json import dumps
 
 
-def mouvement(idjoueur, direction, joueurs, combat):
+def mouvement(idjoueur: str, direction: str, joueurs: Dict, combat: List) -> bool:
     """Cette fonction permet a un joueur de se déplacer"""
-    if idjoueur in joueurs:
+    if int(idjoueur) in joueurs.keys():
         joueur = joueurs[idjoueur]
         if not joueur.en_combat:
             if direction == "right":
@@ -22,18 +22,19 @@ def mouvement(idjoueur, direction, joueurs, combat):
             return MAPS.get(joueur.map).move(joueur, directionmouv, combat)
 
 
-def connexion(client, ids, joueurs):
+def connexion(client, ids: int, joueurs: Dict) -> Tuple[int, Dict]:
     """Cette fonction est appellée quand un joueur se connecte"""
-    client.send((str(ids)).encode())
-    joueurs[ids] = Joueur(ids)
-    map = MAPS.get(joueurs[ids].map)
+    joueur = Joueur(ids)
+    joueurs[ids] = joueur
+    map = MAPS.get(joueur.map)
     map.actif = True
-    map.joueurs[ids] = joueurs[ids]
+    map.joueurs[ids] = joueur
+    client.send((str(ids) + ":" + str(joueur.mapcoords[0]) + ":" + str(joueur.mapcoords[1])).encode())
     ids += 1
     return ids, joueurs
 
 
-def carte(id_joueur, joueurs):
+def carte(id_joueur: str, joueurs: Dict) -> str:
     """Cette fonction est appellée quand le joueur arrive sur une carte et lui transmet des informations"""
     joueur = joueurs[int(id_joueur)]
     mobgroups = []
@@ -48,7 +49,7 @@ def carte(id_joueur, joueurs):
     return dumps({"map": joueur.map, "mobs": mobgroups, "joueurs": temp})
 
 
-def commandecarte(message, client, ids, joueurs, combats):
+def commandecarte(message: str, client, ids: int, joueurs: Dict, combats: List) -> Tuple[int, Dict]:
     """Cette fonction effectue toute le commandes liés a la carte (mouvement,objets a affichager,...)"""
     if message[0] == "move" and len(message) == 3:
         client.send(mouvement(message[1], message[2], joueurs, combats))
@@ -65,6 +66,6 @@ def commandecarte(message, client, ids, joueurs, combats):
     return ids, joueurs
 
 
-def commandecombat(message):
+def commandecombat(message: str):
     """Cette fonction efffectue toute les commandes liée au combat (attaque,déplacement,...)"""
     pass

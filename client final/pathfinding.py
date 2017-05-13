@@ -5,6 +5,7 @@ from heapq import heapify, heappush, heappop
 from typing import Tuple, List
 
 
+
 def tuple_add(tuple1: Tuple, tuple2: Tuple) -> Tuple:
     """Cette fonction permet d'additionner deux tuples"""
     return tuple([x + y for x, y in zip(tuple1, tuple2)])
