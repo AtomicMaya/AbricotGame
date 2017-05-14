@@ -59,8 +59,8 @@ def commandecarte(message: str, client, ids: int, joueurs: Dict, combats: List) 
     elif message[0] == "connect" and len(message) == 1:
         ids, joueurs = connexion(client, ids, joueurs)
     elif message[0] == "quitter" and len(message) == 2:
-        if message[1] in joueurs:
-            joueur = joueurs[message[1]]
+        if int(message[1]) in joueurs:
+            joueur = joueurs[int(message[1])]
             if not joueur.en_combat:
                 del MAPS.get(joueur.map).joueurs[int(joueur.id)]
 
