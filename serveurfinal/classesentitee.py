@@ -165,14 +165,24 @@ class Battle:
         odds *= sum([mob.actuelcaracteristiques.hp/mob.maxcaracteristiques.hp for mob in assist_spells[0]]) / len(assist_spells[0])
         if odds > random():
             self.apply_effect(ass_spell.effects, choice(assist_spells[0]))
-        else:
+        elif len(attack_spells) > 0:
             available_mana = self.current.actuelcaracteristiques.ap
-            
+            while True:
+                spell = choice(attack_spells)
+                available_mana -= spell.cost
+                if available_mana >= 0:
+                    self.apply_effect(spell.effects, self.target)
+                else:
+                    break
 
-
-
-    def apply_effect(self, effects, target):
-        pass
+    def apply_effect(self, effects: Dict[str, int], target):
+        for key, value in effects.items():
+            if key == 'HP':
+                target.actuelcaracteristiques.hp += value
+            if key == 'AP':
+                target.actuelcaracteristiques.ap += value
+            if key == 'MP':
+                target.actuelcaracteristiques.mp += value
 
     def end_turn(self):
         self.current = self.queue[(self.queue.index(self.current) + 1) % len(self.queue)]
