@@ -153,7 +153,6 @@ class Battle:
             if spell.spellType == 'SUPPORT' and not set(allies.keys()).isdisjoint(range):
                 intersects_at = set(allies.keys()).intersection(range)
                 assist_spells[spell] = [[allies[c] for c in intersects_at], range]
-        odds = 0
         most = 0
         ass_spell = 0
         for spell, r in assist_spells.items():
