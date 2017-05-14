@@ -56,7 +56,7 @@ def commandecarte(message: List, client, ids: int, joueurs: Dict, combats: List)
     if message[0] == "move" and len(message) == 3:
         client.send(str(mouvement(message[1], message[2], joueurs, combats)).encode())
     elif message[0] == "carte" and len(message) == 2:
-        client.send(carte(message[1], joueurs).encode())
+        client.send(str(carte(message[1], joueurs)).encode())
     elif message[0] == "connect" and len(message) == 1:
         ids, joueurs = connexion(client, ids, joueurs)
     elif message[0] == "quitter" and len(message) == 2:
@@ -80,7 +80,8 @@ def entitee_combat(id: int, joueurs: Dict) -> str:
     actif = False
     if joueur == joueur.combat.current:
         actif = True
-    return dumps({"mobs": mobs, "joueurs": temp, "actif": actif, "position": joueur.position_combat})
+    return dumps({"mobs": mobs, "joueurs": temp, "actif": actif, "position": joueur.position_combat,
+                  "vie": joueur.var_attributs.hp})
 
 
 def mouvement_combat(idjoueur: str, direction: str, joueurs: Dict):
