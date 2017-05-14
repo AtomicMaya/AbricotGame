@@ -455,7 +455,7 @@ class Joueur(Entitee):
         super().__init__((31, 4))
         self.name = ""
         self.spells = []
-        self.max_attributs = Caracteristiques(0, 0, 0)
+        self.max_attributs = Caracteristiques(150, 3, 100)
         self.var_attributs = deepcopy(self.max_attributs)
         self.level = 0
         self.map = "(0,0)"
