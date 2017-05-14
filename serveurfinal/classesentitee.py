@@ -60,8 +60,8 @@ class Battle:
             stats[player] *= 2 if movements[i] == max(movements) else 1
             stats[player] *= 2 if self.current.level > player.level else 1
             stats[player] *= 4 if 0 <= player.var_attributs.hp / player.max_attributs.hp < 0.25 else 3 \
-                if 0.25 <= player.var_attributs.hp / player.max_attributs.hp < 0.5\
-                else 2 if 0.5 <= player.var_attributs.hp / player.max_attributs.hp < 0.75 else 1
+                if 0.25 <= player.var_attributs.hp / player.max_attributs.hp < 0.5 else \
+                2 if 0.5 <= player.var_attributs.hp / player.max_attributs.hp < 0.75 else 1
             i += 1
         player = list(stats.keys())[list(stats.values()).index(max(stats.values()))]
         path = movements[self.players.index(player)]
@@ -162,7 +162,8 @@ class Battle:
                 ass_spell = spell
         odds = most / len(self.mobgroup)
         assist_spells = assist_spells[ass_spell]
-        odds *= sum([mob.var_attributs.hp/mob.max_attributs.hp for mob in assist_spells[0]]) / len(assist_spells[0])
+        odds *= sum([mob.var_attributs.hp / mob.max_attributs.hp for mob in assist_spells[0]]) / len(
+            assist_spells[0])
         if odds > random():
             self.apply_effect(ass_spell.effects, choice(assist_spells[0]))
         elif len(attack_spells) > 0:
