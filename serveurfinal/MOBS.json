@@ -26,7 +26,7 @@
 	"SPELLS" : ["001", "002"],
 	"BASEHP" : 100,
 	"XHP" : 10,
-	"MOVEMENTPOINTS" : 3,
+	"MOVEMENTPOINTS" : 4,
 	"ACTIONPOINTS" : 75,
 	"IDLE" : [null],
 	"ATTACK" : [null],
@@ -35,10 +35,21 @@
 "000":{
 	"NAME" : "Chef murloc",
 	"SPELLS" : ["002", "003"],
-	"BASEHP" : 120,
-	"XHP" : 12,
+	"BASEHP" : 100,
+	"XHP" : 10,
 	"MOVEMENTPOINTS" : 4,
-	"ACTIONPOINTS" : 100,
+	"ACTIONPOINTS" : 150,
+	"IDLE" : [null],
+	"ATTACK" : [null],
+	"MOVEMENT" : [null]
+	},
+"003":{
+	"NAME" : "Chef",
+	"SPELLS" : ["002", "003"],
+	"BASEHP" : 70,
+	"XHP" : 7,
+	"MOVEMENTPOINTS" : 3,
+	"ACTIONPOINTS" : 75,
 	"IDLE" : [null],
 	"ATTACK" : [null],
 	"MOVEMENT" : [null]

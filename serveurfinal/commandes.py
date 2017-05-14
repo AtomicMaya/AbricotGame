@@ -77,7 +77,10 @@ def entitee_combat(id: int, joueurs: Dict) -> str:
     temp = []
     for players in joueur.combat.players:
         temp.append({"name": players.name, "classe": players.classe, "position": players.position_combat})
-    return dumps({"mobs": mobs, "joueurs": temp})
+    actif = False
+    if joueur == joueur.combat.current:
+        actif = True
+    return dumps({"mobs": mobs, "joueurs": temp, "actif": actif})
 
 
 def commandecombat(message: List, client, joueurs: Dict):

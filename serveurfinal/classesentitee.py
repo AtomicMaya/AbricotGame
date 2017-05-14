@@ -178,6 +178,31 @@ class Battle:
         for i in self.players:
             i.combat = self
 
+    def update(self):
+        """ Fonction appelle a chaque tick, effectuant un calcul """
+        if self.current in self.mobgroup:
+            if self.phase == Phase.end:
+                self.end_turn()
+            elif self.phase == Phase.attack:
+                pass
+                # self.attack()
+                # self.phase = Phase.end
+            elif self.phase == Phase.movement:
+                pass
+                # self.movement(self.path, int(sum(self.get_ranges()) / 2))
+                # self.phase = Phase.attack
+            elif self.phase == Phase.targeting:
+                self.phase = Phase.end
+                # self.target, self.path = self.find_target()
+                # self.phase = Phase.movement
+
+    def end_turn(self):
+        """ Vide les parametres """
+        self.current = self.queue[(self.queue.index(self.current) + 1) % len(self.queue)]
+        self.target = None
+        self.path = []
+        self.phase = Phase.targeting
+
     # noinspection PyTypeChecker
     def find_target(self):
         """Permet a un mob de choisir sa cible en fonction de parametres comme la vie, la distance et le niveau du
@@ -323,32 +348,6 @@ class Battle:
                 target.var_attributs.ap += value
             if key == 'MP':
                 target.var_attributs.mp += value
-
-    def end_turn(self):
-        """ Vide les parametres """
-        self.current = self.queue[(self.queue.index(self.current) + 1) % len(self.queue)]
-        self.target = None
-        self.path = []
-        self.phase = Phase.targeting
-
-    def update(self):
-        """ Fonction appelle a chaque tick, effectuant un calcul """
-        if self.current in self.mobgroup:
-            if self.phase == Phase.end:
-                pass
-                # self.end_turn()
-            elif self.phase == Phase.attack:
-                pass
-                # self.attack()
-                # self.phase = Phase.end
-            elif self.phase == Phase.movement:
-                pass
-                # self.movement(self.path, int(sum(self.get_ranges()) / 2))
-                # self.phase = Phase.attack
-            elif self.phase == Phase.targeting:
-                pass
-                # self.target, self.path = self.find_target()
-                # self.phase = Phase.movement
 
 
 class TypeMob:

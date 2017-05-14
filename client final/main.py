@@ -62,6 +62,7 @@ class RendererController:
         self.fond = None
         self.textures_mobs = {}
         self.textures_classes = {"001": convert_image("assets/images/classes/archer/archer4.png")}
+        self.boutons = {"fintour": pygame.image.load("assets/images/interface/fintour.png").convert()}
 
     def charger_textures(self, joueur):
         """Cette méthode est appellée lors d'un changement de map pour charger les textures de la nouvelle map"""
@@ -124,7 +125,8 @@ class RendererController:
             if box:
                 self.fenetre.blit(box, (x, y))
         else:
-            joueur.actualisecombat()
+            if joueur.actualisecombat():
+                self.fenetre.blit(self.boutons["fintour"], (1100, 600))
             for i in joueur.carte_mobs:
                 self.fenetre.blit(self.textures_mobs[i[0]], decalage(i[1]))
             for i in joueur.carte_joueurs:
@@ -225,6 +227,10 @@ class Playercontroller:
         self.carte_joueurs = []
         for i in resultat["joueurs"]:
             self.carte_joueurs.append((i["classe"], i["position"], i["name"]))
+        if resultat["actif"]:
+            return True
+        else:
+            return False
 
 
 def decalage(coord: Tuple[int, int]) -> Tuple[int, int]:
