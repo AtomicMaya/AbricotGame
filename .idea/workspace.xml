@@ -6,8 +6,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="114abdb7-0668-4678-ad4f-62735e3ecc53" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client final/main.py" afterPath="$PROJECT_DIR$/client final/main.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/serveurfinal/classesentitee.py" afterPath="$PROJECT_DIR$/serveurfinal/classesentitee.py" />
     </list>
     <ignored path="AbricotGame.iws" />
@@ -41,16 +39,12 @@
       <file leaf-file-name="classesentitee.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/serveurfinal/classesentitee.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.58357346">
-              <caret line="448" column="65" selection-start-line="448" selection-start-column="65" selection-end-line="448" selection-end-column="65" />
+            <state vertical-scroll-proportion="5.012559">
+              <caret line="451" column="26" selection-start-line="451" selection-start-column="26" selection-end-line="451" selection-end-column="26" />
               <folding>
                 <element signature="e#490#667#0" expanded="false" />
                 <element signature="e#693#770#0" expanded="false" />
                 <element signature="e#909#1226#0" expanded="false" />
-                <element signature="e#13336#13818#0" expanded="false" />
-                <element signature="e#13433#13665#0" expanded="false" />
-                <element signature="e#13714#13818#0" expanded="false" />
-                <element signature="e#13919#14175#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -634,10 +628,6 @@
             <element signature="e#490#667#0" expanded="false" />
             <element signature="e#693#770#0" expanded="false" />
             <element signature="e#909#1226#0" expanded="false" />
-            <element signature="e#13336#13818#0" expanded="false" />
-            <element signature="e#13433#13665#0" expanded="false" />
-            <element signature="e#13714#13818#0" expanded="false" />
-            <element signature="e#13919#14175#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -703,10 +693,6 @@
             <element signature="e#490#667#0" expanded="false" />
             <element signature="e#693#770#0" expanded="false" />
             <element signature="e#909#1226#0" expanded="false" />
-            <element signature="e#13336#13818#0" expanded="false" />
-            <element signature="e#13433#13665#0" expanded="false" />
-            <element signature="e#13714#13818#0" expanded="false" />
-            <element signature="e#13919#14175#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -761,10 +747,6 @@
             <element signature="e#490#667#0" expanded="false" />
             <element signature="e#693#770#0" expanded="false" />
             <element signature="e#909#1226#0" expanded="false" />
-            <element signature="e#13336#13818#0" expanded="false" />
-            <element signature="e#13433#13665#0" expanded="false" />
-            <element signature="e#13714#13818#0" expanded="false" />
-            <element signature="e#13919#14175#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -798,10 +780,6 @@
             <element signature="e#490#667#0" expanded="false" />
             <element signature="e#693#770#0" expanded="false" />
             <element signature="e#909#1226#0" expanded="false" />
-            <element signature="e#13336#13818#0" expanded="false" />
-            <element signature="e#13433#13665#0" expanded="false" />
-            <element signature="e#13714#13818#0" expanded="false" />
-            <element signature="e#13919#14175#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1041,16 +1019,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/serveurfinal/classesentitee.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.58357346">
-          <caret line="448" column="65" selection-start-line="448" selection-start-column="65" selection-end-line="448" selection-end-column="65" />
+        <state vertical-scroll-proportion="5.012559">
+          <caret line="451" column="26" selection-start-line="451" selection-start-column="26" selection-end-line="451" selection-end-column="26" />
           <folding>
             <element signature="e#490#667#0" expanded="false" />
             <element signature="e#693#770#0" expanded="false" />
             <element signature="e#909#1226#0" expanded="false" />
-            <element signature="e#13336#13818#0" expanded="false" />
-            <element signature="e#13433#13665#0" expanded="false" />
-            <element signature="e#13714#13818#0" expanded="false" />
-            <element signature="e#13919#14175#0" expanded="false" />
           </folding>
         </state>
       </provider>

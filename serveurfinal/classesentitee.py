@@ -447,7 +447,7 @@ class Joueur(Entitee):
         self.name = ""
         self.spells = []
         self.max_attributs = Caracteristiques(0, 0, 0)
-        self.actuelcaracterisiques = deepcopy(self.max_attributs)
+        self.var_attributs = deepcopy(self.max_attributs)
         self.level = 0
         self.map = "(0,0)"
         self.en_combat = False
