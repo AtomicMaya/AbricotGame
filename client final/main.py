@@ -85,6 +85,8 @@ class RendererController:
 
         temp = False
         box = None
+        x = 0
+        y = 0
         for i in joueur.carte_mobs:
             self.fenetre.blit(self.textures_mobs[i[0]], decalage(i[1]))
 
@@ -183,11 +185,12 @@ class Playercontroller:
 
     def move_to(self, case: Tuple[int, int]):
         """Cette fonction calcule le chemin qu'il faut faire pour aller jusqu'a la case pointé par la souris"""
-        self.chemin = calculate_movement(self.position, case, MAPS.get(self.carte_id).obstacles)
-        print(self.chemin)
-        for i in range(len(self.chemin) - 1, 0, -1):
-            self.chemin[i] = compare_tuple(self.chemin[i - 1], self.chemin[i])
-        del self.chemin[0]
+        temp = calculate_movement(self.position, case, MAPS.get(self.carte_id).obstacles)
+        if len(temp) > 0:
+            self.chemin = temp
+            for i in range(len(self.chemin) - 1, 0, -1):
+                self.chemin[i] = compare_tuple(self.chemin[i - 1], self.chemin[i])
+            del self.chemin[0]
 
     def actualise(self):
         """En attandant d'avoir un vrai systeme"""
@@ -248,7 +251,7 @@ def boucle(fenetre: RendererController, joueur: Playercontroller) -> bool:
         if event.type == QUIT:
             commande("carte:quitter:" + str(joueur.id))
             return False
-        if event.type == MOUSEBUTTONDOWN and event.button == 1:
+        if event.type == MOUSEBUTTONDOWN:
             joueur.clic()
     fenetre.afficher_carte(joueur)
     if len(joueur.chemin) > 0 and time.time() > 7 + joueur.dernier_mouvment:
@@ -256,13 +259,13 @@ def boucle(fenetre: RendererController, joueur: Playercontroller) -> bool:
         mouvement = joueur.chemin[0]
         demande("carte:move:" + str(joueur.id) + ":" + mouvement)
         if mouvement == "up":
-            joueur.position = (joueur.position[0], joueur.position[1]-1)
+            joueur.position = (joueur.position[0], joueur.position[1] - 1)
         elif mouvement == "down":
-            joueur.position = (joueur.position[0], joueur.position[1]+1)
+            joueur.position = (joueur.position[0], joueur.position[1] + 1)
         elif mouvement == "left":
-            joueur.position = (joueur.position[0]-1, joueur.position[1])
+            joueur.position = (joueur.position[0] - 1, joueur.position[1])
         elif mouvement == "right":
-            joueur.position = (joueur.position[0]+1, joueur.position[1])
+            joueur.position = (joueur.position[0] + 1, joueur.position[1])
         else:
             raise ValueError("Le mouvement demandé n'exite pas")
         del joueur.chemin[0]
