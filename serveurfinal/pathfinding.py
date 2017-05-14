@@ -3,7 +3,6 @@
 from itertools import filterfalse
 from heapq import heapify, heappush, heappop
 from typing import Tuple, List
-from math import sqrt
 
 
 def tuple_add(tuple1: Tuple, tuple2: Tuple) -> Tuple:
@@ -305,14 +304,3 @@ class AStar(object):
                         self.update_cell(n_cell, cell)
                         heappush(self.open_list, (n_cell.f, n_cell))
         return self.display_path()
-
-
-def distances(center: Tuple[int, int], values: List[Tuple[int, int]]) -> Tuple[int, int]:
-    smallest = None
-    small = 100
-    for c in values:
-        d = int(sqrt((c[0]-center[0])**2+(c[1]-center[1])**2))
-        if d < small:
-            small = d
-            smallest = c
-    return smallest

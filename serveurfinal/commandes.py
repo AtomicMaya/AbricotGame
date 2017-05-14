@@ -7,7 +7,7 @@ from json import dumps
 def mouvement(idjoueur: str, direction: str, joueurs: Dict, combat: List) -> bool:
     """Cette fonction permet a un joueur de se déplacer"""
     if int(idjoueur) in joueurs.keys():
-        joueur = joueurs[idjoueur]
+        joueur = joueurs[int(idjoueur)]
         if not joueur.en_combat:
             if direction == "right":
                 directionmouv = Mouvements.DROITE
@@ -20,6 +20,7 @@ def mouvement(idjoueur: str, direction: str, joueurs: Dict, combat: List) -> boo
             else:
                 return False
             return MAPS.get(joueur.map).move(joueur, directionmouv, combat)
+    return False
 
 
 def connexion(client, ids: int, joueurs: Dict) -> Tuple[int, Dict]:
@@ -52,7 +53,7 @@ def carte(id_joueur: str, joueurs: Dict) -> str:
 def commandecarte(message: str, client, ids: int, joueurs: Dict, combats: List) -> Tuple[int, Dict]:
     """Cette fonction effectue toute le commandes liés a la carte (mouvement,objets a affichager,...)"""
     if message[0] == "move" and len(message) == 3:
-        client.send(mouvement(message[1], message[2], joueurs, combats))
+        client.send(str(mouvement(message[1], message[2], joueurs, combats)).encode())
     elif message[0] == "carte" and len(message) == 2:
         client.send(carte(message[1], joueurs).encode())
     elif message[0] == "connect" and len(message) == 1:
