@@ -62,7 +62,7 @@ def commandecarte(message: List, client, ids: int, joueurs: Dict, combats: List)
     elif message[0] == "quitter" and len(message) == 2:
         if int(message[1]) in joueurs:
             joueur = joueurs[int(message[1])]
-            if not joueur.en_combat:
+            if not joueur.combat:
                 del MAPS.get(joueur.map).joueurs[int(joueur.id)]
 
     return ids, joueurs
@@ -87,3 +87,6 @@ def commandecombat(message: List, client, joueurs: Dict):
     """Cette fonction efffectue toute les commandes liée au combat (attaque,déplacement,...)"""
     if message[0] == "carte" and len(message) == 2:
         client.send(entitee_combat(int(message[1]), joueurs).encode())
+    elif message[0] == "endturn" and len(message) == 2:
+        if int(message[1])in joueurs.keys():
+            joueurs[int(message[1])].combat.end_turn()

@@ -164,6 +164,7 @@ class Playercontroller:
         self.chemin = []
         self.dernier_mouvment = 0
         self.en_combat = False
+        self.mouvement = 3
 
     def changement_carte(self, fenetre: RendererController):
         """Cette fonction est appellée quand le joueur change de carte et sert a charger les nouvelles textures et la
@@ -186,9 +187,16 @@ class Playercontroller:
 
     def clic(self):
         """Cette fonction est appellée quand le joueur fait un clic de souris"""
-        if not self.en_combat:
+        if self.en_combat:
+            position_clic = pygame.mouse.get_pos()
+            case = decalage_inverse(position_clic)
+            if -1 < case[0] < 32 and -1 < case[1] < 18:
+                self.move_to(case)
+            elif 1245 > position_clic[0] > 1100 and 677 > position_clic[1] > 600:
+                commande("combat:endturn:" + str(self.id))
+        else:
             case = decalage_inverse(pygame.mouse.get_pos())
-            if 0 < case[0] < 32 and 0 < case[1] < 18:
+            if -1 < case[0] < 32 and -1 < case[1] < 18:
                 self.move_to(case)
 
     def move_to(self, case: Tuple[int, int]):
@@ -273,6 +281,7 @@ def boucle(fenetre: RendererController, joueur: Playercontroller) -> bool:
     for event in pygame.event.get():
         if event.type == QUIT:
             if joueur.en_combat:
+                commande("combat:quitter:" + str(joueur.id))
                 return False
             else:
                 commande("carte:quitter:" + str(joueur.id))

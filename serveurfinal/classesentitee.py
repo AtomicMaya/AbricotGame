@@ -183,6 +183,9 @@ class Battle:
         if self.current in self.mobgroup:
             if self.phase == Phase.end:
                 self.end_turn()
+                self.target = None
+                self.path = []
+                self.phase = Phase.targeting
             elif self.phase == Phase.attack:
                 pass
                 # self.attack()
@@ -197,11 +200,8 @@ class Battle:
                 # self.phase = Phase.movement
 
     def end_turn(self):
-        """ Vide les parametres """
+        """Indique le prochain joueur"""
         self.current = self.queue[(self.queue.index(self.current) + 1) % len(self.queue)]
-        self.target = None
-        self.path = []
-        self.phase = Phase.targeting
 
     # noinspection PyTypeChecker
     def find_target(self):
