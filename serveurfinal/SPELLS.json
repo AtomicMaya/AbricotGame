@@ -19,7 +19,7 @@
 	"COST" : 25,
 	"ATTACKMAXRANGE" : 6,
 	"ATTACKMINRANGE" : 1,
-	"EFFECTS" : {"HP" : -3},
+	"EFFECTS" : {"HP" : -30},
 	"AOE" : false,
 	"AOERANGE" : null,
 	"AOESHAPE" : null,
