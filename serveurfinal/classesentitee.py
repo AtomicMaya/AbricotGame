@@ -203,6 +203,34 @@ class Battle:
         """Indique le prochain joueur"""
         self.current = self.queue[(self.queue.index(self.current) + 1) % len(self.queue)]
 
+    def move(self, entitee: Entitee, direction: Mouvements):
+        """Cette fonction permet de déplacer une entitée sur la carte"""
+        coord = entitee.position_combat
+        coords = [(0, -1), (-1, 0), (0, 1), (1, 0)]
+        if direction == Mouvements.HAUT and coord[1] != 0:
+            cible = tuple_add(coord, coords[0])
+        elif direction == Mouvements.BAS and coord[1] != (taille_map_y - 1):
+            cible = tuple_add(coord, coords[2])
+        elif direction == Mouvements.GAUCHE and coord[0] != 0:
+            cible = tuple_add(coord, coords[1])
+        elif direction == Mouvements.DROITE and coord[0] != (taille_map_x - 1):
+            cible = tuple_add(coord, coords[3])
+        else:
+            cible = coord
+
+        if cible not in self.map.obstacles:
+            valide = True
+            for i in self.mobgroup:
+                if i.position_combat == cible:
+                    valide = False
+            for i in self.players:
+                if i.position_combat == cible:
+                    valide = False
+            if valide:
+                entitee.position_combat = cible
+                return True
+        return False
+
     # noinspection PyTypeChecker
     def find_target(self):
         """Permet a un mob de choisir sa cible en fonction de parametres comme la vie, la distance et le niveau du

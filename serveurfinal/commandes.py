@@ -80,13 +80,33 @@ def entitee_combat(id: int, joueurs: Dict) -> str:
     actif = False
     if joueur == joueur.combat.current:
         actif = True
-    return dumps({"mobs": mobs, "joueurs": temp, "actif": actif})
+    return dumps({"mobs": mobs, "joueurs": temp, "actif": actif, "position": joueur.position_combat})
+
+
+def mouvement_combat(idjoueur: str, direction: str, joueurs: Dict):
+    """Cette fonction sert a se déplacer si on est en combat"""
+    if int(idjoueur) in joueurs.keys():
+        joueur = joueurs[int(idjoueur)]
+        if joueur.combat:
+            if direction == "right":
+                directionmouv = Mouvements.DROITE
+            elif direction == "left":
+                directionmouv = Mouvements.GAUCHE
+            elif direction == "up":
+                directionmouv = Mouvements.HAUT
+            elif direction == "down":
+                directionmouv = Mouvements.BAS
+            else:
+                return False
+            return joueur.combat.move(joueur, directionmouv)
 
 
 def commandecombat(message: List, client, joueurs: Dict):
     """Cette fonction efffectue toute les commandes liée au combat (attaque,déplacement,...)"""
     if message[0] == "carte" and len(message) == 2:
         client.send(entitee_combat(int(message[1]), joueurs).encode())
+    elif message[0] == "move" and len(message) == 3:
+        client.send(str(mouvement_combat(message[1], message[2], joueurs)).encode())
     elif message[0] == "endturn" and len(message) == 2:
-        if int(message[1])in joueurs.keys():
+        if int(message[1]) in joueurs.keys():
             joueurs[int(message[1])].combat.end_turn()

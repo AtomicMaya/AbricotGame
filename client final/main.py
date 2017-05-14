@@ -82,7 +82,18 @@ class RendererController:
         for i in free:
             pygame.draw.rect(self.fenetre, (0, 0, 0), (i[0] * 32 + 128, i[1] * 32, 33, 33), 1)
 
-        if not joueur.en_combat:
+        if joueur.en_combat:
+            if joueur.tour_actif:
+                self.fenetre.blit(self.boutons["fintour"], (1100, 600))
+                f = pygame.font.Font(None, 120)
+                txt = f.render(str(joueur.mouvement), 0, (0, 255, 0))
+                self.fenetre.blit(txt, (1000, 600))
+            for i in joueur.carte_mobs:
+                self.fenetre.blit(self.textures_mobs[i[0]], decalage(i[1]))
+            for i in joueur.carte_joueurs:
+                self.fenetre.blit(self.textures_classes[i[0]], decalage(i[1]))
+
+        else:
             temp = False
             box = None
             x = 0
@@ -124,13 +135,7 @@ class RendererController:
                 self.fenetre.blit(self.textures_classes[i[0]], decalage(i[1]))
             if box:
                 self.fenetre.blit(box, (x, y))
-        else:
-            if joueur.actualisecombat():
-                self.fenetre.blit(self.boutons["fintour"], (1100, 600))
-            for i in joueur.carte_mobs:
-                self.fenetre.blit(self.textures_mobs[i[0]], decalage(i[1]))
-            for i in joueur.carte_joueurs:
-                self.fenetre.blit(self.textures_classes[i[0]], decalage(i[1]))
+
         pygame.display.flip()
 
 
@@ -165,6 +170,8 @@ class Playercontroller:
         self.dernier_mouvment = 0
         self.en_combat = False
         self.mouvement = 3
+        self.debut_tour = False
+        self.tour_actif = False
 
     def changement_carte(self, fenetre: RendererController):
         """Cette fonction est appellée quand le joueur change de carte et sert a charger les nouvelles textures et la
@@ -194,6 +201,8 @@ class Playercontroller:
                 self.move_to(case)
             elif 1245 > position_clic[0] > 1100 and 677 > position_clic[1] > 600:
                 commande("combat:endturn:" + str(self.id))
+                self.debut_tour = False
+                self.mouvement = 3
         else:
             case = decalage_inverse(pygame.mouse.get_pos())
             if -1 < case[0] < 32 and -1 < case[1] < 18:
@@ -208,7 +217,7 @@ class Playercontroller:
                 self.chemin[i] = compare_tuple(self.chemin[i - 1], self.chemin[i])
             del self.chemin[0]
 
-    def actualise(self):
+    def info_carte(self):
         """En attandant d'avoir un vrai systeme"""
         resultat = loads(demande("carte:carte:" + str(self.id)))
         self.carte_id = eval(resultat["map"])
@@ -235,10 +244,63 @@ class Playercontroller:
         self.carte_joueurs = []
         for i in resultat["joueurs"]:
             self.carte_joueurs.append((i["classe"], i["position"], i["name"]))
+        self.position = (resultat["position"][0], resultat["position"][1])
         if resultat["actif"]:
-            return True
+            if not self.debut_tour:
+                self.debut_tour = True
+                self.chemin = []
+            self.tour_actif = True
         else:
-            return False
+            self.tour_actif = False
+
+    def update(self):
+        """Cette fonction est appellée une fois par tick"""
+        if self.en_combat:
+            self.actualisecombat()
+            if self.tour_actif:
+                self.mouvement_combat()
+        else:
+            self.info_carte()
+            self.mouvement_carte()
+
+    def mouvement_carte(self):
+        """Cette fonction sert a déplacer le joueur sur la carte"""
+        if len(self.chemin) > 0 and time.time() > 0.25 + self.dernier_mouvment:
+            self.dernier_mouvment = time.time()
+            mouvement = self.chemin[0]
+            if demande("carte:move:" + str(self.id) + ":" + mouvement) == "True":
+                self.en_combat = True
+            else:
+                if mouvement == "up":
+                    self.position = (self.position[0], self.position[1] - 1)
+                elif mouvement == "down":
+                    self.position = (self.position[0], self.position[1] + 1)
+                elif mouvement == "left":
+                    self.position = (self.position[0] - 1, self.position[1])
+                elif mouvement == "right":
+                    self.position = (self.position[0] + 1, self.position[1])
+                else:
+                    raise ValueError("Le mouvement demandé n'exite pas")
+                del self.chemin[0]
+
+    def mouvement_combat(self):
+        """Cette fonction sert a se déplacer lorsque l'on est en combat"""
+        if len(self.chemin) > 0 and time.time() > 0.25 + self.dernier_mouvment and self.mouvement > 0:
+            self.dernier_mouvment = time.time()
+            mouvement = self.chemin[0]
+            if demande("combat:move:" + str(self.id) + ":" + mouvement) == "True":
+                if mouvement == "up":
+                    self.position = (self.position[0], self.position[1] - 1)
+                elif mouvement == "down":
+                    self.position = (self.position[0], self.position[1] + 1)
+                elif mouvement == "left":
+                    self.position = (self.position[0] - 1, self.position[1])
+                elif mouvement == "right":
+                    self.position = (self.position[0] + 1, self.position[1])
+                else:
+                    raise ValueError("Le mouvement demandé n'exite pas")
+                del self.chemin[0]
+                self.mouvement -= 1
 
 
 def decalage(coord: Tuple[int, int]) -> Tuple[int, int]:
@@ -290,25 +352,7 @@ def boucle(fenetre: RendererController, joueur: Playercontroller) -> bool:
             joueur.clic()
 
     fenetre.afficher_carte(joueur)
-
-    if not joueur.en_combat:
-        if len(joueur.chemin) > 0 and time.time() > 7 + joueur.dernier_mouvment:
-            joueur.dernier_mouvment + time.time()
-            mouvement = joueur.chemin[0]
-            if demande("carte:move:" + str(joueur.id) + ":" + mouvement) == "True":
-                joueur.en_combat = True
-            else:
-                if mouvement == "up":
-                    joueur.position = (joueur.position[0], joueur.position[1] - 1)
-                elif mouvement == "down":
-                    joueur.position = (joueur.position[0], joueur.position[1] + 1)
-                elif mouvement == "left":
-                    joueur.position = (joueur.position[0] - 1, joueur.position[1])
-                elif mouvement == "right":
-                    joueur.position = (joueur.position[0] + 1, joueur.position[1])
-                else:
-                    raise ValueError("Le mouvement demandé n'exite pas")
-                del joueur.chemin[0]
+    joueur.update()
     return True
 
 
@@ -319,7 +363,6 @@ def main():
     fenetre = RendererController()
     joueur = Playercontroller(fenetre)
     while actif:
-        joueur.actualise()
         actif = boucle(fenetre, joueur)
         pygame.time.Clock().tick(42)
 
