@@ -24,6 +24,7 @@ class Mouvements(Enum):
 
 
 class Phase(Enum):
+    """ Represente les différentes phases de combat """
     targeting = auto()
     movement = auto()
     attack = auto()
@@ -47,7 +48,7 @@ class Battle:
 
     # noinspection PyTypeChecker
     def find_target(self):
-        """Permet a un mob de choisir sa cible en fonction de criteres comme la vie, la distance et le niveau du
+        """Permet a un mob de choisir sa cible en fonction de parametres comme la vie, la distance et le niveau du
         joueur"""
         movements = []
         for player in self.players:
@@ -68,6 +69,7 @@ class Battle:
         return player, path
 
     def get_ranges(self):
+        """ :return: Portée minimale et maximale des attques du mob """
         maxs, mins = [], []
         for spell in self.current.spells:
             maxs += [spell.maxRange]
@@ -75,15 +77,18 @@ class Battle:
         return min(mins), max(maxs)
 
     def movement(self, path, dist):
+        """ Effectue le déplacement sur la map """
         self.current.move_on_path(path, dist)
 
     def spell_range(self, spell):
+        """ En fonction du type de sort, renvoie les cases touchees """
         if spell.shape == 'SPLASH':
             return self.splash(self.current.mapcoords, spell.minRange, spell.maxRange)
         if spell.shape == 'LINE':
             return self.line(self.current, spell.minRange, spell.maxRange)
 
     def splash(self, center: Tuple[int, int], minRange: int, maxRange: int) -> List[Tuple[int, int]]:
+        """ Si le sort a une zone d'attaque circulaire autour de l'entite """
         aoe = [(0, maxRange), (maxRange, 0), (0, -maxRange), (-maxRange, 0)]
         aoe = [tuple_add(a, center) for a in aoe]
         over = bresenham(aoe[3], aoe[2])[:-1] + bresenham(aoe[2], aoe[1])
@@ -116,6 +121,7 @@ class Battle:
         return out
 
     def line(self, center: Tuple[int, int], minRange: int, maxRange: int) -> List[Tuple[int, int]]:
+        """ Si le sort a une zone d'attaque lineaire depuis l'entite """
         aoe = [(0, maxRange), (maxRange, 0), (0, -maxRange), (-maxRange, 0)]
         aoe = [tuple_add(a, center) for a in aoe]
         out = []
@@ -144,6 +150,7 @@ class Battle:
         return out
 
     def attack(self):
+        """ Choisit soit d'attquer soit d'aider ses allies et effectue cette action """
         attack_spells = []
         assist_spells = {}
         allies = {ally.mapcoords: ally for ally in self.mobgroup}
@@ -176,6 +183,7 @@ class Battle:
                     break
 
     def apply_effect(self, effects: Dict[str, int], target):
+        """ Applique un effet (perte de vie par exemple) a la cible """
         for key, value in effects.items():
             if key == 'HP':
                 target.var_attributs.hp += value
@@ -185,13 +193,14 @@ class Battle:
                 target.var_attributs.mp += value
 
     def end_turn(self):
+        """ Vide les parametres """
         self.current = self.queue[(self.queue.index(self.current) + 1) % len(self.queue)]
         self.target = None
         self.path = []
         self.phase = Phase.targeting
 
     def update(self):
-        """Fonction appelle a chaque tick, effectuant un calcul """
+        """ Fonction appelle a chaque tick, effectuant un calcul """
         if self.current in self.mobgroup:
             if self.phase == Phase.targeting:
                 self.target, self.path = self.find_target()
