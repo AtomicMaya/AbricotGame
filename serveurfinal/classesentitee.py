@@ -76,7 +76,102 @@ class Battle:
     def movement(self, path, dist):
         self.current.move_on_path(path, dist)
 
+    def spell_range(self, spell):
+        if spell.shape == 'SPLASH':
+            return self.splash(self.current.mapcoords, spell.minRange, spell.maxRange)
+        if spell.shape == 'LINE':
+            return self.line(self.current, spell.minRange, spell.maxRange)
+
+    def splash(self, center: Tuple[int, int], minRange: int, maxRange: int) -> List[Tuple[int, int]]:
+        aoe = [(0, maxRange), (maxRange, 0), (0, -maxRange), (-maxRange, 0)]
+        aoe = [tuple_add(a, center) for a in aoe]
+        over = bresenham(aoe[3], aoe[2])[:-1] + bresenham(aoe[2], aoe[1])
+        under = bresenham(aoe[3], aoe[0])[:-1] + bresenham(aoe[0], aoe[1])
+        out = over + under
+        for ind in range(len(over) - 2):
+            x, y = over[ind+1]
+            dist = under[ind+1][1] - y
+            for i in range(dist):
+                out.append((x, y + i))
+        out = list(remove_duplicates(out))
+        for c in out:
+            if c[0] < 0 or c[0] > 31 or c[1] < 0 or c[1] > 17:
+                out.remove(c)
+        edge = over + under
+        for e in edge:
+            br = bresenham(center, e)
+            if not set(br).isdisjoint(self.map.fullobs):
+                intersects_at = list(set(br).intersection(self.map.fullobs))
+                closest = distances(center, intersects_at)
+                try:
+                    remove = br[br.index(closest):]
+                    for r in remove:
+                        out.remove(r)
+                except ValueError:
+                    pass
+        if minRange != 0:
+            for c in self.splash(center, 0, minRange):
+                out.remove(c)
+        return out
+
+    def line(self, center: Tuple[int, int], minRange: int, maxRange: int) -> List[Tuple[int, int]]:
+        aoe = [(0, maxRange), (maxRange, 0), (0, -maxRange), (-maxRange, 0)]
+        aoe = [tuple_add(a, center) for a in aoe]
+        out = []
+        for a in aoe:
+            out += bresenham(center, a)
+        for c in out:
+            if c[0] < 0 or c[0] > 31 or c[1] < 0 or c[1] > 17:
+                out.remove(c)
+        if minRange != 0:
+            for c in line(center, 0, minRange):
+                try:
+                    out.remove(c)
+                except ValueError:
+                    pass
+        for o in aoe:
+            br = bresenham(center, o)
+            if not set(br).isdisjoint(self.map.fullobs):
+                intersects_at = list(set(br).intersection(self.map.fullobs))
+                closest = distances(center, intersects_at)
+                try:
+                    remove = br[br.index(closest):]
+                    for r in remove:
+                        out.remove(r)
+                except ValueError:
+                    pass
+        return out
+
     def attack(self):
+        attack_spells = []
+        assist_spells = {}
+        allies = {ally.mapcoords: ally for ally in self.mobgroup}
+        for spell in self.current.spells:
+            range = self.spell_range(spell)
+            if self.target.mapcoords in range and spell.spellType != 'SUPPORT':
+                attack_spells.append(spell)
+            if spell.spellType == 'SUPPORT' and not set(allies.keys()).isdisjoint(range):
+                intersects_at = set(allies.keys()).intersection(range)
+                assist_spells[spell] = [[allies[c] for c in intersects_at], range]
+        odds = 0
+        most = 0
+        ass_spell = 0
+        for spell, r in assist_spells.items():
+            if len(r[0]) > most:
+                most = len(r[0])
+                ass_spell = spell
+        odds = most / len(self.mobgroup)
+        assist_spells = assist_spells[ass_spell]
+        odds *= sum([mob.actuelcaracteristiques.hp/mob.maxcaracteristiques.hp for mob in assist_spells[0]]) / len(assist_spells[0])
+        if odds > random():
+            self.apply_effect(ass_spell.effects, choice(assist_spells[0]))
+        else:
+            available_mana = self.current.actuelcaracteristiques.ap
+            
+
+
+
+    def apply_effect(self, effects, target):
         pass
 
     def end_turn(self):
@@ -96,7 +191,7 @@ class Battle:
                 self.phase = Phase.attack
             elif self.phase == Phase.attack:
                 self.attack()
-                self.Phase = Phase.end
+                self.phase = Phase.end
             elif self.phase == Phase.end:
                 self.end_turn()
 
@@ -273,12 +368,10 @@ class Mobs:
 class Spell:
     """Cette classe permet de definir un sort et d'appliquer ses effets"""
 
-
-    def __init__(self, name: str, damage: int, cost: int, shape: str, spell_type: str, max_range: int, min_range: int,
+    def __init__(self, name: str, cost: int, shape: str, spell_type: str, max_range: int, min_range: int,
                  reload: int, aoe, aoe_range, aoe_shape, effects):
 
         self.name = name
-        self.damage = damage
         self.cost = cost
         self.shape = shape
         self.spellType = spell_type
@@ -289,21 +382,6 @@ class Spell:
         self.aoeRange = aoe_range
         self.aoeShape = aoe_shape
         self.effects = effects
-
-    def apply_effect(self, target):
-        print("fonction non finie,applayeffect")
-
-    def impact(self, coords):
-        x, y = coords
-        points = [(x, y + self.maxRange), (x + self.maxRange, y), (x, y - self.maxRange), (x - self.maxRange, y)]
-        outline = []
-        outline += [bresenham(points[3], points[0]) + bresenham(points[0], points[1])]
-        outline += [bresenham(points[3], points[2]) + bresenham(points[2], points[1])]
-        out = []
-        for i in range(len(outline[0])):
-            out += bresenham(outline[0][i], outline[1][i])
-        out = list(set(out))
-        return out
 
 
 class Spells:
@@ -316,7 +394,7 @@ class Spells:
         self.spells = {}
         for ids in file_spells:
             if ids != '_template':
-                self.spells[ids] = Spell(file_spells[ids]['NAME'], file_spells[ids]['DAMAGE'],
+                self.spells[ids] = Spell(file_spells[ids]['NAME'],
                                          file_spells[ids]['COST'], file_spells[ids]['SHAPE'],
                                          file_spells[ids]['TYPE'], file_spells[ids]['ATTACKMAXRANGE'],
                                          file_spells[ids]['ATTACKMINRANGE'], file_spells[ids]['RELOAD'],
