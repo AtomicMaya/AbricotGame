@@ -242,7 +242,7 @@ class AStar(object):
         :param y: -> Coordonnee y de la case à extraire
         :return: -> La case à ces coordonnees
         """
-        return self.all_cells[x * self.grid_height + y]
+        return self.all_cells[(x - 1) * self.grid_height + (y - 1)]
 
     def get_neighbor_cells(self, cell: GridCell):
         """
