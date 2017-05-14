@@ -8,6 +8,7 @@ from codecs import open as c_open
 from pathfinding import *
 from copy import deepcopy
 from typing import Dict, List, Tuple
+from math import sqrt
 
 taille_map_x = 32
 taille_map_y = 18
@@ -22,6 +23,13 @@ class Mouvements(Enum):
     ERREUR = auto()
 
 
+class Phase(Enum):
+    targeting = auto()
+    movement = auto()
+    attack = auto()
+    end = auto()
+
+
 class Battle:
     """Cette classe represente une instance de combat"""
 
@@ -32,6 +40,9 @@ class Battle:
         self.queue = self.players + self.mobgroup
         shuffle(self.queue)
         self.current = self.queue[0]
+        self.phase = Phase.targeting
+        self.target = None
+        self.path = []
         combat.append(self)
 
     # noinspection PyTypeChecker
@@ -62,23 +73,34 @@ class Battle:
             mins += [spell.minRange]
         return min(mins), max(maxs)
 
-    def movement_phase(self, path, dist):
+    def movement(self, path, dist):
         self.current.move_on_path(path, dist)
 
-    def attack_phase(self):
+    def attack(self):
         pass
 
     def end_turn(self):
         self.current = self.queue[(self.queue.index(self.current) + 1) % len(self.queue)]
+        self.target = None
+        self.path = []
+        self.phase = Phase.targeting
 
     def update(self):
-        """Fonction appelle a chaque tick"""
+        """Fonction appelle a chaque tick, effectuant un calcul """
         if self.current in self.mobgroup:
-            target, path = self.find_target()
-            self.movement_phase(path, int(sum(self.get_ranges()) / 2))
-            self.attack_phase()
-            self.end_turn()
-            
+            if self.phase == Phase.targeting:
+                self.target, self.path = self.find_target()
+                self.phase = Phase.movement
+            elif self.phase == Phase.movement:
+                self.movement(self.path, int(sum(self.get_ranges()) / 2))
+                self.phase = Phase.attack
+            elif self.phase == Phase.attack:
+                self.attack()
+                self.Phase = Phase.end
+            elif self.phase == Phase.end:
+                self.end_turn()
+
+
 class Entitee:
     """Cette classe représente toute les entitée qui peuvent se déplacer szr la carte. Elle est héritée par joueur et
     par mob"""
@@ -152,7 +174,7 @@ class Map:
                         Battle([entitee], i, self, combat)
                         return True
             elif isinstance(entitee, Mob):
-                odds = 1 / (2**(abs(leader.mapcoords[0] - cible[0]) + abs(leader.mapcoords[1] - cible[1]) - 1))
+                odds = 1 / (2**(sqrt((leader.mapcoords[0]-cible[0])**2+(leader.mapcoords[1]-cible[1])**2) - 1))
                 if odds > random():
                     entitee.mapcoords = cible
             return False
@@ -309,6 +331,7 @@ class Spells:
         :return: -> Le sort
         """
         return self.spells[spell_id]
+
 
 class Caracteristiques:
     """Cette classe représente les caactéristiques de combat d'un mob ou d'un joueur"""
