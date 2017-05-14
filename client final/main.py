@@ -30,7 +30,6 @@ class Map:
                 else:
                     self.free.append((x, y))
 
-
 class Maps:
     """Cette classe contient la liste de toute les cartes du jeu"""
 

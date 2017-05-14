@@ -210,9 +210,9 @@ class AStar(object):
 
         self.grid_height = 18
         self.grid_width = 32
-        self.start_x, self.start_y = start
-        self.end_x, self.end_y = end
-        self.obstacles = obstacles
+        self.start_x, self.start_y = tuple_add(start, (1, 1))
+        self.end_x, self.end_y = tuple_add(end, (1, 1))
+        self.obstacles = [tuple_add(o, (1, 1)) for o in obstacles]
         self._init_grid()
 
     def _init_grid(self):
@@ -221,8 +221,8 @@ class AStar(object):
         """
 
         """ Parcoure la carte en longueur puis en largeur """
-        for x in range(0, self.grid_width):
-            for y in range(0, self.grid_height):
+        for x in range(1, self.grid_width + 1):
+            for y in range(1, self.grid_height + 1):
                 not_obstacle = True if (x, y) not in self.obstacles else False
                 self.all_cells.append(GridCell(x, y, not_obstacle))
 
@@ -252,9 +252,9 @@ class AStar(object):
         cells = []
         if cell.x < self.grid_width:
             cells.append(self.get_cell(cell.x + 1, cell.y))
-        if cell.y > 0:
+        if cell.y > 1:
             cells.append(self.get_cell(cell.x, cell.y - 1))
-        if cell.x > 0:
+        if cell.x > 1:
             cells.append(self.get_cell(cell.x - 1, cell.y))
         if cell.y < self.grid_height:
             cells.append(self.get_cell(cell.x, cell.y + 1))
@@ -265,12 +265,12 @@ class AStar(object):
         :return path: -> Le chemin entre la premiere case et la derniere case
         """
         cell = self.end
-        path = [(cell.x, cell.y)]
+        path = [(cell.x - 1, cell.y - 1)]
         if cell.parent is not None:
             while cell.parent is not self.start:
                 cell = cell.parent
-                path.append((cell.x, cell.y))
-            return [(self.start.x, self.start.y)] + path[::-1]
+                path.append((cell.x - 1, cell.y - 1))
+            return [(self.start.x - 1, self.start.y - 1)] + path[::-1]
         else:
             return []
 
