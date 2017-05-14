@@ -59,8 +59,9 @@ class Battle:
             stats[player] = 1
             stats[player] *= 2 if movements[i] == max(movements) else 1
             stats[player] *= 2 if self.current.level > player.level else 1
-            stats[player] *= 4 if 0 <= player.hp / player.maxhp < 0.25 else 3 \
-                if 0.25 <= player.hp / player.maxhp < 0.5 else 2 if 0.5 <= player.hp / player.maxhp < 0.75 else 1
+            stats[player] *= 4 if 0 <= player.var_attributs.hp / player.max_attributs.hp < 0.25 else 3 \
+                if 0.25 <= player.var_attributs.hp / player.max_attributs.hp < 0.5\
+                else 2 if 0.5 <= player.var_attributs.hp / player.max_attributs.hp < 0.75 else 1
             i += 1
         player = list(stats.keys())[list(stats.values()).index(max(stats.values()))]
         path = movements[self.players.index(player)]
@@ -153,7 +154,6 @@ class Battle:
             if spell.spellType == 'SUPPORT' and not set(allies.keys()).isdisjoint(range):
                 intersects_at = set(allies.keys()).intersection(range)
                 assist_spells[spell] = [[allies[c] for c in intersects_at], range]
-        odds = 0
         most = 0
         ass_spell = 0
         for spell, r in assist_spells.items():
@@ -162,11 +162,11 @@ class Battle:
                 ass_spell = spell
         odds = most / len(self.mobgroup)
         assist_spells = assist_spells[ass_spell]
-        odds *= sum([mob.actuelcaracteristiques.hp/mob.maxcaracteristiques.hp for mob in assist_spells[0]]) / len(assist_spells[0])
+        odds *= sum([mob.var_attributs.hp/mob.max_attributs.hp for mob in assist_spells[0]]) / len(assist_spells[0])
         if odds > random():
             self.apply_effect(ass_spell.effects, choice(assist_spells[0]))
         elif len(attack_spells) > 0:
-            available_mana = self.current.actuelcaracteristiques.ap
+            available_mana = self.current.var_attributs.ap
             while True:
                 spell = choice(attack_spells)
                 available_mana -= spell.cost
@@ -178,11 +178,11 @@ class Battle:
     def apply_effect(self, effects: Dict[str, int], target):
         for key, value in effects.items():
             if key == 'HP':
-                target.actuelcaracteristiques.hp += value
+                target.var_attributs.hp += value
             if key == 'AP':
-                target.actuelcaracteristiques.ap += value
+                target.var_attributs.ap += value
             if key == 'MP':
-                target.actuelcaracteristiques.mp += value
+                target.var_attributs.mp += value
 
     def end_turn(self):
         self.current = self.queue[(self.queue.index(self.current) + 1) % len(self.queue)]
@@ -332,8 +332,8 @@ class Mob(Entitee):
         super().__init__(position)
         self.name = typemob.name
         self.spells = typemob.spells
-        self.maxcaracteristiques = typemob.caracteristiques + typemob.xcaracteristiques * level
-        self.actuelcaracteristiques = deepcopy(self.maxcaracteristiques)
+        self.max_attributs = typemob.caracteristiques + typemob.xcaracteristiques * level
+        self.var_attributs = deepcopy(self.max_attributs)
         self.idle_anim = typemob.idle_anim
         self.attack_anim = typemob.attack_anim
         self.mouvement_anim = typemob.mouvement_anim
@@ -446,8 +446,8 @@ class Joueur(Entitee):
         super().__init__((31, 4))
         self.name = ""
         self.spells = []
-        self.maxcaracteristiques = Caracteristiques(0, 0, 0)
-        self.actuelcaracterisiques = deepcopy(self.maxcaracteristiques)
+        self.max_attributs = Caracteristiques(0, 0, 0)
+        self.actuelcaracterisiques = deepcopy(self.max_attributs)
         self.level = 0
         self.map = "(0,0)"
         self.en_combat = False
