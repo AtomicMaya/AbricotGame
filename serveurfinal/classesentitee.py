@@ -90,8 +90,8 @@ class Battle:
         under = bresenham(aoe[3], aoe[0])[:-1] + bresenham(aoe[0], aoe[1])
         out = over + under
         for ind in range(len(over) - 2):
-            x, y = over[ind + 1]
-            dist = under[ind + 1][1] - y
+            x, y = over[ind+1]
+            dist = under[ind+1][1] - y
             for i in range(dist):
                 out.append((x, y + i))
         out = list(remove_duplicates(out))
@@ -252,8 +252,8 @@ class Map:
             self.actif = False
             for mobgroup in self.mobsgroups:
                 mobgroup.move(self, combats)
-
-    def move(self, entitee: Entitee, direction: Mouvements, combat: List = [], leader=None) -> bool:
+                
+    def move(self, entitee: Entitee, direction: Mouvements, combat: List = [], leader = None) -> bool:
         """Cette fonction permet de déplacer une entitée sur la carte"""
         coord = entitee.mapcoords
         coords = [(0, -1), (-1, 0), (0, 1), (1, 0)]
@@ -279,8 +279,7 @@ class Map:
                         Battle([entitee], i, self, combat)
                         return True
             elif isinstance(entitee, Mob):
-                odds = 1 / (
-                    2 ** (sqrt((leader.mapcoords[0] - cible[0]) ** 2 + (leader.mapcoords[1] - cible[1]) ** 2) - 1))
+                odds = 1 / (2**(sqrt((leader.mapcoords[0]-cible[0])**2+(leader.mapcoords[1]-cible[1])**2) - 1))
                 if odds > random():
                     entitee.mapcoords = cible
             return False
@@ -305,7 +304,7 @@ class Mobgroup:
             self.level += mob.level
         self.timer = 1
 
-    def move(self, map: Map):
+    def move(self, map: Map, combat: List):
         """Cette fonction fait bouger tout les mobs d'un groupe"""
         self.timer = randint(42 * 5, 42 * 10)
         for mob in self.mobgroup[1:]:  # Leader does not move
@@ -370,6 +369,7 @@ class Mobs:
             if ids != '_template':
                 self.mobs[ids] = TypeMob(file_mobs[ids])
 
+
     def get(self, mob_id: str, level: int, position: Tuple[int, int]) -> Mob:
         """Permet de récuperer un mob grace a son id"""
         return Mob(self.mobs[mob_id], level, position)
@@ -380,6 +380,7 @@ class Spell:
 
     def __init__(self, name: str, cost: int, shape: str, spell_type: str, max_range: int, min_range: int,
                  reload: int, aoe, aoe_range, aoe_shape, effects):
+
         self.name = name
         self.cost = cost
         self.shape = shape
