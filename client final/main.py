@@ -70,9 +70,9 @@ class RendererController:
         self.fond = pygame.transform.scale(self.fond, (1024, 576))
         self.textures_mobs = {}
         for mob in MAPS.get(joueur.carte_id).mobs:
-            self.textures_mobs[mob] = pygame.image.load("assets/images/mobs/" + mob + ".png").convert_alpha()
+            self.textures_mobs[mob] = pygame.transform.scale(
+                pygame.image.load("assets/images/mobs/" + mob + ".png").convert_alpha(), (32, 32))
 
-    
     def afficher_carte(self, joueur):
         """Cette fonction sert afficher la carte"""
 
@@ -104,26 +104,40 @@ class RendererController:
                         txt = f.render('Niveau ' + str(j[1]), 0, (255, 255, 255))
                         x, y = pygame.mouse.get_pos()
                         if x + max_len > 1152:
-                            x = 1152 - max_len -20
-                        if y + (len(display)+1)*30 > 576:
-                            y = 576-(1+len(display))*30
+                            x = 1152 - max_len - 20
+                        if y + (len(display) + 1) * 30 > 576:
+                            y = 576 - (1 + len(display)) * 30
 
-                        box = pygame.Surface((max_len+20, (1+len(display))*30+20))
+                        box = pygame.Surface((max_len + 20, (1 + len(display)) * 30 + 20))
                         box.fill((50, 50, 50))
                         box.set_alpha(200)
-                        
+
                         wid = txt.get_rect()[2]
-                        box.blit(txt, ((max_len-wid)//2, 10))
-                        
+                        box.blit(txt, ((max_len - wid) // 2, 10))
+
                         for n in range(len(display)):
-                            box.blit(display[n], (10, 30 * (n+1) + 10))
-                        
+                            box.blit(display[n], (10, 30 * (n + 1) + 10))
+
         for i in joueur.carte_joueurs:
             self.fenetre.blit(self.textures_classes[i[0]], decalage(i[1]))
         if box:
-            self.fenetre.blit(box, (x, y))     
+            self.fenetre.blit(box, (x, y))
 
         pygame.display.flip()
+
+
+def compare_tuple(depart: Tuple[int, int], arrivee: Tuple[int, int]):
+    """Cette fonction permet de voir dans quelle direction il faut aller pour passer d'un tuple a l'autre"""
+    if depart[0] - arrivee[0] == 1:
+        return "left"
+    elif depart[0] - arrivee[0] == -1:
+        return "right"
+    elif depart[1] - arrivee[1] == 1:
+        return "up"
+    elif depart[1] - arrivee[1] == -1:
+        return "down"
+    else:
+        raise ValueError("Les deux tuples ne sont pas adjacents")
 
 
 class Playercontroller:
@@ -140,7 +154,7 @@ class Playercontroller:
         self.groupmobs = []
         self.changement_carte(fenetre)
         self.chemin = []
-        self.dernier_mouvment=0
+        self.dernier_mouvment = 0
 
     def changement_carte(self, fenetre: RendererController):
         """Cette fonction est appellée quand le joueur change de carte et sert a charger les nouvelles textures et la
@@ -169,7 +183,10 @@ class Playercontroller:
 
     def move_to(self, case: Tuple[int, int]):
         """Cette fonction calcule le chemin qu'il faut faire pour aller jusqu'a la case pointé par la souris"""
-        self.chemin=calculate_movement(self.position, case, MAPS.get(self.carte_id).obstacles)
+        self.chemin = calculate_movement(self.position, case, MAPS.get(self.carte_id).obstacles)
+        for i in range(len(self.chemin) - 1, 0, -1):
+            self.chemin[i] = compare_tuple(self.chemin[i - 1], self.chemin[i])
+        del self.chemin[0]
 
     def actualise(self):
         """En attandant d'avoir un vrai systeme"""
@@ -187,12 +204,12 @@ class Playercontroller:
         self.carte_joueurs = []
         for i in resultat["joueurs"]:
             self.carte_joueurs.append((i["classe"], i["position"], i["name"]))
-        
 
 
 def decalage(coord: Tuple[int, int]) -> Tuple[int, int]:
     """Cette fonction sert a transformer une coordonnée sur la carte en une position en pixels"""
     return coord[0] * 32 + 128, coord[1] * 32
+
 
 def decalage_inverse(coord: Tuple[int, int]) -> Tuple[int, int]:
     """Cette fonction fait l'inverse de décalage et permet de transformer une position en pixel en coordonnée sur la
@@ -233,9 +250,21 @@ def boucle(fenetre: RendererController, joueur: Playercontroller) -> bool:
         if event.type == MOUSEBUTTONDOWN:
             joueur.clic()
     fenetre.afficher_carte(joueur)
-    if len(joueur.chemin)>0and time.time()>7+joueur.dernier_mouvment:
-        joueur.dernier_mouvment+time.time()
-        commande("carte:move:"+str(joueur.id))
+    if len(joueur.chemin) > 0 and time.time() > 7 + joueur.dernier_mouvment:
+        joueur.dernier_mouvment + time.time()
+        mouvement = joueur.chemin[0]
+        demande("carte:move:" + str(joueur.id) + ":" + mouvement)
+        if mouvement == "up":
+            joueur.position = (joueur.position[0], joueur.position[1]-1)
+        elif mouvement == "down":
+            joueur.position = (joueur.position[0], joueur.position[1]+1)
+        elif mouvement == "left":
+            joueur.position = (joueur.position[0]-1, joueur.position[1])
+        elif mouvement == "right":
+            joueur.position = (joueur.position[0]+1, joueur.position[1])
+        else:
+            raise ValueError("Le mouvement demandé n'exite pas")
+        del joueur.chemin[0]
     return True
 
 
