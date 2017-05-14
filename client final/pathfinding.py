@@ -221,8 +221,8 @@ class AStar(object):
         """
 
         """ Parcoure la carte en longueur puis en largeur """
-        for x in range(1, self.grid_width + 1):
-            for y in range(1, self.grid_height + 1):
+        for x in range(0, self.grid_width):
+            for y in range(0, self.grid_height):
                 not_obstacle = True if (x, y) not in self.obstacles else False
                 self.all_cells.append(GridCell(x, y, not_obstacle))
 
@@ -242,7 +242,7 @@ class AStar(object):
         :param y: -> Coordonnee y de la case à extraire
         :return: -> La case à ces coordonnees
         """
-        return self.all_cells[(x - 1) * self.grid_height + (y - 1)]
+        return self.all_cells[x * self.grid_height + y]
 
     def get_neighbor_cells(self, cell: GridCell):
         """
@@ -252,9 +252,9 @@ class AStar(object):
         cells = []
         if cell.x < self.grid_width:
             cells.append(self.get_cell(cell.x + 1, cell.y))
-        if cell.y > 1:
+        if cell.y > 0:
             cells.append(self.get_cell(cell.x, cell.y - 1))
-        if cell.x > 1:
+        if cell.x > 0:
             cells.append(self.get_cell(cell.x - 1, cell.y))
         if cell.y < self.grid_height:
             cells.append(self.get_cell(cell.x, cell.y + 1))
