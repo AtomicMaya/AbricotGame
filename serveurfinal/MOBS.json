@@ -32,7 +32,7 @@
 	"ATTACK" : [null],
 	"MOVEMENT" : [null]
 	},
-"003":{
+"000":{
 	"NAME" : "Chef murloc",
 	"SPELLS" : ["002", "003"],
 	"BASEHP" : 120,

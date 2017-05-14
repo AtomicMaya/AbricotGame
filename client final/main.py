@@ -267,6 +267,8 @@ def boucle(fenetre: RendererController, joueur: Playercontroller) -> bool:
     for event in pygame.event.get():
         if event.type == QUIT:
             if joueur.en_combat:
+                return False
+            else:
                 commande("carte:quitter:" + str(joueur.id))
                 return False
         if event.type == MOUSEBUTTONDOWN and event.button == 1:
