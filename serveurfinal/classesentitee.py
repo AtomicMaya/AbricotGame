@@ -60,8 +60,8 @@ class Battle:
             stats[player] *= 2 if movements[i] == max(movements) else 1
             stats[player] *= 2 if self.current.level > player.level else 1
             stats[player] *= 4 if 0 <= player.var_attributs.hp / player.max_attributs.hp < 0.25 else 3 \
-                if 0.25 <= player.var_attributs.hp / player.max_attributs.hp < 0.5 else \
-                2 if 0.5 <= player.var_attributs.hp / player.max_attributs.hp < 0.75 else 1
+                if 0.25 <= player.var_attributs.hp / player.max_attributs.hp < 0.5\
+                else 2 if 0.5 <= player.var_attributs.hp / player.max_attributs.hp < 0.75 else 1
             i += 1
         player = list(stats.keys())[list(stats.values()).index(max(stats.values()))]
         path = movements[self.players.index(player)]
@@ -162,8 +162,7 @@ class Battle:
                 ass_spell = spell
         odds = most / len(self.mobgroup)
         assist_spells = assist_spells[ass_spell]
-        odds *= sum([mob.var_attributs.hp / mob.max_attributs.hp for mob in assist_spells[0]]) / len(
-            assist_spells[0])
+        odds *= sum([mob.var_attributs.hp/mob.max_attributs.hp for mob in assist_spells[0]]) / len(assist_spells[0])
         if odds > random():
             self.apply_effect(ass_spell.effects, choice(assist_spells[0]))
         elif len(attack_spells) > 0:
@@ -239,12 +238,12 @@ class Map:
                     self.free.append((x, y))
         self.obstacles = self.semiobs + self.fullobs
 
-    def update(self, combats: List):
+    def update(self):
         """Fonction appellée a chaque tick qui sert a faire bouger les entitées, a rafraichir les combats et a faire
         apparaitre de nouveaux ennemis"""
         for mobgroup in self.mobsgroups:
             if mobgroup.timer == 0:
-                mobgroup.move(self, combats)
+                mobgroup.move(self)
             else:
                 mobgroup.timer -= 1
         if len(self.mobsgroups) < self.group_number and len(self.mobs) != 0:
@@ -252,7 +251,7 @@ class Map:
         if len(self.joueurs) == 0:
             self.actif = False
             for mobgroup in self.mobsgroups:
-                mobgroup.move(self, combats)
+                mobgroup.move(self)
                 
     def move(self, entitee: Entitee, direction: Mouvements, combat: List = [], leader = None) -> bool:
         """Cette fonction permet de déplacer une entitée sur la carte"""
@@ -305,7 +304,7 @@ class Mobgroup:
             self.level += mob.level
         self.timer = 1
 
-    def move(self, map: Map, combat: List):
+    def move(self, map: Map):
         """Cette fonction fait bouger tout les mobs d'un groupe"""
         self.timer = randint(42 * 5, 42 * 10)
         for mob in self.mobgroup[1:]:  # Leader does not move
