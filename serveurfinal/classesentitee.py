@@ -59,9 +59,8 @@ class Battle:
             stats[player] = 1
             stats[player] *= 2 if movements[i] == max(movements) else 1
             stats[player] *= 2 if self.current.level > player.level else 1
-            stats[player] *= 4 if 0 <= player.var_attributs.hp / player.max_attributs.hp < 0.25 else 3 \
-                if 0.25 <= player.var_attributs.hp / player.max_attributs.hp < 0.5\
-                else 2 if 0.5 <= player.var_attributs.hp / player.max_attributs.hp < 0.75 else 1
+            stats[player] *= 4 if 0 <= player.hp / player.maxhp < 0.25 else 3 \
+                if 0.25 <= player.hp / player.maxhp < 0.5 else 2 if 0.5 <= player.hp / player.maxhp < 0.75 else 1
             i += 1
         player = list(stats.keys())[list(stats.values()).index(max(stats.values()))]
         path = movements[self.players.index(player)]
@@ -90,8 +89,8 @@ class Battle:
         under = bresenham(aoe[3], aoe[0])[:-1] + bresenham(aoe[0], aoe[1])
         out = over + under
         for ind in range(len(over) - 2):
-            x, y = over[ind+1]
-            dist = under[ind+1][1] - y
+            x, y = over[ind + 1]
+            dist = under[ind + 1][1] - y
             for i in range(dist):
                 out.append((x, y + i))
         out = list(remove_duplicates(out))
@@ -162,11 +161,12 @@ class Battle:
                 ass_spell = spell
         odds = most / len(self.mobgroup)
         assist_spells = assist_spells[ass_spell]
-        odds *= sum([mob.var_attributs.hp/mob.max_attributs.hp for mob in assist_spells[0]]) / len(assist_spells[0])
+        odds *= sum([mob.actuelcaracteristiques.hp / mob.maxcaracteristiques.hp for mob in assist_spells[0]]) / len(
+            assist_spells[0])
         if odds > random():
             self.apply_effect(ass_spell.effects, choice(assist_spells[0]))
         elif len(attack_spells) > 0:
-            available_mana = self.current.var_attributs.ap
+            available_mana = self.current.actuelcaracteristiques.ap
             while True:
                 spell = choice(attack_spells)
                 available_mana -= spell.cost
@@ -178,11 +178,11 @@ class Battle:
     def apply_effect(self, effects: Dict[str, int], target):
         for key, value in effects.items():
             if key == 'HP':
-                target.var_attributs.hp += value
+                target.actuelcaracteristiques.hp += value
             if key == 'AP':
-                target.var_attributs.ap += value
+                target.actuelcaracteristiques.ap += value
             if key == 'MP':
-                target.var_attributs.mp += value
+                target.actuelcaracteristiques.mp += value
 
     def end_turn(self):
         self.current = self.queue[(self.queue.index(self.current) + 1) % len(self.queue)]
@@ -252,8 +252,8 @@ class Map:
             self.actif = False
             for mobgroup in self.mobsgroups:
                 mobgroup.move(self, combats)
-                
-    def move(self, entitee: Entitee, direction: Mouvements, combat: List = [], leader = None) -> bool:
+
+    def move(self, entitee: Entitee, direction: Mouvements, combat: List = [], leader=None) -> bool:
         """Cette fonction permet de déplacer une entitée sur la carte"""
         coord = entitee.mapcoords
         coords = [(0, -1), (-1, 0), (0, 1), (1, 0)]
@@ -279,7 +279,8 @@ class Map:
                         Battle([entitee], i, self, combat)
                         return True
             elif isinstance(entitee, Mob):
-                odds = 1 / (2**(sqrt((leader.mapcoords[0]-cible[0])**2+(leader.mapcoords[1]-cible[1])**2) - 1))
+                odds = 1 / (
+                    2 ** (sqrt((leader.mapcoords[0] - cible[0]) ** 2 + (leader.mapcoords[1] - cible[1]) ** 2) - 1))
                 if odds > random():
                     entitee.mapcoords = cible
             return False
@@ -304,7 +305,7 @@ class Mobgroup:
             self.level += mob.level
         self.timer = 1
 
-    def move(self, map: Map, combat: List):
+    def move(self, map: Map):
         """Cette fonction fait bouger tout les mobs d'un groupe"""
         self.timer = randint(42 * 5, 42 * 10)
         for mob in self.mobgroup[1:]:  # Leader does not move
@@ -332,8 +333,8 @@ class Mob(Entitee):
         super().__init__(position)
         self.name = typemob.name
         self.spells = typemob.spells
-        self.max_attributs = typemob.caracteristiques + typemob.xcaracteristiques * level
-        self.var_attributs = deepcopy(self.max_attributs)
+        self.maxcaracteristiques = typemob.caracteristiques + typemob.xcaracteristiques * level
+        self.actuelcaracteristiques = deepcopy(self.maxcaracteristiques)
         self.idle_anim = typemob.idle_anim
         self.attack_anim = typemob.attack_anim
         self.mouvement_anim = typemob.mouvement_anim
@@ -369,7 +370,6 @@ class Mobs:
             if ids != '_template':
                 self.mobs[ids] = TypeMob(file_mobs[ids])
 
-
     def get(self, mob_id: str, level: int, position: Tuple[int, int]) -> Mob:
         """Permet de récuperer un mob grace a son id"""
         return Mob(self.mobs[mob_id], level, position)
@@ -380,7 +380,6 @@ class Spell:
 
     def __init__(self, name: str, cost: int, shape: str, spell_type: str, max_range: int, min_range: int,
                  reload: int, aoe, aoe_range, aoe_shape, effects):
-
         self.name = name
         self.cost = cost
         self.shape = shape
@@ -446,8 +445,8 @@ class Joueur(Entitee):
         super().__init__((31, 4))
         self.name = ""
         self.spells = []
-        self.max_attributs = Caracteristiques(0, 0, 0)
-        self.actuelcaracterisiques = deepcopy(self.max_attributs)
+        self.maxcaracteristiques = Caracteristiques(0, 0, 0)
+        self.actuelcaracterisiques = deepcopy(self.maxcaracteristiques)
         self.level = 0
         self.map = "(0,0)"
         self.en_combat = False
