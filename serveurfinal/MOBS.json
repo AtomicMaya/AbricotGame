@@ -11,7 +11,7 @@
 	"MOVEMENT" : [null]
 	},
 "001":{
-	"NAME" : "Moutonnet",
+	"NAME" : "Murloc",
 	"SPELLS" : ["001", "002"],
 	"BASEHP" : 50,
 	"XHP" : 5,
@@ -22,7 +22,7 @@
 	"MOVEMENT" : [null]
 	},
 "002":{
-	"NAME" : "Grand_Moutonnet",
+	"NAME" : "Hiporloc",
 	"SPELLS" : ["001", "002"],
 	"BASEHP" : 100,
 	"XHP" : 10,
@@ -33,7 +33,7 @@
 	"MOVEMENT" : [null]
 	},
 "003":{
-	"NAME" : "Moutonnet_de_Guerre",
+	"NAME" : "Chef murloc",
 	"SPELLS" : ["002", "003"],
 	"BASEHP" : 120,
 	"XHP" : 12,
