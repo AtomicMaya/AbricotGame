@@ -8,6 +8,7 @@ from codecs import open as c_open
 from pathfinding import *
 from copy import deepcopy
 from typing import Dict, List, Tuple
+from math import sqrt
 
 taille_map_x = 32
 taille_map_y = 18
@@ -98,7 +99,8 @@ class Battle:
                 self.Phase = Phase.end
             elif self.phase == Phase.end:
                 self.end_turn()
-            
+
+
 class Entitee:
     """Cette classe représente toute les entitée qui peuvent se déplacer szr la carte. Elle est héritée par joueur et
     par mob"""
@@ -172,7 +174,7 @@ class Map:
                         Battle([entitee], i, self, combat)
                         return True
             elif isinstance(entitee, Mob):
-                odds = 1 / (2**(abs(leader.mapcoords[0] - cible[0]) + abs(leader.mapcoords[1] - cible[1]) - 1))
+                odds = 1 / (2**(sqrt((leader.mapcoords[0]-cible[0])**2+(leader.mapcoords[1]-cible[1])**2) - 1))
                 if odds > random():
                     entitee.mapcoords = cible
             return False
@@ -329,6 +331,7 @@ class Spells:
         :return: -> Le sort
         """
         return self.spells[spell_id]
+
 
 class Caracteristiques:
     """Cette classe représente les caactéristiques de combat d'un mob ou d'un joueur"""
