@@ -31,6 +31,114 @@ class Phase(Enum):
     end = auto()
 
 
+class Entitee:
+    """Cette classe représente toute les entitée qui peuvent se déplacer szr la carte. Elle est héritée par joueur et
+    par mob"""
+
+    def __init__(self, position: Tuple[int, int]):
+        self.mapcoords = position
+        self.position_combat = None
+
+
+class Map:
+    """Cette classe represente une carte du jeu"""
+
+    def __init__(self, data: Dict):
+        self.actif = False
+        self.semiobs = []
+        self.fullobs = []
+        self.free = []
+        self.mobs = [mob_id for mob_id in data["MOBS"]]
+        self.levelmax = data['LEVELMAX']
+        self.levelmin = data['LEVELMIN']
+        self.group_number = data['GROUP_NUMBER']
+        self.mobsgroups = []
+        self.joueurs = {}
+        for y in range(len(data["MAP"])):
+            for x in range(len(data["MAP"][y])):
+                if data["MAP"][y][x] == 1:
+                    self.fullobs.append((x, y))
+                elif data["MAP"][y][x] == 2:
+                    self.semiobs.append((x, y))
+                else:
+                    self.free.append((x, y))
+        self.obstacles = self.semiobs + self.fullobs
+
+    def update(self):
+        """Fonction appellée a chaque tick qui sert a faire bouger les entitées, a rafraichir les combats et a faire
+        apparaitre de nouveaux ennemis"""
+        for mobgroup in self.mobsgroups:
+            if mobgroup.timer == 0:
+                mobgroup.move(self)
+            else:
+                mobgroup.timer -= 1
+        if len(self.mobsgroups) < self.group_number and len(self.mobs) != 0:
+            self.mobsgroups.append(Mobgroup(self))
+        if len(self.joueurs) == 0:
+            self.actif = False
+            for mobgroup in self.mobsgroups:
+                mobgroup.move(self)
+
+    def move(self, entitee: Entitee, direction: Mouvements, combat: List = [], leader=None) -> bool:
+        """Cette fonction permet de déplacer une entitée sur la carte"""
+        coord = entitee.mapcoords
+        coords = [(0, -1), (-1, 0), (0, 1), (1, 0)]
+        if direction == Mouvements.HAUT and coord[1] != 0:
+            cible = tuple_add(coord, coords[0])
+        elif direction == Mouvements.BAS and coord[1] != (taille_map_y - 1):
+            cible = tuple_add(coord, coords[2])
+        elif direction == Mouvements.GAUCHE and coord[0] != 0:
+            cible = tuple_add(coord, coords[1])
+        elif direction == Mouvements.DROITE and coord[0] != (taille_map_x - 1):
+            cible = tuple_add(coord, coords[3])
+        else:
+            cible = coord
+
+        if cible not in self.obstacles:
+            if isinstance(entitee, Joueur):
+                entitee.mapcoords = cible
+                for i in self.mobsgroups:
+                    if i.group_coords == cible:
+                        self.mobsgroups.remove(i)
+                        del self.joueurs[entitee.id]
+                        entitee.en_combat = True
+                        Battle([entitee], i, self, combat)
+                        return True
+            elif isinstance(entitee, Mob):
+                odds = 1 / (
+                    2 ** (sqrt((leader.mapcoords[0] - cible[0]) ** 2 + (leader.mapcoords[1] - cible[1]) ** 2) - 1))
+                if odds > random():
+                    entitee.mapcoords = cible
+            return False
+
+
+class Mobgroup:
+    """Cette classe représente un groupe de mobs """
+
+    def __init__(self, map: Map):
+        valide = False
+        while not valide:
+            self.group_coords = choice(map.free)
+            valide = True
+            for i in map.mobsgroups:
+                if i.group_coords == self.group_coords:
+                    valide = False
+
+        self.mobgroup = [MOBS.get(choice(map.mobs), randint(map.levelmin, map.levelmax), self.group_coords) for _ in
+                         range(randint(2, 8))]
+        self.level = 0
+        for mob in self.mobgroup:
+            self.level += mob.level
+        self.timer = 1
+
+    def move(self, map: Map):
+        """Cette fonction fait bouger tout les mobs d'un groupe"""
+        self.timer = randint(42 * 5, 42 * 10)
+        for mob in self.mobgroup[1:]:  # Leader does not move
+            action = choice([Mouvements.HAUT, Mouvements.GAUCHE, Mouvements.BAS, Mouvements.DROITE])
+            map.move(mob, action, leader=self.mobgroup[0])
+
+
 class Battle:
     """Cette classe represente une instance de combat"""
 
@@ -45,6 +153,55 @@ class Battle:
         self.target = None
         self.path = []
         combat.append(self)
+        for i in self.mobgroup:
+            valide = False
+            while not valide:
+                cible = choice(map.free)
+                valide = True
+                for j in self.mobgroup:
+                    if cible == j.position_combat:
+                        valide = False
+            i.position_combat = cible
+
+        for i in self.players:
+            valide = False
+            while not valide:
+                cible = choice(map.free)
+                valide = True
+                for j in self.mobgroup:
+                    if cible == j.position_combat:
+                        valide = False
+                for j in self.players:
+                    if cible == j.position_combat:
+                        valide = False
+            i.position_combat = cible
+        for i in self.players:
+            i.combat = self
+
+    def update(self):
+        """ Fonction appelle a chaque tick, effectuant un calcul """
+        if self.current in self.mobgroup:
+            if self.phase == Phase.end:
+                self.end_turn()
+                self.target = None
+                self.path = []
+                self.phase = Phase.targeting
+            elif self.phase == Phase.attack:
+                pass
+                # self.attack()
+                # self.phase = Phase.end
+            elif self.phase == Phase.movement:
+                pass
+                # self.movement(self.path, int(sum(self.get_ranges()) / 2))
+                # self.phase = Phase.attack
+            elif self.phase == Phase.targeting:
+                self.phase = Phase.end
+                # self.target, self.path = self.find_target()
+                # self.phase = Phase.movement
+
+    def end_turn(self):
+        """Indique le prochain joueur"""
+        self.current = self.queue[(self.queue.index(self.current) + 1) % len(self.queue)]
 
     # noinspection PyTypeChecker
     def find_target(self):
@@ -61,7 +218,7 @@ class Battle:
             stats[player] *= 2 if movements[i] == max(movements) else 1
             stats[player] *= 2 if self.current.level > player.level else 1
             stats[player] *= 4 if 0 <= player.var_attributs.hp / player.max_attributs.hp < 0.25 else 3 \
-                if 0.25 <= player.var_attributs.hp / player.max_attributs.hp < 0.5\
+                if 0.25 <= player.var_attributs.hp / player.max_attributs.hp < 0.5 \
                 else 2 if 0.5 <= player.var_attributs.hp / player.max_attributs.hp < 0.75 else 1
             i += 1
         player = list(stats.keys())[list(stats.values()).index(max(stats.values()))]
@@ -95,8 +252,8 @@ class Battle:
         under = bresenham(aoe[3], aoe[0])[:-1] + bresenham(aoe[0], aoe[1])
         out = over + under
         for ind in range(len(over) - 2):
-            x, y = over[ind+1]
-            dist = under[ind+1][1] - y
+            x, y = over[ind + 1]
+            dist = under[ind + 1][1] - y
             for i in range(dist):
                 out.append((x, y + i))
         out = list(remove_duplicates(out))
@@ -169,7 +326,7 @@ class Battle:
                 ass_spell = spell
         odds = most / len(self.mobgroup)
         assist_spells = assist_spells[ass_spell]
-        odds *= sum([mob.var_attributs.hp/mob.max_attributs.hp for mob in assist_spells[0]]) / len(assist_spells[0])
+        odds *= sum([mob.var_attributs.hp / mob.max_attributs.hp for mob in assist_spells[0]]) / len(assist_spells[0])
         if odds > random():
             self.apply_effect(ass_spell.effects, choice(assist_spells[0]))
         elif len(attack_spells) > 0:
@@ -191,134 +348,6 @@ class Battle:
                 target.var_attributs.ap += value
             if key == 'MP':
                 target.var_attributs.mp += value
-
-    def end_turn(self):
-        """ Vide les parametres """
-        self.current = self.queue[(self.queue.index(self.current) + 1) % len(self.queue)]
-        self.target = None
-        self.path = []
-        self.phase = Phase.targeting
-
-    def update(self):
-        """ Fonction appelle a chaque tick, effectuant un calcul """
-        if self.current in self.mobgroup:
-            if self.phase == Phase.targeting:
-                self.target, self.path = self.find_target()
-                self.phase = Phase.movement
-            elif self.phase == Phase.movement:
-                self.movement(self.path, int(sum(self.get_ranges()) / 2))
-                self.phase = Phase.attack
-            elif self.phase == Phase.attack:
-                self.attack()
-                self.phase = Phase.end
-            elif self.phase == Phase.end:
-                self.end_turn()
-
-
-class Entitee:
-    """Cette classe représente toute les entitée qui peuvent se déplacer szr la carte. Elle est héritée par joueur et
-    par mob"""
-
-    def __init__(self, position: Tuple[int, int]):
-        self.mapcoords = position
-
-
-class Map:
-    """Cette classe represente une carte du jeu"""
-
-    def __init__(self, data: Dict):
-        self.actif = False
-        self.semiobs = []
-        self.fullobs = []
-        self.free = []
-        self.mobs = [mob_id for mob_id in data["MOBS"]]
-        self.levelmax = data['LEVELMAX']
-        self.levelmin = data['LEVELMIN']
-        self.group_number = data['GROUP_NUMBER']
-        self.mobsgroups = []
-        self.joueurs = {}
-        for y in range(len(data["MAP"])):
-            for x in range(len(data["MAP"][y])):
-                if data["MAP"][y][x] == 1:
-                    self.fullobs.append((x, y))
-                elif data["MAP"][y][x] == 2:
-                    self.semiobs.append((x, y))
-                else:
-                    self.free.append((x, y))
-        self.obstacles = self.semiobs + self.fullobs
-
-    def update(self):
-        """Fonction appellée a chaque tick qui sert a faire bouger les entitées, a rafraichir les combats et a faire
-        apparaitre de nouveaux ennemis"""
-        for mobgroup in self.mobsgroups:
-            if mobgroup.timer == 0:
-                mobgroup.move(self)
-            else:
-                mobgroup.timer -= 1
-        if len(self.mobsgroups) < self.group_number and len(self.mobs) != 0:
-            self.mobsgroups.append(Mobgroup(self))
-        if len(self.joueurs) == 0:
-            self.actif = False
-            for mobgroup in self.mobsgroups:
-                mobgroup.move(self)
-                
-    def move(self, entitee: Entitee, direction: Mouvements, combat: List = [], leader = None) -> bool:
-        """Cette fonction permet de déplacer une entitée sur la carte"""
-        coord = entitee.mapcoords
-        coords = [(0, -1), (-1, 0), (0, 1), (1, 0)]
-        if direction == Mouvements.HAUT and coord[1] != 0:
-            cible = tuple_add(coord, coords[0])
-        elif direction == Mouvements.BAS and coord[1] != (taille_map_y - 1):
-            cible = tuple_add(coord, coords[2])
-        elif direction == Mouvements.GAUCHE and coord[0] != 0:
-            cible = tuple_add(coord, coords[1])
-        elif direction == Mouvements.DROITE and coord[0] != (taille_map_x - 1):
-            cible = tuple_add(coord, coords[3])
-        else:
-            cible = coord
-
-        if cible not in self.obstacles:
-            if isinstance(entitee, Joueur):
-                entitee.mapcoords = cible
-                for i in self.mobsgroups:
-                    if i.group_coords == cible:
-                        self.mobsgroups.remove(i)
-                        del self.joueurs[entitee.id]
-                        entitee.en_combat = True
-                        Battle([entitee], i, self, combat)
-                        return True
-            elif isinstance(entitee, Mob):
-                odds = 1 / (2**(sqrt((leader.mapcoords[0]-cible[0])**2+(leader.mapcoords[1]-cible[1])**2) - 1))
-                if odds > random():
-                    entitee.mapcoords = cible
-            return False
-
-
-class Mobgroup:
-    """Cette classe représente un groupe de mobs """
-
-    def __init__(self, map: Map):
-        valide = False
-        while not valide:
-            self.group_coords = choice(map.free)
-            valide = True
-            for i in map.mobsgroups:
-                if i.group_coords == self.group_coords:
-                    valide = False
-
-        self.mobgroup = [MOBS.get(choice(map.mobs), randint(map.levelmin, map.levelmax), self.group_coords) for _ in
-                         range(randint(2, 8))]
-        self.level = 0
-        for mob in self.mobgroup:
-            self.level += mob.level
-        self.timer = 1
-
-    def move(self, map: Map):
-        """Cette fonction fait bouger tout les mobs d'un groupe"""
-        self.timer = randint(42 * 5, 42 * 10)
-        for mob in self.mobgroup[1:]:  # Leader does not move
-            action = choice([Mouvements.HAUT, Mouvements.GAUCHE, Mouvements.BAS, Mouvements.DROITE])
-            map.move(mob, action, leader=self.mobgroup[0])
 
 
 class TypeMob:
@@ -378,7 +407,6 @@ class Mobs:
             if ids != '_template':
                 self.mobs[ids] = TypeMob(file_mobs[ids])
 
-
     def get(self, mob_id: str, level: int, position: Tuple[int, int]) -> Mob:
         """Permet de récuperer un mob grace a son id"""
         return Mob(self.mobs[mob_id], level, position)
@@ -389,7 +417,6 @@ class Spell:
 
     def __init__(self, name: str, cost: int, shape: str, spell_type: str, max_range: int, min_range: int,
                  reload: int, aoe, aoe_range, aoe_shape, effects):
-
         self.name = name
         self.cost = cost
         self.shape = shape
@@ -459,9 +486,9 @@ class Joueur(Entitee):
         self.var_attributs = deepcopy(self.max_attributs)
         self.level = 0
         self.map = "(0,0)"
-        self.en_combat = False
         self.id = id
         self.classe = "001"
+        self.combat = None
 
 
 SPELLS = Spells()

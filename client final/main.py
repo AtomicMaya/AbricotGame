@@ -62,6 +62,7 @@ class RendererController:
         self.fond = None
         self.textures_mobs = {}
         self.textures_classes = {"001": convert_image("assets/images/classes/archer/archer4.png")}
+        self.boutons = {"fintour": pygame.image.load("assets/images/interface/fintour.png").convert()}
 
     def charger_textures(self, joueur):
         """Cette méthode est appellée lors d'un changement de map pour charger les textures de la nouvelle map"""
@@ -75,56 +76,61 @@ class RendererController:
 
     def afficher_carte(self, joueur):
         """Cette fonction sert afficher la carte"""
-
         self.fenetre.fill((0, 0, 0))
         self.fenetre.blit(self.fond, (128, 0))
-
         free = MAPS.get(joueur.carte_id).free
         for i in free:
             pygame.draw.rect(self.fenetre, (0, 0, 0), (i[0] * 32 + 128, i[1] * 32, 33, 33), 1)
 
-        temp = False
-        box = None
-        x = 0
-        y = 0
-        for i in joueur.carte_mobs:
-            self.fenetre.blit(self.textures_mobs[i[0]], decalage(i[1]))
+        if not joueur.en_combat:
+            temp = False
+            box = None
+            x = 0
+            y = 0
+            for i in joueur.carte_mobs:
+                self.fenetre.blit(self.textures_mobs[i[0]], decalage(i[1]))
 
-            if i[1] == decalage_inverse(pygame.mouse.get_pos()) and not temp:
-                temp = True
-                f = pygame.font.Font(None, 30)
-                for j in joueur.groupmobs:
-                    if i in j[0]:
-                        max_len = 0
-                        display = []
-                        for k in j[0]:
-                            txt = f.render(k[0].replace("_", " "), 0, (255, 255, 255))
-                            if txt.get_rect()[2] > max_len:
-                                max_len = txt.get_rect()[2]
-                            display.append(txt)
+                if i[1] == decalage_inverse(pygame.mouse.get_pos()) and not temp:
+                    temp = True
+                    f = pygame.font.Font(None, 30)
+                    for j in joueur.groupmobs:
+                        if i in j[0]:
+                            max_len = 0
+                            display = []
+                            for k in j[0]:
+                                txt = f.render(k[0].replace("_", " "), 0, (255, 255, 255))
+                                if txt.get_rect()[2] > max_len:
+                                    max_len = txt.get_rect()[2]
+                                display.append(txt)
 
-                        txt = f.render('Niveau ' + str(j[1]), 0, (255, 255, 255))
-                        x, y = pygame.mouse.get_pos()
-                        if x + max_len > 1152:
-                            x = 1152 - max_len - 20
-                        if y + (len(display) + 1) * 30 > 576:
-                            y = 576 - (1 + len(display)) * 30
+                            txt = f.render('Niveau ' + str(j[1]), 0, (255, 255, 255))
+                            x, y = pygame.mouse.get_pos()
+                            if x + max_len > 1152:
+                                x = 1152 - max_len - 20
+                            if y + (len(display) + 1) * 30 > 576:
+                                y = 576 - (1 + len(display)) * 30
 
-                        box = pygame.Surface((max_len + 20, (1 + len(display)) * 30 + 20))
-                        box.fill((50, 50, 50))
-                        box.set_alpha(200)
+                            box = pygame.Surface((max_len + 20, (1 + len(display)) * 30 + 20))
+                            box.fill((50, 50, 50))
+                            box.set_alpha(200)
 
-                        wid = txt.get_rect()[2]
-                        box.blit(txt, ((max_len - wid) // 2, 10))
+                            wid = txt.get_rect()[2]
+                            box.blit(txt, ((max_len - wid) // 2, 10))
 
-                        for n in range(len(display)):
-                            box.blit(display[n], (10, 30 * (n + 1) + 10))
+                            for n in range(len(display)):
+                                box.blit(display[n], (10, 30 * (n + 1) + 10))
 
-        for i in joueur.carte_joueurs:
-            self.fenetre.blit(self.textures_classes[i[0]], decalage(i[1]))
-        if box:
-            self.fenetre.blit(box, (x, y))
-
+            for i in joueur.carte_joueurs:
+                self.fenetre.blit(self.textures_classes[i[0]], decalage(i[1]))
+            if box:
+                self.fenetre.blit(box, (x, y))
+        else:
+            if joueur.actualisecombat():
+                self.fenetre.blit(self.boutons["fintour"], (1100, 600))
+            for i in joueur.carte_mobs:
+                self.fenetre.blit(self.textures_mobs[i[0]], decalage(i[1]))
+            for i in joueur.carte_joueurs:
+                self.fenetre.blit(self.textures_classes[i[0]], decalage(i[1]))
         pygame.display.flip()
 
 
@@ -157,6 +163,8 @@ class Playercontroller:
         self.changement_carte(fenetre)
         self.chemin = []
         self.dernier_mouvment = 0
+        self.en_combat = False
+        self.mouvement = 3
 
     def changement_carte(self, fenetre: RendererController):
         """Cette fonction est appellée quand le joueur change de carte et sert a charger les nouvelles textures et la
@@ -179,9 +187,17 @@ class Playercontroller:
 
     def clic(self):
         """Cette fonction est appellée quand le joueur fait un clic de souris"""
-        case = decalage_inverse(pygame.mouse.get_pos())
-        if 0 < case[0] < 32 and 0 < case[1] < 18:
-            self.move_to(case)
+        if self.en_combat:
+            position_clic = pygame.mouse.get_pos()
+            case = decalage_inverse(position_clic)
+            if -1 < case[0] < 32 and -1 < case[1] < 18:
+                self.move_to(case)
+            elif 1245 > position_clic[0] > 1100 and 677 > position_clic[1] > 600:
+                commande("combat:endturn:" + str(self.id))
+        else:
+            case = decalage_inverse(pygame.mouse.get_pos())
+            if -1 < case[0] < 32 and -1 < case[1] < 18:
+                self.move_to(case)
 
     def move_to(self, case: Tuple[int, int]):
         """Cette fonction calcule le chemin qu'il faut faire pour aller jusqu'a la case pointé par la souris"""
@@ -208,6 +224,21 @@ class Playercontroller:
         self.carte_joueurs = []
         for i in resultat["joueurs"]:
             self.carte_joueurs.append((i["classe"], i["position"], i["name"]))
+
+    def actualisecombat(self):
+        """En attandant d'avoir un vrai systeme"""
+        resultat = loads(demande("combat:carte:" + str(self.id)))
+        self.carte_mobs = []
+        for j in resultat["mobs"]:
+            mob = (j[0], (j[1][0], j[1][1]))
+            self.carte_mobs.append(mob)
+        self.carte_joueurs = []
+        for i in resultat["joueurs"]:
+            self.carte_joueurs.append((i["classe"], i["position"], i["name"]))
+        if resultat["actif"]:
+            return True
+        else:
+            return False
 
 
 def decalage(coord: Tuple[int, int]) -> Tuple[int, int]:
@@ -249,26 +280,35 @@ def boucle(fenetre: RendererController, joueur: Playercontroller) -> bool:
     """Cette fonction est la boucle principale du client"""
     for event in pygame.event.get():
         if event.type == QUIT:
-            commande("carte:quitter:" + str(joueur.id))
-            return False
+            if joueur.en_combat:
+                commande("combat:quitter:" + str(joueur.id))
+                return False
+            else:
+                commande("carte:quitter:" + str(joueur.id))
+                return False
         if event.type == MOUSEBUTTONDOWN and event.button == 1:
             joueur.clic()
+
     fenetre.afficher_carte(joueur)
-    if len(joueur.chemin) > 0 and time.time() > 7 + joueur.dernier_mouvment:
-        joueur.dernier_mouvment + time.time()
-        mouvement = joueur.chemin[0]
-        demande("carte:move:" + str(joueur.id) + ":" + mouvement)
-        if mouvement == "up":
-            joueur.position = (joueur.position[0], joueur.position[1] - 1)
-        elif mouvement == "down":
-            joueur.position = (joueur.position[0], joueur.position[1] + 1)
-        elif mouvement == "left":
-            joueur.position = (joueur.position[0] - 1, joueur.position[1])
-        elif mouvement == "right":
-            joueur.position = (joueur.position[0] + 1, joueur.position[1])
-        else:
-            raise ValueError("Le mouvement demandé n'exite pas")
-        del joueur.chemin[0]
+
+    if not joueur.en_combat:
+        if len(joueur.chemin) > 0 and time.time() > 7 + joueur.dernier_mouvment:
+            joueur.dernier_mouvment + time.time()
+            mouvement = joueur.chemin[0]
+            if demande("carte:move:" + str(joueur.id) + ":" + mouvement) == "True":
+                joueur.en_combat = True
+            else:
+                if mouvement == "up":
+                    joueur.position = (joueur.position[0], joueur.position[1] - 1)
+                elif mouvement == "down":
+                    joueur.position = (joueur.position[0], joueur.position[1] + 1)
+                elif mouvement == "left":
+                    joueur.position = (joueur.position[0] - 1, joueur.position[1])
+                elif mouvement == "right":
+                    joueur.position = (joueur.position[0] + 1, joueur.position[1])
+                else:
+                    raise ValueError("Le mouvement demandé n'exite pas")
+                del joueur.chemin[0]
     return True
 
 
