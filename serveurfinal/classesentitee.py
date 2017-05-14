@@ -152,7 +152,27 @@ class Battle:
                 attack_spells.append(spell)
             if spell.spellType == 'SUPPORT' and not set(allies.keys()).isdisjoint(range):
                 intersects_at = set(allies.keys()).intersection(range)
-                assist_spells[spell] = [allies[c] for c in intersects_at]
+                assist_spells[spell] = [[allies[c] for c in intersects_at], range]
+        odds = 0
+        most = 0
+        ass_spell = 0
+        for spell, r in assist_spells.items():
+            if len(r[0]) > most:
+                most = len(r[0])
+                ass_spell = spell
+        odds = most / len(self.mobgroup)
+        assist_spells = assist_spells[ass_spell]
+        odds *= sum([mob.actuelcaracteristiques.hp/mob.maxcaracteristiques.hp for mob in assist_spells[0]]) / len(assist_spells[0])
+        if odds > random():
+            self.apply_effect(ass_spell.effects, choice(assist_spells[0]))
+        else:
+            available_mana = self.current.actuelcaracteristiques.ap
+            
+
+
+
+    def apply_effect(self, effects, target):
+        pass
 
     def end_turn(self):
         self.current = self.queue[(self.queue.index(self.current) + 1) % len(self.queue)]
