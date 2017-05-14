@@ -251,7 +251,7 @@ def boucle(fenetre: RendererController, joueur: Playercontroller) -> bool:
         if event.type == QUIT:
             commande("carte:quitter:" + str(joueur.id))
             return False
-        if event.type == MOUSEBUTTONDOWN:
+        if event.type == MOUSEBUTTONDOWN and event.button == 1:
             joueur.clic()
     fenetre.afficher_carte(joueur)
     if len(joueur.chemin) > 0 and time.time() > 7 + joueur.dernier_mouvment:
