@@ -44,7 +44,7 @@ def boucle(commandes, combats: List, ids: int, joueurs: Dict) -> Tuple[int, Dict
             if text[0] == "carte":
                 ids, joueurs = commandecarte(text[1:len(text)], demande[1], ids, joueurs, combats)
             elif text[0] == "combat":
-                commandecombat(text[1:len(text)])
+                commandecombat(text[1:len(text)], demande[1], joueurs)
 
     for i in MAPS.maps.values():
         if i.actif:

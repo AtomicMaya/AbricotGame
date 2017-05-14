@@ -8,7 +8,7 @@ def mouvement(idjoueur: str, direction: str, joueurs: Dict, combat: List) -> boo
     """Cette fonction permet a un joueur de se déplacer"""
     if int(idjoueur) in joueurs.keys():
         joueur = joueurs[int(idjoueur)]
-        if not joueur.en_combat:
+        if not joueur.combat:
             if direction == "right":
                 directionmouv = Mouvements.DROITE
             elif direction == "left":
@@ -37,20 +37,21 @@ def connexion(client, ids: int, joueurs: Dict) -> Tuple[int, Dict]:
 
 def carte(id_joueur: str, joueurs: Dict) -> str:
     """Cette fonction est appellée quand le joueur arrive sur une carte et lui transmet des informations"""
-    joueur = joueurs[int(id_joueur)]
-    mobgroups = []
-    for mobsgroups in MAPS.get(joueur.map).mobsgroups:
-        temp = {"level": mobsgroups.level, "mobs": []}
-        for mob in mobsgroups.mobgroup:
-            temp["mobs"].append((mob.name, mob.mapcoords))
-        mobgroups.append(temp)
-    temp = []
-    for players in MAPS.get(joueur.map).joueurs.values():
-        temp.append({"name": players.name, "classe": players.classe, "position": players.mapcoords})
-    return dumps({"map": joueur.map, "mobs": mobgroups, "joueurs": temp})
+    if int(id_joueur) in joueurs.keys():
+        joueur = joueurs[int(id_joueur)]
+        mobgroups = []
+        for mobsgroups in MAPS.get(joueur.map).mobsgroups:
+            temp = {"level": mobsgroups.level, "mobs": []}
+            for mob in mobsgroups.mobgroup:
+                temp["mobs"].append((mob.name, mob.mapcoords))
+            mobgroups.append(temp)
+        temp = []
+        for players in MAPS.get(joueur.map).joueurs.values():
+            temp.append({"name": players.name, "classe": players.classe, "position": players.mapcoords})
+        return dumps({"map": joueur.map, "mobs": mobgroups, "joueurs": temp})
 
 
-def commandecarte(message: str, client, ids: int, joueurs: Dict, combats: List) -> Tuple[int, Dict]:
+def commandecarte(message: List, client, ids: int, joueurs: Dict, combats: List) -> Tuple[int, Dict]:
     """Cette fonction effectue toute le commandes liés a la carte (mouvement,objets a affichager,...)"""
     if message[0] == "move" and len(message) == 3:
         client.send(str(mouvement(message[1], message[2], joueurs, combats)).encode())
@@ -67,6 +68,19 @@ def commandecarte(message: str, client, ids: int, joueurs: Dict, combats: List) 
     return ids, joueurs
 
 
-def commandecombat(message: str):
+def entitee_combat(id: int, joueurs: Dict) -> str:
+    """Cette fonction transmet au joueur toute les informations sur un combat"""
+    joueur = joueurs[int(id)]
+    mobs = []
+    for mob in joueur.combat.mobgroup:
+        mobs.append((mob.name, mob.position_combat))
+    temp = []
+    for players in joueur.combat.players:
+        temp.append({"name": players.name, "classe": players.classe, "position": players.position_combat})
+    return dumps({"mobs": mobs, "joueurs": temp})
+
+
+def commandecombat(message: List, client, joueurs: Dict):
     """Cette fonction efffectue toute les commandes liée au combat (attaque,déplacement,...)"""
-    pass
+    if message[0] == "carte" and len(message) == 2:
+        client.send(entitee_combat(int(message[1]), joueurs).encode())
