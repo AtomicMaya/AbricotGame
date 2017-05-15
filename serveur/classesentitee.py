@@ -84,8 +84,6 @@ class Map:
 
     def move(self, entitee: Entitee, direction: Mouvements, combat=None, leader=None) -> bool:
         """Cette fonction permet de déplacer une entitée sur la carte"""
-        if combat is None:
-            combat = []
         coord = entitee.map_coords
         coords = [(0, -1), (-1, 0), (0, 1), (1, 0)]
         if direction == Mouvements.HAUT and coord[1] != 0:
@@ -485,16 +483,39 @@ class Spell:
             if cible.var_attributs.hp > cible.max_attributs.hp:
                 cible.var_attributs.hp = cible.max_attributs.hp
             elif cible.var_attributs.hp < 1:
-                combat=cible.combat
+                combat = cible.combat
                 if isinstance(cible, Joueur):
                     combat.players.remove(cible)
                     combat.joueurs_morts.append(cible)
                     combat.queue.remove(cible)
+                    if len(combat.players) == 0:
+                        for i in combat.joueurs_morts:
+                            i.var_attribute.hp = 1
+                            i.en_combat = False
+                            i.combat = None
+                            i.map_coords = (31, 4)
+                            i.map = "(0,0)"
+                            map = MAPS.get(i.map)
+                            map.actif = True
+                        return True
+                    return False
+
                 else:
                     combat.mobgroup.remove(cible)
                     combat.ennemis_morts.append(cible)
                     combat.queue.remove(cible)
-
+                    if len(combat.mobgroup) == 0:
+                        for i in combat.joueurs_morts:
+                            i.var_attribute.hp = 1
+                            i.en_combat = False
+                            combat.map.joueurs[i.id] = i
+                            i.combat = None
+                        for i in combat.players:
+                            i.en_combat = False
+                            combat.map.joueurs[i.id] = i
+                            i.combat = None
+                        return True
+                    return False
 
 class LineSpell(Spell):
     """Cette classe représente un sort lancé en ligne droite"""

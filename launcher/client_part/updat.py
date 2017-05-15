@@ -88,3 +88,7 @@ for file_info in data:
     possible_cur += size
     if current[0] < possible_cur:
         current[0] = possible_cur
+
+with open(file, "w") as f:
+    f.write(server_version)
+    

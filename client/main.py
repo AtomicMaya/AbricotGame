@@ -236,9 +236,9 @@ class Playercontroller:
             case = decalage_inverse(position_clic)
             if -1 < case[0] < 32 and -1 < case[1] < 18:
                 if self.spell_actuel:
-                    commande(
-                        "combat:sort:" + str(self.id) + ":" + str(self.spell_actuel) + ":" + str(case[0]) + ":" + str(
-                            case[1]))
+                    if (demande("combat:sort:" + str(self.id) + ":" + str(self.spell_actuel) + ":" + str(
+                            case[0]) + ":" + str(case[1])) == "True"):
+                        self.en_combat = False
                     self.spell_actuel = None
                 else:
                     self.move_to(case)
