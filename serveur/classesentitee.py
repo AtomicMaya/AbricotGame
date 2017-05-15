@@ -104,7 +104,6 @@ class Map:
                     if i.group_coords == cible:
                         self.mobsgroups.remove(i)
                         del self.joueurs[entitee.id]
-                        entitee.en_combat = True
                         Battle([entitee], i, self, combat)
                         return True
             elif isinstance(entitee, Mob):
@@ -171,7 +170,6 @@ class Battle:
                     if cible == j.combat_coords:
                         valide = False
             i.combat_coords = cible
-
         for i in self.players:
             valide = False
             cible = (-1, -1)
@@ -185,7 +183,6 @@ class Battle:
                     if cible == j.combat_coords:
                         valide = False
             i.combat_coords = cible
-        for i in self.players:
             i.combat = self
 
     def update(self):
@@ -274,17 +271,33 @@ class Battle:
         """Cette fonction se déclenche a la fin d'un combat"""
         self.actif = False
         for i in self.joueurs_morts:
-            i.var_attribute.hp = 1
-            i.en_combat = False
+            i.var_attributs.hp = 1
+            i.var_attributs.mp = i.max_attributs.mp
+            i.var_attributs.ap = i.max_attributs.ap
+            i.combat = None
+
+        for i in self.players:
+            i.var_attributs.mp = i.max_attributs.mp
+            i.var_attributs.ap = i.max_attributs.ap
             i.combat = None
 
         if victoire:
             self.map.actif = True
             for i in self.joueurs_morts:
+<<<<<<< HEAD
                 self.map[i.id] = i
             # Futur : Loot Generator --> Nicolas
+=======
+                self.map.joueurs[i.id] = i
+            for i in self.players:
+                self.map.joueurs[i.id] = i
+>>>>>>> refs/remotes/origin/master
         else:
             MAPS.get("(0,0)").actif = True
+            for i in self.joueurs_morts:
+                i.map_coords = (31, 4)
+                i.map = "(0,0)"
+                MAPS.get("(0,0)").joueurs[i.id] = i
 
     def attack(self):
         """ Choisit soit d'attquer soit d'aider ses allies et effectue cette action """
@@ -428,13 +441,6 @@ class Spell:
                     combat.queue.remove(cible)
                     if len(combat.players) == 0:
                         combat.fin(False)
-                        for i in combat.joueurs_morts:
-                            i.var_attribute.hp = 1
-                            i.en_combat = False
-                            i.combat = None
-                            i.map_coords = (31, 4)
-                            i.map = "(0,0)"
-                            combat.map.joueurs[i.id] = i
                         return True
                     return False
 
@@ -444,15 +450,6 @@ class Spell:
                     combat.queue.remove(cible)
                     if len(combat.mobgroup) == 0:
                         combat.fin(True)
-                        for i in combat.joueurs_morts:
-                            i.var_attribute.hp = 1
-                            i.en_combat = False
-                            combat.map.joueurs[i.id] = i
-                            i.combat = None
-                        for i in combat.players:
-                            i.en_combat = False
-                            combat.map.joueurs[i.id] = i
-                            i.combat = None
                         return True
                     return False
 
@@ -496,22 +493,22 @@ class LineSpell(Spell):
     def cibles_potentielles(self, lanceur: Entitee) -> List:
         """Cette fonction permet de voir toutes les cases qui pourraient être touchées par un sort"""
         resultat = []
-        for i in range(self.min_range, self.max_range+1):
+        for i in range(self.min_range, self.max_range + 1):
             if (lanceur.combat_coords[0] + i, lanceur.combat_coords[1]) not in lanceur.combat.map.fullobs:
                 resultat.append((lanceur.combat_coords[0] + i, lanceur.combat_coords[1]))
             else:
                 break
-        for i in range(self.min_range, self.max_range+1):
+        for i in range(self.min_range, self.max_range + 1):
             if (lanceur.combat_coords[0] - i, lanceur.combat_coords[1]) not in lanceur.combat.map.fullobs:
                 resultat.append((lanceur.combat_coords[0] - i, lanceur.combat_coords[1]))
             else:
                 break
-        for i in range(self.min_range, self.max_range+1):
+        for i in range(self.min_range, self.max_range + 1):
             if (lanceur.combat_coords[0], lanceur.combat_coords[1] + i) not in lanceur.combat.map.fullobs:
                 resultat.append((lanceur.combat_coords[0], lanceur.combat_coords[1] + i))
             else:
                 break
-        for i in range(self.min_range, self.max_range+1):
+        for i in range(self.min_range, self.max_range + 1):
             if (lanceur.combat_coords[0], lanceur.combat_coords[1] - i) not in lanceur.combat.map.fullobs:
                 resultat.append((lanceur.combat_coords[0], lanceur.combat_coords[1] - i))
             else:
