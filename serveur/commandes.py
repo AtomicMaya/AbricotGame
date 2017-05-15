@@ -48,7 +48,7 @@ def carte(id_joueur: str, joueurs: Dict) -> str:
         temp = []
         for players in MAPS.get(joueur.map).joueurs.values():
             temp.append({"name": players.name, "classe": str(players.classe), "position": players.map_coords})
-        return dumps({"map": joueur.map, "mobs": mobgroups, "joueurs": temp,"position":joueur.map_coords})
+        return dumps({"map": joueur.map, "mobs": mobgroups, "joueurs": temp, "position": joueur.map_coords})
 
 
 def commandecarte(message: List, client, ids: int, joueurs: Dict, combats: List) -> Tuple[int, Dict]:
@@ -64,6 +64,7 @@ def commandecarte(message: List, client, ids: int, joueurs: Dict, combats: List)
             joueur = joueurs[int(message[1])]
             if not joueur.combat:
                 del MAPS.get(joueur.map).joueurs[int(joueur.id)]
+                del joueurs[int(joueur.id)]
 
     return ids, joueurs
 
@@ -128,3 +129,23 @@ def commandecombat(message: List, client, joueurs: Dict):
     elif message[0] == "endturn" and len(message) == 2:
         if int(message[1]) in joueurs.keys():
             joueurs[int(message[1])].combat.end_turn()
+    elif message[0] == "quitter" and len(message) == 2:
+        if int(message[1]) in joueurs:
+            joueur = joueurs[int(message[1])]
+            if joueur.combat:
+                joueur.var_attributs.hp = -1
+                combat = joueur.combat
+                combat.players.remove(joueur)
+                combat.joueurs_morts.append(joueur)
+                combat.queue.remove(joueur)
+                if len(combat.players) == 0:
+                    combat.actif = False
+                    for i in combat.joueurs_morts:
+                        i.var_attributs.hp = 1
+                        i.en_combat = False
+                        i.combat = None
+                        i.map_coords = (31, 4)
+                        i.map = "(0,0)"
+                        map = MAPS.get(i.map)
+                        map.actif = True
+    return joueurs

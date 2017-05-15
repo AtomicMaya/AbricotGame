@@ -44,14 +44,16 @@ def boucle(commandes, combats: List, ids: int, joueurs: Dict) -> Tuple[int, Dict
             if text[0] == "carte":
                 ids, joueurs = commandecarte(text[1:len(text)], demande[1], ids, joueurs, combats)
             elif text[0] == "combat":
-                commandecombat(text[1:len(text)], demande[1], joueurs)
+                joueurs = commandecombat(text[1:len(text)], demande[1], joueurs)
 
     for i in MAPS.maps.values():
         if i.actif:
             i.update()
     for i in combats:
-        i.update()
-
+        if i.actif:
+            i.update()
+        else:
+            del i
     return ids, joueurs, combats
 
 
@@ -61,6 +63,7 @@ def main():
     ids = 0
     joueurs = {}
     combats = []
+    print("Démarage terminé")
     while True:
         ids, joueurs, combats = boucle(commandes, combats, ids, joueurs)
         pygame.time.Clock().tick(42)

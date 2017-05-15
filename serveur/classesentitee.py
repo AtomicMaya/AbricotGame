@@ -146,6 +146,7 @@ class Battle:
     """Cette classe represente une instance de combat"""
 
     def __init__(self, players, mobgroup, map, combat):
+        self.actif = True
         self.joueurs_morts = []
         self.ennemis_morts = []
         self.mobgroup = mobgroup.mobgroup
@@ -489,6 +490,7 @@ class Spell:
                     combat.joueurs_morts.append(cible)
                     combat.queue.remove(cible)
                     if len(combat.players) == 0:
+                        combat.actif = False
                         for i in combat.joueurs_morts:
                             i.var_attribute.hp = 1
                             i.en_combat = False
@@ -497,6 +499,7 @@ class Spell:
                             i.map = "(0,0)"
                             map = MAPS.get(i.map)
                             map.actif = True
+                            combat.map.joueurs[i.id] = i
                         return True
                     return False
 
@@ -505,6 +508,8 @@ class Spell:
                     combat.ennemis_morts.append(cible)
                     combat.queue.remove(cible)
                     if len(combat.mobgroup) == 0:
+                        combat.actif = False
+                        combat.map.actif = True
                         for i in combat.joueurs_morts:
                             i.var_attribute.hp = 1
                             i.en_combat = False
@@ -516,6 +521,10 @@ class Spell:
                             i.combat = None
                         return True
                     return False
+
+    def cibles_potentielles(self, lanceur: Entitee) -> List:
+        """Cette fonction permet de voir toutes les cases qui pourraient être touchées par un sort"""
+        return []
 
 
 class LineSpell(Spell):
@@ -553,23 +562,23 @@ class LineSpell(Spell):
         """Cette fonction permet de voir toutes les cases qui pourraient être touchées par un sort"""
         resultat = []
         for i in range(self.min_range, self.max_range):
-            if (lanceur.combat_coords[0]+i, lanceur.combat_coords[1]) not in lanceur.combat.map.fullobs:
-                resultat.append((lanceur.combat_coords[0]+i, lanceur.combat_coords[1]))
+            if (lanceur.combat_coords[0] + i, lanceur.combat_coords[1]) not in lanceur.combat.map.fullobs:
+                resultat.append((lanceur.combat_coords[0] + i, lanceur.combat_coords[1]))
             else:
                 break
         for i in range(self.min_range, self.max_range):
-            if (lanceur.combat_coords[0]-i, lanceur.combat_coords[1]) not in lanceur.combat.map.fullobs:
-                resultat.append((lanceur.combat_coords[0]-i, lanceur.combat_coords[1]))
+            if (lanceur.combat_coords[0] - i, lanceur.combat_coords[1]) not in lanceur.combat.map.fullobs:
+                resultat.append((lanceur.combat_coords[0] - i, lanceur.combat_coords[1]))
             else:
                 break
         for i in range(self.min_range, self.max_range):
-            if (lanceur.combat_coords[0], lanceur.combat_coords[1]+i) not in lanceur.combat.map.fullobs:
-                resultat.append((lanceur.combat_coords[0], lanceur.combat_coords[1]+i))
+            if (lanceur.combat_coords[0], lanceur.combat_coords[1] + i) not in lanceur.combat.map.fullobs:
+                resultat.append((lanceur.combat_coords[0], lanceur.combat_coords[1] + i))
             else:
                 break
         for i in range(self.min_range, self.max_range):
-            if (lanceur.combat_coords[0], lanceur.combat_coords[1]-i) not in lanceur.combat.map.fullobs:
-                resultat.append((lanceur.combat_coords[0], lanceur.combat_coords[1]-i))
+            if (lanceur.combat_coords[0], lanceur.combat_coords[1] - i) not in lanceur.combat.map.fullobs:
+                resultat.append((lanceur.combat_coords[0], lanceur.combat_coords[1] - i))
             else:
                 break
         return resultat
@@ -696,6 +705,9 @@ class Joueur(Entitee):
         self.map = "(0,0)"
         self.id = id
         self.classe = CLASSES.get("001")
+
+    def __del__(self):
+        print("Je disparait")
 
 
 def compare_tuple(depart: Tuple[int, int], arrivee: Tuple[int, int]):
