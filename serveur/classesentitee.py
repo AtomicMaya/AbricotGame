@@ -351,20 +351,19 @@ class Battle:
         """ Choisit soit d'attquer soit d'aider ses allies et effectue cette action """
         attack_spells = []
         assist_spells = {}
-        allies = {ally.map_coords: ally for ally in self.mobgroup}
-        print("\n", self.current, '\'s Attack')
-        print("Allies :", allies)
+        allies = {ally.combat_coords: ally for ally in self.mobgroup}
+        allies.pop(self.current.combat_coords)
+        print("\n", self.current.name, '\'s Attack')
         for spell in self.current.spells:
             if spell.verif_conditions(self.current, self.target.combat_coords) and \
                             spell.spellType != 'SUPPORT':
                 attack_spells.append(spell)
+            print("Spell", spell)
             attack_coords = spell.cibles_potentielles(self.current)
-            print("Spell Type :", spell.spellType)
             print("Available coords", attack_coords)
             if spell.spellType == 'SUPPORT' and not set(allies.keys()).isdisjoint(attack_coords):
                 intersects_at = set(allies.keys()).intersection(attack_coords)
                 assist_spells[spell] = [[allies[c] for c in intersects_at], attack_coords]
-        print("\nAssist spells :", assist_spells)
         print("Attack spells :", attack_spells)
         most = 0
         assist_spell = 0
@@ -372,10 +371,8 @@ class Battle:
             if len(r[0]) > most:
                 most = len(r[0])
                 assist_spell = spell
-        print("ASSIST SPELL ? ", assist_spell)
 
         odds = most / len(self.mobgroup)
-        print("ODDS:", odds)
         if assist_spell in assist_spells.keys():
             assist_spells = assist_spells[assist_spell]
             odds *= sum([mob.var_attributs.hp / mob.max_attributs.hp for mob in assist_spells[0]]) / len(
