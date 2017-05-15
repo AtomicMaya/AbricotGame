@@ -73,7 +73,7 @@ def entitee_combat(id: int, joueurs: Dict) -> str:
     joueur = joueurs[int(id)]
     mobs = []
     for mob in joueur.combat.mobgroup:
-        mobs.append((mob.name, mob.combat_coords))
+        mobs.append((mob.name, mob.combat_coords, mob.var_attributs.hp))
     temp = []
     for players in joueur.combat.players:
         temp.append({"name": players.name, "classe": str(players.classe), "position": players.combat_coords})
@@ -108,6 +108,10 @@ def lancer_sort(joueur: str, sort: str, cible: Tuple[int, int], joueurs: Dict):
         joueur = joueurs[int(joueur)]
         sort = SPELLS.get(joueur.classe.spells[sort])
         if sort.verif_conditions(joueur, cible):
+            cibles = sort.liste_case(joueur, cible)
+            for i in joueur.combat.queue:
+                if i.combat_coords in cibles:
+                    sort.appliquer_effet(i)
             return True
     return False
 

@@ -82,8 +82,10 @@ class Map:
             for mobgroup in self.mobsgroups:
                 mobgroup.move(self)
 
-    def move(self, entitee: Entitee, direction: Mouvements, combat: List = [], leader=None) -> bool:
+    def move(self, entitee: Entitee, direction: Mouvements, combat=None, leader=None) -> bool:
         """Cette fonction permet de déplacer une entitée sur la carte"""
+        if combat is None:
+            combat = []
         coord = entitee.map_coords
         coords = [(0, -1), (-1, 0), (0, 1), (1, 0)]
         if direction == Mouvements.HAUT and coord[1] != 0:
@@ -146,9 +148,11 @@ class Battle:
     """Cette classe represente une instance de combat"""
 
     def __init__(self, players, mobgroup, map, combat):
+        self.joueurs_morts = []
+        self.ennemis_morts = []
         self.mobgroup = mobgroup.mobgroup
         for mob in self.mobgroup:
-             mob.combat = self
+            mob.combat = self
         self.players = players
         self.map = map
         self.queue = self.players + self.mobgroup
@@ -197,7 +201,7 @@ class Battle:
                 self.attack()
                 self.phase = Phase.end
             elif self.phase == Phase.movement:
-                self.movement(int(sum(self.get_ranges()) / 2))
+                self.movement()  # int(sum(self.get_ranges()) / 2))
                 self.phase = Phase.attack
             elif self.phase == Phase.targeting:
                 self.target, self.path = self.find_target()
@@ -239,7 +243,6 @@ class Battle:
                     return True
         return False
 
-    # noinspection PyTypeChecker
     def find_target(self):
         """Permet a un mob de choisir sa cible en fonction de parametres comme la vie, la distance et le niveau du
         joueur"""
@@ -252,8 +255,8 @@ class Battle:
             stats[player] *= 2 if len(movements[player]) == min([len(mov) for mov in movements.values()]) else 1
             stats[player] *= 2 if self.current.level > player.level else 1
             stats[player] *= 4 if 0 <= player.var_attributs.hp / player.max_attributs.hp < 0.25 else 3 \
-                if 0.25 <= player.var_attributs.hp / player.max_attributs.hp < 0.5 \
-                else 2 if 0.5 <= player.var_attributs.hp / player.max_attributs.hp < 0.75 else 1
+                if 0.25 <= (player.var_attributs.hp / player.max_attributs.hp) < 0.5 \
+                else 2 if 0.5 <= (player.var_attributs.hp / player.max_attributs.hp) < 0.75 else 1
         player = list(stats.keys())[list(stats.values()).index(max(stats.values()))]
         path = movements[player]
         return player, path
@@ -266,7 +269,7 @@ class Battle:
             mins += [spell.min_range]
         return min(mins), max(maxs)
 
-    def movement(self, dist):
+    def movement(self):
         """ Effectue le déplacement sur la map """
 
         if len(self.path) > self.current.max_attributs.mp:
@@ -274,7 +277,7 @@ class Battle:
                 self.move(self.current, compare_tuple(self.path[i], self.path[i + 1]))
         else:
             for i in range(0, len(self.path) - 1):
-                    self.move(self.current, compare_tuple(self.path[i], self.path[i + 1]))
+                self.move(self.current, compare_tuple(self.path[i], self.path[i + 1]))
 
     # def spell_range(self, spell):
     #     """ En fonction du type de sort, renvoie les cases touchees """
@@ -351,7 +354,7 @@ class Battle:
         assist_spells = {}
         allies = {ally.map_coords: ally for ally in self.mobgroup}
         for spell in self.current.spells:
-            if spell.verif_conditions(self.current, self.target.combat_coords) and\
+            if spell.verif_conditions(self.current, self.target.combat_coords) and \
                             spell.spellType != 'SUPPORT':
                 attack_spells.append(spell)
             if spell.spellType == 'SUPPORT' and not set(allies.keys()).isdisjoint(range):
@@ -367,7 +370,8 @@ class Battle:
         odds = most / len(self.mobgroup)
         if assist_spell in assist_spells.keys():
             assist_spells = assist_spells[assist_spell]
-            odds *= sum([mob.var_attributs.hp / mob.max_attributs.hp for mob in assist_spells[0]]) / len(assist_spells[0])
+            odds *= sum([mob.var_attributs.hp / mob.max_attributs.hp for mob in assist_spells[0]]) / len(
+                assist_spells[0])
             if odds > random():
                 this_spell = choice(assist_spells[0])
                 self.apply_effect(assist_spell.effects, this_spell)
@@ -466,9 +470,30 @@ class Spell:
         self.reload = int(reload)
         self.effects = effects
 
-    def verif_conditions(self, joueur, cible):
+    def verif_conditions(self, joueur: Entitee, cible: Tuple[int, int]) -> bool:
         """Cette fonction détermine si le sort est valide"""
         return False
+
+    def liste_case(self, joueur: Entitee, cible: Tuple[int, int]) -> List:
+        """Cette fonction renvoie la liste des cases touchées"""
+        return []
+
+    def appliquer_effet(self, cible: Entitee):
+        """Cette fonction applique les effets d'un sort sur la cible"""
+        if "HP" in self.effects:
+            cible.var_attributs.hp += self.effects["HP"]
+            if cible.var_attributs.hp > cible.max_attributs.hp:
+                cible.var_attributs.hp = cible.max_attributs.hp
+            elif cible.var_attributs.hp < 1:
+                combat=cible.combat
+                if isinstance(cible, Joueur):
+                    combat.players.remove(cible)
+                    combat.joueurs_morts.append(cible)
+                    combat.queue.remove(cible)
+                else:
+                    combat.mobgroup.remove(cible)
+                    combat.ennemis_morts.append(cible)
+                    combat.queue.remove(cible)
 
 
 class LineSpell(Spell):
@@ -481,7 +506,7 @@ class LineSpell(Spell):
 
     def verif_conditions(self, entitee, cible):
         """Cette fonction détermine si le sort est valide"""
-        if entitee.var_attributs.ap > self.cost:
+        if entitee.var_attributs.ap >= self.cost:
             if entitee.combat_coords[0] == cible[0]:
                 if not (self.max_range >= abs(entitee.combat_coords[1] - cible[1]) >= self.min_range):
                     return False
@@ -497,6 +522,10 @@ class LineSpell(Spell):
             entitee.var_attributs.ap -= self.cost
             return True
         return False
+
+    def liste_case(self, joueur, cible):
+        """Cette fonction renvoie la liste des cases touchées"""
+        return [cible]
 
 
 class SplashSpell(Spell):
@@ -526,6 +555,10 @@ class SplashSpell(Spell):
             entitee.var_attributs.ap -= self.cost
             return True
         return False
+
+    def liste_case(self, joueur, cible):
+        """Cette fonction renvoie la liste des cases touchées"""
+        return [cible]
 
 
 class Spells:
@@ -617,6 +650,7 @@ class Joueur(Entitee):
         self.id = id
         self.classe = CLASSES.get("001")
 
+
 def compare_tuple(depart: Tuple[int, int], arrivee: Tuple[int, int]):
     """Cette fonction permet de voir dans quelle direction il faut aller pour passer d'un tuple a l'autre"""
     if depart[0] - arrivee[0] == 1:
@@ -629,6 +663,7 @@ def compare_tuple(depart: Tuple[int, int], arrivee: Tuple[int, int]):
         return Mouvements.BAS
     else:
         raise ValueError("Les deux tuples ne sont pas adjacents")
+
 
 SPELLS = Spells()
 MAPS = Maps()

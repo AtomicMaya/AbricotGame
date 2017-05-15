@@ -115,11 +115,16 @@ class RendererController:
                     f = pygame.font.Font(None, 30)
                     txt = f.render("Taper fort : 75", 0, (255, 255, 255))
                     self.fenetre.blit(txt, cuseur)
+            txt = None
             for i in joueur.carte_mobs:
                 self.fenetre.blit(self.textures_mobs[i[0]], decalage(i[1]))
+                if i[1] == decalage_inverse(pygame.mouse.get_pos()):
+                    f = pygame.font.Font(None, 30)
+                    txt = f.render(i[0] + ":" + str(i[2]), 0, (255, 255, 255))
             for i in joueur.carte_joueurs:
                 self.fenetre.blit(self.textures_classes[i[0]], decalage(i[1]))
-
+            if txt:
+                self.fenetre.blit(txt, pygame.mouse.get_pos())
         else:
             temp = False
             box = None
@@ -242,13 +247,13 @@ class Playercontroller:
                 self.debut_tour = False
                 self.mouvement = 3
             elif 713 > position_clic[1] > 585 and 100 < position_clic[0] < 228:
-                self.spell_actuel = "000"
-            elif 713 > position_clic[1] > 585 and 250 < position_clic[0] < 378:
-                self.spell_actuel = "003"
-            elif 713 > position_clic[1] > 585 and 400 < position_clic[0] < 528:
-                self.spell_actuel = "002"
-            elif 713 > position_clic[1] > 585 and 550 < position_clic[0] < 678:
                 self.spell_actuel = "001"
+            elif 713 > position_clic[1] > 585 and 250 < position_clic[0] < 378:
+                self.spell_actuel = "002"
+            elif 713 > position_clic[1] > 585 and 400 < position_clic[0] < 528:
+                self.spell_actuel = "003"
+            elif 713 > position_clic[1] > 585 and 550 < position_clic[0] < 678:
+                self.spell_actuel = "000"
             else:
                 self.spell_actuel = None
         else:
@@ -287,7 +292,7 @@ class Playercontroller:
         resultat = loads(demande("combat:carte:" + str(self.id)))
         self.carte_mobs = []
         for j in resultat["mobs"]:
-            mob = (j[0], (j[1][0], j[1][1]))
+            mob = (j[0], (j[1][0], j[1][1]), j[2])
             self.carte_mobs.append(mob)
         self.carte_joueurs = []
         for i in resultat["joueurs"]:

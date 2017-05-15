@@ -307,6 +307,7 @@ class AStar(object):
 
 
 def distances(center: Tuple[int, int], values: List[Tuple[int, int]]) -> Tuple[int, int]:
+    """Nicolass ?"""
     smallest = None
     small = 100
     for c in values:
