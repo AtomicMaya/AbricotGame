@@ -11,14 +11,16 @@
   },
 
   "001": {
-    "NAME": "Archer",
-    "SPELLS": [
-      "004",
-      "005"
-    ],
+    "NAME": "Guerrier",
+    "SPELLS": {
+        "000":"000",
+        "001":"001",
+        "002":"002",
+        "003":"003"
+    },
     "BASEHP": 50,
     "XHP": 5,
-    "MOVEMENTPOINTS": 2,
-    "ACTIONPOINTS": 50
+    "MOVEMENTPOINTS": 3,
+    "ACTIONPOINTS": 150
   }
 }

@@ -61,6 +61,7 @@ def main():
     ids = 0
     joueurs = {}
     combats = []
+    print("Démarage terminé")
     while True:
         ids, joueurs, combats = boucle(commandes, combats, ids, joueurs)
         pygame.time.Clock().tick(42)

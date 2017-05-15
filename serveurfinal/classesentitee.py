@@ -35,9 +35,12 @@ class Entitee:
     """Cette classe représente toute les entitée qui peuvent se déplacer szr la carte. Elle est héritée par joueur et
     par mob"""
 
-    def __init__(self, position: Tuple[int, int]):
+    def __init__(self, position: Tuple[int, int], max_vie: int, max_mp: int, max_ap: int):
         self.mapcoords = position
         self.position_combat = None
+        self.max_attributs = Caracteristiques(max_vie, max_mp, max_ap)
+        self.var_attributs = deepcopy(self.max_attributs)
+        self.combat = None
 
 
 class Map:
@@ -155,6 +158,7 @@ class Battle:
         combat.append(self)
         for i in self.mobgroup:
             valide = False
+            cible = (-1, -1)
             while not valide:
                 cible = choice(map.free)
                 valide = True
@@ -165,6 +169,7 @@ class Battle:
 
         for i in self.players:
             valide = False
+            cible = (-1, -1)
             while not valide:
                 cible = choice(map.free)
                 valide = True
@@ -202,33 +207,37 @@ class Battle:
     def end_turn(self):
         """Indique le prochain joueur"""
         self.current = self.queue[(self.queue.index(self.current) + 1) % len(self.queue)]
+        self.current.var_attributs.ap = self.current.max_attributs.ap
+        self.current.var_attributs.mp = self.current.max_attributs.mp
 
     def move(self, entitee: Entitee, direction: Mouvements):
         """Cette fonction permet de déplacer une entitée sur la carte"""
-        coord = entitee.position_combat
-        coords = [(0, -1), (-1, 0), (0, 1), (1, 0)]
-        if direction == Mouvements.HAUT and coord[1] != 0:
-            cible = tuple_add(coord, coords[0])
-        elif direction == Mouvements.BAS and coord[1] != (taille_map_y - 1):
-            cible = tuple_add(coord, coords[2])
-        elif direction == Mouvements.GAUCHE and coord[0] != 0:
-            cible = tuple_add(coord, coords[1])
-        elif direction == Mouvements.DROITE and coord[0] != (taille_map_x - 1):
-            cible = tuple_add(coord, coords[3])
-        else:
-            cible = coord
+        if entitee.var_attributs.mp > 0:
+            entitee.var_attributs.mp -= 1
+            coord = entitee.position_combat
+            coords = [(0, -1), (-1, 0), (0, 1), (1, 0)]
+            if direction == Mouvements.HAUT and coord[1] != 0:
+                cible = tuple_add(coord, coords[0])
+            elif direction == Mouvements.BAS and coord[1] != (taille_map_y - 1):
+                cible = tuple_add(coord, coords[2])
+            elif direction == Mouvements.GAUCHE and coord[0] != 0:
+                cible = tuple_add(coord, coords[1])
+            elif direction == Mouvements.DROITE and coord[0] != (taille_map_x - 1):
+                cible = tuple_add(coord, coords[3])
+            else:
+                cible = coord
 
-        if cible not in self.map.obstacles:
-            valide = True
-            for i in self.mobgroup:
-                if i.position_combat == cible:
-                    valide = False
-            for i in self.players:
-                if i.position_combat == cible:
-                    valide = False
-            if valide:
-                entitee.position_combat = cible
-                return True
+            if cible not in self.map.obstacles:
+                valide = True
+                for i in self.mobgroup:
+                    if i.position_combat == cible:
+                        valide = False
+                for i in self.players:
+                    if i.position_combat == cible:
+                        valide = False
+                if valide:
+                    entitee.position_combat = cible
+                    return True
         return False
 
     # noinspection PyTypeChecker
@@ -395,11 +404,11 @@ class Mob(Entitee):
     """Classe represanatant un mob"""
 
     def __init__(self, typemob: TypeMob, level: int, position: Tuple[int, int]):
-        super().__init__(position)
+        super().__init__(position, typemob.caracteristiques.hp + typemob.xcaracteristiques.hp * level,
+                         typemob.caracteristiques.mp + typemob.xcaracteristiques.mp * level,
+                         typemob.caracteristiques.ap + typemob.xcaracteristiques.ap * level)
         self.name = typemob.name
         self.spells = typemob.spells
-        self.max_attributs = typemob.caracteristiques + typemob.xcaracteristiques * level
-        self.var_attributs = deepcopy(self.max_attributs)
         self.idle_anim = typemob.idle_anim
         self.attack_anim = typemob.attack_anim
         self.mouvement_anim = typemob.mouvement_anim
@@ -441,21 +450,46 @@ class Mobs:
 
 
 class Spell:
-    """Cette classe permet de definir un sort et d'appliquer ses effets"""
+    """Cette classe abstraite est héritée par tout les sorts"""
 
-    def __init__(self, name: str, cost: int, shape: str, spell_type: str, max_range: int, min_range: int,
-                 reload: int, aoe, aoe_range, aoe_shape, effects):
+    def __init__(self, name: str, cost: int, spell_type: str, reload: int, effects: Dict):
         self.name = name
         self.cost = cost
-        self.shape = shape
         self.spellType = spell_type
-        self.maxRange = int(max_range)
-        self.minRange = min_range
         self.reload = int(reload)
-        self.aoe = bool(aoe)
-        self.aoeRange = aoe_range
-        self.aoeShape = aoe_shape
         self.effects = effects
+
+    def valide(self, joueur, cible):
+        """Cette fonction détermine si le sort est valide"""
+        return False
+
+
+class LineSpell(Spell):
+    """Cette classe représente un sort lancé en ligne droite"""
+
+    def __init__(self, name: str, cost: int, spell_type: str, reload: int, effects: Dict, forme: Dict):
+        super().__init__(name, cost, spell_type, reload, effects)
+        self.longeur_max = forme["MAXRANGE"]
+        self.longeur_min = forme["MINRANGE"]
+
+    def valide(self, entitee, cible):
+        """Cette fonction détermine si le sort est valide"""
+        if entitee.var_attributs.ap > self.cost:
+            if entitee.position_combat[0] == cible[0]:
+                if not (self.longeur_max >= abs(entitee.position_combat[1] - cible[1]) >= self.longeur_min):
+                    return False
+            elif entitee.position_combat[1] == cible[1]:
+                if not (self.longeur_max >= abs(entitee.position_combat[0] - cible[0]) >= self.longeur_min):
+                    return False
+            else:
+                return False
+            cases_traversee = bresenham(entitee.position_combat, cible)
+            for i in cases_traversee:
+                if i in entitee.combat.map.fullobs:
+                    return False
+            entitee.var_attributs.ap -= self.cost
+            return True
+        return False
 
 
 class Spells:
@@ -468,13 +502,10 @@ class Spells:
         self.spells = {}
         for ids in file_spells:
             if ids != '_template':
-                self.spells[ids] = Spell(file_spells[ids]['NAME'],
-                                         file_spells[ids]['COST'], file_spells[ids]['SHAPE'],
-                                         file_spells[ids]['TYPE'], file_spells[ids]['ATTACKMAXRANGE'],
-                                         file_spells[ids]['ATTACKMINRANGE'], file_spells[ids]['RELOAD'],
-                                         file_spells[ids]['AOE'], file_spells[ids]['AOERANGE'],
-                                         file_spells[ids]['AOESHAPE'],
-                                         file_spells[ids]['EFFECTS'])
+                if file_spells[ids]['SHAPE']["SHAPE"] == "LINE":
+                    self.spells[ids] = LineSpell(file_spells[ids]['NAME'], file_spells[ids]['COST'],
+                                                 file_spells[ids]['TYPE'], file_spells[ids]['RELOAD'],
+                                                 file_spells[ids]['EFFECTS'], file_spells[ids]['SHAPE'])
 
     def get(self, spell_id: str):
         """
@@ -483,6 +514,41 @@ class Spells:
         :return: -> Le sort
         """
         return self.spells[spell_id]
+
+
+class Classe:
+    """Cette classe permet de definir un sort et d'appliquer ses effets"""
+
+    def __init__(self, name: str, spells: Dict, basehp: int, xhp: int, mouvement_point: int, action_point: int,
+                 id: str):
+        self.name = name
+        self.spells = spells
+        self.caracteristiques = Caracteristiques(basehp, mouvement_point, action_point)
+        self.xcaracteristiques = Caracteristiques(xhp, 0, 0)
+        self.id = id
+
+    def __str__(self):
+        return self.id
+
+
+class Classes:
+    """Cette classe contient la liste de tout les sorts du jeu"""
+
+    def __init__(self):
+        json_file = c_open("classes.json", encoding='utf-8')
+        file_classes = load(json_file)
+        json_file.close()
+        self.classes = {}
+        for ids in file_classes:
+            if ids != '_template':
+                self.classes[ids] = Classe(file_classes[ids]['NAME'],
+                                           file_classes[ids]['SPELLS'], file_classes[ids]['BASEHP'],
+                                           file_classes[ids]['XHP'], file_classes[ids]['MOVEMENTPOINTS'],
+                                           file_classes[ids]["ACTIONPOINTS"], ids)
+
+    def get(self, classe_id: str):
+        """Permet de récupérer une classe a partir de son id"""
+        return self.classes[classe_id]
 
 
 class Caracteristiques:
@@ -507,18 +573,16 @@ class Joueur(Entitee):
     """Cette classe represente un joueur connecte au jeu"""
 
     def __init__(self, id: int):
-        super().__init__((31, 4))
+        super().__init__((31, 4), 150, 3, 150)
         self.name = ""
         self.spells = []
-        self.max_attributs = Caracteristiques(150, 3, 100)
-        self.var_attributs = deepcopy(self.max_attributs)
         self.level = 0
         self.map = "(0,0)"
         self.id = id
-        self.classe = "001"
-        self.combat = None
+        self.classe = CLASSES.get("001")
 
 
 SPELLS = Spells()
 MAPS = Maps()
 MOBS = Mobs()
+CLASSES = Classes()

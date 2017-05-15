@@ -30,11 +30,12 @@ class Map:
                 else:
                     self.free.append((x, y))
 
+
 class Maps:
     """Cette classe contient la liste de toute les cartes du jeu"""
 
     def __init__(self):
-        json_file = open("assets/cartes/maps.json")
+        json_file = open("assets/json/maps.json")
         file_maps = load(json_file)
         json_file.close()
         self.maps = {}
@@ -60,8 +61,12 @@ class RendererController:
         pygame.display.set_icon(pygame.image.load("assets/images/icone.png").convert_alpha())
         self.fond = None
         self.textures_mobs = {}
-        self.textures_classes = {"001": convert_image("assets/images/classes/archer/archer4.png")}
+        self.textures_classes = {"001": convert_image("assets/images/classes/guerrier/guerrier2.png")}
         self.boutons = {"fintour": pygame.image.load("assets/images/interface/fintour.png").convert()}
+        self.spells = {"000": pygame.image.load("assets/images/sorts/Coup.png").convert(),
+                       "001": pygame.image.load("assets/images/sorts/Coup_puissant.png").convert(),
+                       "002": pygame.image.load("assets/images/sorts/Taper.png").convert(),
+                       "003": pygame.image.load("assets/images/sorts/TAper_fort.png").convert()}
 
     def charger_textures(self, joueur):
         """Cette méthode est appellée lors d'un changement de map pour charger les textures de la nouvelle map"""
@@ -85,8 +90,31 @@ class RendererController:
             if joueur.tour_actif:
                 self.fenetre.blit(self.boutons["fintour"], (1100, 600))
                 f = pygame.font.Font(None, 120)
+                txt = f.render(str(joueur.action_point), 0, (0, 0, 150))
+                self.fenetre.blit(txt, (850, 600))
                 txt = f.render(str(joueur.mouvement), 0, (0, 255, 0))
                 self.fenetre.blit(txt, (1000, 600))
+                self.fenetre.blit(self.spells["003"], (550, 585))
+                self.fenetre.blit(self.spells["002"], (400, 585))
+                self.fenetre.blit(self.spells["001"], (250, 585))
+                self.fenetre.blit(self.spells["000"], (100, 585))
+                cuseur = pygame.mouse.get_pos()
+                if 713 > cuseur[1] > 585 and 100 < cuseur[0] < 228:
+                    f = pygame.font.Font(None, 30)
+                    txt = f.render("Coup : 50", 0, (255, 255, 255))
+                    self.fenetre.blit(txt, cuseur)
+                elif 713 > cuseur[1] > 585 and 250 < cuseur[0] < 378:
+                    f = pygame.font.Font(None, 30)
+                    txt = f.render("Coup puissant : 75", 0, (255, 255, 255))
+                    self.fenetre.blit(txt, cuseur)
+                elif 713 > cuseur[1] > 585 and 400 < cuseur[0] < 528:
+                    f = pygame.font.Font(None, 30)
+                    txt = f.render("Taper : 50", 0, (255, 255, 255))
+                    self.fenetre.blit(txt, cuseur)
+                elif 713 > cuseur[1] > 585 and 550 < cuseur[0] < 678:
+                    f = pygame.font.Font(None, 30)
+                    txt = f.render("Taper fort : 75", 0, (255, 255, 255))
+                    self.fenetre.blit(txt, cuseur)
             for i in joueur.carte_mobs:
                 self.fenetre.blit(self.textures_mobs[i[0]], decalage(i[1]))
             for i in joueur.carte_joueurs:
@@ -134,7 +162,9 @@ class RendererController:
                 self.fenetre.blit(self.textures_classes[i[0]], decalage(i[1]))
             if box:
                 self.fenetre.blit(box, (x, y))
-
+        f = pygame.font.Font(None, 120)
+        txt = f.render(str(joueur.vie), 0, (255, 0, 0))
+        self.fenetre.blit(txt, (700, 600))
         pygame.display.flip()
 
 
@@ -171,6 +201,9 @@ class Playercontroller:
         self.mouvement = 3
         self.debut_tour = False
         self.tour_actif = False
+        self.vie = 150
+        self.action_point = 150
+        self.spell_actuel = None
 
     def changement_carte(self, fenetre: RendererController):
         """Cette fonction est appellée quand le joueur change de carte et sert a charger les nouvelles textures et la
@@ -197,11 +230,27 @@ class Playercontroller:
             position_clic = pygame.mouse.get_pos()
             case = decalage_inverse(position_clic)
             if -1 < case[0] < 32 and -1 < case[1] < 18:
-                self.move_to(case)
+                if self.spell_actuel:
+                    commande(
+                        "combat:sort:" + str(self.id) + ":" + str(self.spell_actuel) + ":" + str(case[0]) + ":" + str(
+                            case[1]))
+                    self.spell_actuel = None
+                else:
+                    self.move_to(case)
             elif 1245 > position_clic[0] > 1100 and 677 > position_clic[1] > 600:
                 commande("combat:endturn:" + str(self.id))
                 self.debut_tour = False
                 self.mouvement = 3
+            elif 713 > position_clic[1] > 585 and 100 < position_clic[0] < 228:
+                self.spell_actuel = "000"
+            elif 713 > position_clic[1] > 585 and 250 < position_clic[0] < 378:
+                self.spell_actuel = "003"
+            elif 713 > position_clic[1] > 585 and 400 < position_clic[0] < 528:
+                self.spell_actuel = "002"
+            elif 713 > position_clic[1] > 585 and 550 < position_clic[0] < 678:
+                self.spell_actuel = "001"
+            else:
+                self.spell_actuel = None
         else:
             case = decalage_inverse(pygame.mouse.get_pos())
             if -1 < case[0] < 32 and -1 < case[1] < 18:
@@ -244,6 +293,8 @@ class Playercontroller:
         for i in resultat["joueurs"]:
             self.carte_joueurs.append((i["classe"], i["position"], i["name"]))
         self.position = (resultat["position"][0], resultat["position"][1])
+        self.vie = resultat["vie"]
+        self.action_point = resultat["action"]
         if resultat["actif"]:
             if not self.debut_tour:
                 self.debut_tour = True
