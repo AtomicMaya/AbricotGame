@@ -105,14 +105,15 @@ def mouvement_combat(idjoueur: str, direction: str, joueurs: Dict):
 def lancer_sort(joueur: str, sort: str, cible: Tuple[int, int], joueurs: Dict):
     """Cette fonction permet aux joueurs de lancer des sorts"""
     if int(joueur) in joueurs.keys():
+        fin_combat = False
         joueur = joueurs[int(joueur)]
         sort = SPELLS.get(joueur.classe.spells[sort])
         if sort.verif_conditions(joueur, cible):
             cibles = sort.liste_case(joueur, cible)
             for i in joueur.combat.queue:
                 if i.combat_coords in cibles:
-                    sort.appliquer_effet(i)
-            return True
+                    fin_combat = fin_combat or sort.appliquer_effet(i)
+            return fin_combat
     return False
 
 
