@@ -82,8 +82,10 @@ class Map:
             for mobgroup in self.mobsgroups:
                 mobgroup.move(self)
 
-    def move(self, entitee: Entitee, direction: Mouvements, combat: List = [], leader=None) -> bool:
+    def move(self, entitee: Entitee, direction: Mouvements, combat=None, leader=None) -> bool:
         """Cette fonction permet de déplacer une entitée sur la carte"""
+        if combat is None:
+            combat = []
         coord = entitee.map_coords
         coords = [(0, -1), (-1, 0), (0, 1), (1, 0)]
         if direction == Mouvements.HAUT and coord[1] != 0:
@@ -146,6 +148,8 @@ class Battle:
     """Cette classe represente une instance de combat"""
 
     def __init__(self, players, mobgroup, map, combat):
+        self.joueurs_morts = []
+        self.ennemis_morts = []
         self.mobgroup = mobgroup.mobgroup
         for mob in self.mobgroup:
             mob.combat = self
@@ -197,7 +201,7 @@ class Battle:
                 self.attack()
                 self.phase = Phase.end
             elif self.phase == Phase.movement:
-                self.movement(int(sum(self.get_ranges()) / 2))
+                self.movement()  # int(sum(self.get_ranges()) / 2))
                 self.phase = Phase.attack
             elif self.phase == Phase.targeting:
                 self.target, self.path = self.find_target()
@@ -265,7 +269,7 @@ class Battle:
             mins += [spell.min_range]
         return min(mins), max(maxs)
 
-    def movement(self, dist):
+    def movement(self):
         """ Effectue le déplacement sur la map """
 
         if len(self.path) > self.current.max_attributs.mp:
@@ -477,7 +481,19 @@ class Spell:
     def appliquer_effet(self, cible: Entitee):
         """Cette fonction applique les effets d'un sort sur la cible"""
         if "HP" in self.effects:
-            cible.var_attributs.hp+=self.effects["HP"]
+            cible.var_attributs.hp += self.effects["HP"]
+            if cible.var_attributs.hp > cible.max_attributs.hp:
+                cible.var_attributs.hp = cible.max_attributs.hp
+            elif cible.var_attributs.hp < 1:
+                combat=cible.combat
+                if isinstance(cible, Joueur):
+                    combat.players.remove(cible)
+                    combat.joueurs_morts.append(cible)
+                    combat.queue.remove(cible)
+                else:
+                    combat.mobgroup.remove(cible)
+                    combat.ennemis_morts.append(cible)
+                    combat.queue.remove(cible)
 
 
 class LineSpell(Spell):
