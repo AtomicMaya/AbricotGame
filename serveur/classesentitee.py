@@ -351,11 +351,14 @@ class Battle:
         attack_spells = []
         assist_spells = {}
         allies = {ally.map_coords: ally for ally in self.mobgroup}
+        print("\n", self.current, '\'s Attack')
+        print("Allies :", allies)
         for spell in self.current.spells:
             if spell.verif_conditions(self.current, self.target.combat_coords) and \
                             spell.spellType != 'SUPPORT':
                 attack_spells.append(spell)
-            if spell.spellType == 'SUPPORT' and not set(allies.keys()).isdisjoint(range):
+            # attack_coords = spell.liste_case(self.current, self)
+            if spell.spellType == 'SUPPORT' and not set(allies.keys()).isdisjoint(attack_coords):
                 intersects_at = set(allies.keys()).intersection(range)
                 assist_spells[spell] = [[allies[c] for c in intersects_at], range]
         most = 0
