@@ -30,7 +30,7 @@ def connexion(client, ids: int, joueurs: Dict) -> Tuple[int, Dict]:
     map = MAPS.get(joueur.map)
     map.actif = True
     map.joueurs[ids] = joueur
-    client.send((str(ids) + ":" + str(joueur.map_coords[0]) + ":" + str(joueur.map_coords[1])).encode())
+    client.send(str(ids).encode())
     ids += 1
     return ids, joueurs
 
@@ -48,7 +48,7 @@ def carte(id_joueur: str, joueurs: Dict) -> str:
         temp = []
         for players in MAPS.get(joueur.map).joueurs.values():
             temp.append({"name": players.name, "classe": str(players.classe), "position": players.map_coords})
-        return dumps({"map": joueur.map, "mobs": mobgroups, "joueurs": temp})
+        return dumps({"map": joueur.map, "mobs": mobgroups, "joueurs": temp,"position":joueur.map_coords})
 
 
 def commandecarte(message: List, client, ids: int, joueurs: Dict, combats: List) -> Tuple[int, Dict]:
