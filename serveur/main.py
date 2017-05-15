@@ -28,9 +28,9 @@ def lire_message():
                     temp = temp.decode()
                     messages.append((temp, client))
                 except ConnectionResetError:
-                    print("deconnexion")
+                    pass
                 except ConnectionAbortedError:
-                    print("deconnexion")
+                    pass
         yield messages
 
 

@@ -36,8 +36,8 @@ class Entitee:
     par mob"""
 
     def __init__(self, position: Tuple[int, int], max_vie: int, max_mp: int, max_ap: int):
-        self.mapcoords = position
-        self.position_combat = None
+        self.map_coords = position
+        self.combat_coords = None
         self.max_attributs = Caracteristiques(max_vie, max_mp, max_ap)
         self.var_attributs = deepcopy(self.max_attributs)
         self.combat = None
@@ -84,7 +84,7 @@ class Map:
 
     def move(self, entitee: Entitee, direction: Mouvements, combat: List = [], leader=None) -> bool:
         """Cette fonction permet de déplacer une entitée sur la carte"""
-        coord = entitee.mapcoords
+        coord = entitee.map_coords
         coords = [(0, -1), (-1, 0), (0, 1), (1, 0)]
         if direction == Mouvements.HAUT and coord[1] != 0:
             cible = tuple_add(coord, coords[0])
@@ -99,7 +99,7 @@ class Map:
 
         if cible not in self.obstacles:
             if isinstance(entitee, Joueur):
-                entitee.mapcoords = cible
+                entitee.map_coords = cible
                 for i in self.mobsgroups:
                     if i.group_coords == cible:
                         self.mobsgroups.remove(i)
@@ -109,9 +109,9 @@ class Map:
                         return True
             elif isinstance(entitee, Mob):
                 odds = 1 / (
-                    2 ** (sqrt((leader.mapcoords[0] - cible[0]) ** 2 + (leader.mapcoords[1] - cible[1]) ** 2) - 1))
+                    2 ** (sqrt((leader.map_coords[0] - cible[0]) ** 2 + (leader.map_coords[1] - cible[1]) ** 2) - 1))
                 if odds > random():
-                    entitee.mapcoords = cible
+                    entitee.map_coords = cible
             return False
 
 
@@ -147,6 +147,8 @@ class Battle:
 
     def __init__(self, players, mobgroup, map, combat):
         self.mobgroup = mobgroup.mobgroup
+        for mob in self.mobgroup:
+             mob.combat = self
         self.players = players
         self.map = map
         self.queue = self.players + self.mobgroup
@@ -163,9 +165,9 @@ class Battle:
                 cible = choice(map.free)
                 valide = True
                 for j in self.mobgroup:
-                    if cible == j.position_combat:
+                    if cible == j.combat_coords:
                         valide = False
-            i.position_combat = cible
+            i.combat_coords = cible
 
         for i in self.players:
             valide = False
@@ -174,12 +176,12 @@ class Battle:
                 cible = choice(map.free)
                 valide = True
                 for j in self.mobgroup:
-                    if cible == j.position_combat:
+                    if cible == j.combat_coords:
                         valide = False
                 for j in self.players:
-                    if cible == j.position_combat:
+                    if cible == j.combat_coords:
                         valide = False
-            i.position_combat = cible
+            i.combat_coords = cible
         for i in self.players:
             i.combat = self
 
@@ -192,12 +194,10 @@ class Battle:
                 self.path = []
                 self.phase = Phase.targeting
             elif self.phase == Phase.attack:
-                pass
                 self.attack()
                 self.phase = Phase.end
             elif self.phase == Phase.movement:
-                pass
-                self.movement(self.path, int(sum(self.get_ranges()) / 2))
+                self.movement(int(sum(self.get_ranges()) / 2))
                 self.phase = Phase.attack
             elif self.phase == Phase.targeting:
                 self.target, self.path = self.find_target()
@@ -213,7 +213,7 @@ class Battle:
         """Cette fonction permet de déplacer une entitée sur la carte"""
         if entitee.var_attributs.mp > 0:
             entitee.var_attributs.mp -= 1
-            coord = entitee.position_combat
+            coord = entitee.combat_coords
             coords = [(0, -1), (-1, 0), (0, 1), (1, 0)]
             if direction == Mouvements.HAUT and coord[1] != 0:
                 cible = tuple_add(coord, coords[0])
@@ -229,13 +229,13 @@ class Battle:
             if cible not in self.map.obstacles:
                 valide = True
                 for i in self.mobgroup:
-                    if i.position_combat == cible:
+                    if i.combat_coords == cible:
                         valide = False
                 for i in self.players:
-                    if i.position_combat == cible:
+                    if i.combat_coords == cible:
                         valide = False
                 if valide:
-                    entitee.position_combat = cible
+                    entitee.combat_coords = cible
                     return True
         return False
 
@@ -245,7 +245,7 @@ class Battle:
         joueur"""
         movements = []
         for player in self.players:
-            movements += [calculate_movement(self.current.mapcoords, player.mapcoords, self.map.obstacles)[:-1]]
+            movements += [calculate_movement(self.current.map_coords, player.map_coords, self.map.obstacles)]
 
         stats = {}
         i = 0
@@ -269,103 +269,107 @@ class Battle:
             mins += [spell.min_range]
         return min(mins), max(maxs)
 
-    def movement(self, path, dist):
+    def movement(self, dist):
         """ Effectue le déplacement sur la map """
-        # DEBUG
-        self.move(path, dist)
 
-    def spell_range(self, spell):
-        """ En fonction du type de sort, renvoie les cases touchees """
-        if spell.shape == 'SPLASH':
-            return self.splash(self.current.mapcoords, spell.minRange, spell.maxRange)
-        if spell.shape == 'LINE':
-            return self.line(self.current, spell.minRange, spell.maxRange)
+        for i in range(0, min([len(self.path), dist])):
+            self.move(self.current, compare_tuple(self.path[i], self.path[i + 1]))
 
-    def splash(self, center: Tuple[int, int], minRange: int, maxRange: int) -> List[Tuple[int, int]]:
-        """ Si le sort a une zone d'attaque circulaire autour de l'entite """
-        aoe = [(0, maxRange), (maxRange, 0), (0, -maxRange), (-maxRange, 0)]
-        aoe = [tuple_add(a, center) for a in aoe]
-        over = bresenham(aoe[3], aoe[2])[:-1] + bresenham(aoe[2], aoe[1])
-        under = bresenham(aoe[3], aoe[0])[:-1] + bresenham(aoe[0], aoe[1])
-        out = over + under
-        for ind in range(len(over) - 2):
-            x, y = over[ind + 1]
-            dist = under[ind + 1][1] - y
-            for i in range(dist):
-                out.append((x, y + i))
-        out = list(remove_duplicates(out))
-        for c in out:
-            if c[0] < 0 or c[0] > 31 or c[1] < 0 or c[1] > 17:
-                out.remove(c)
-        edge = over + under
-        for e in edge:
-            br = bresenham(center, e)
-            if not set(br).isdisjoint(self.map.fullobs):
-                intersects_at = list(set(br).intersection(self.map.fullobs))
-                closest = distances(center, intersects_at)
-                try:
-                    remove = br[br.index(closest):]
-                    for r in remove:
-                        out.remove(r)
-                except ValueError:
-                    pass
-        if minRange != 0:
-            for c in self.splash(center, 0, minRange):
-                out.remove(c)
-        return out
 
-    def line(self, center: Tuple[int, int], minRange: int, maxRange: int) -> List[Tuple[int, int]]:
-        """ Si le sort a une zone d'attaque lineaire depuis l'entite """
-        aoe = [(0, maxRange), (maxRange, 0), (0, -maxRange), (-maxRange, 0)]
-        aoe = [tuple_add(a, center) for a in aoe]
-        out = []
-        for a in aoe:
-            out += bresenham(center, a)
-        for c in out:
-            if c[0] < 0 or c[0] > 31 or c[1] < 0 or c[1] > 17:
-                out.remove(c)
-        if minRange != 0:
-            for c in line(center, 0, minRange):
-                try:
-                    out.remove(c)
-                except ValueError:
-                    pass
-        for o in aoe:
-            br = bresenham(center, o)
-            if not set(br).isdisjoint(self.map.fullobs):
-                intersects_at = list(set(br).intersection(self.map.fullobs))
-                closest = distances(center, intersects_at)
-                try:
-                    remove = br[br.index(closest):]
-                    for r in remove:
-                        out.remove(r)
-                except ValueError:
-                    pass
-        return out
+    # def spell_range(self, spell):
+    #     """ En fonction du type de sort, renvoie les cases touchees """
+    #     if spell.shape == 'SPLASH':
+    #         return self.splash(self.current.map_coords, spell.minRange, spell.maxRange)
+    #     if isinstance(spell, LineSpell):
+    #         return self.line(self.current, spell.minRange, spell.maxRange)
+    # 
+    # def splash(self, center: Tuple[int, int], minRange: int, maxRange: int) -> List[Tuple[int, int]]:
+    #     """ Si le sort a une zone d'attaque circulaire autour de l'entite """
+    #     aoe = [(0, maxRange), (maxRange, 0), (0, -maxRange), (-maxRange, 0)]
+    #     aoe = [tuple_add(a, center) for a in aoe]
+    #     over = bresenham(aoe[3], aoe[2])[:-1] + bresenham(aoe[2], aoe[1])
+    #     under = bresenham(aoe[3], aoe[0])[:-1] + bresenham(aoe[0], aoe[1])
+    #     out = over + under
+    #     for ind in range(len(over) - 2):
+    #         x, y = over[ind + 1]
+    #         dist = under[ind + 1][1] - y
+    #         for i in range(dist):
+    #             out.append((x, y + i))
+    #     out = list(remove_duplicates(out))
+    #     for c in out:
+    #         if c[0] < 0 or c[0] > 31 or c[1] < 0 or c[1] > 17:
+    #             out.remove(c)
+    #     edge = over + under
+    #     for e in edge:
+    #         br = bresenham(center, e)
+    #         if not set(br).isdisjoint(self.map.fullobs):
+    #             intersects_at = list(set(br).intersection(self.map.fullobs))
+    #             closest = distances(center, intersects_at)
+    #             try:
+    #                 remove = br[br.index(closest):]
+    #                 for r in remove:
+    #                     out.remove(r)
+    #             except ValueError:
+    #                 pass
+    #     if minRange != 0:
+    #         for c in self.splash(center, 0, minRange):
+    #             out.remove(c)
+    #     return out
+    # 
+    # def line(self, center: Tuple[int, int], minRange: int, maxRange: int) -> List[Tuple[int, int]]:
+    #     """ Si le sort a une zone d'attaque lineaire depuis l'entite """
+    #     aoe = [(0, maxRange), (maxRange, 0), (0, -maxRange), (-maxRange, 0)]
+    #     aoe = [tuple_add(a, center) for a in aoe]
+    #     out = []
+    #     for a in aoe:
+    #         out += bresenham(center, a)
+    #     for c in out:
+    #         if c[0] < 0 or c[0] > 31 or c[1] < 0 or c[1] > 17:
+    #             out.remove(c)
+    #     if minRange != 0:
+    #         for c in line(center, 0, minRange):
+    #             try:
+    #                 out.remove(c)
+    #             except ValueError:
+    #                 pass
+    #     for o in aoe:
+    #         br = bresenham(center, o)
+    #         if not set(br).isdisjoint(self.map.fullobs):
+    #             intersects_at = list(set(br).intersection(self.map.fullobs))
+    #             closest = distances(center, intersects_at)
+    #             try:
+    #                 remove = br[br.index(closest):]
+    #                 for r in remove:
+    #                     out.remove(r)
+    #             except ValueError:
+    #                 pass
+    #     return out
 
     def attack(self):
         """ Choisit soit d'attquer soit d'aider ses allies et effectue cette action """
         attack_spells = []
         assist_spells = {}
-        allies = {ally.mapcoords: ally for ally in self.mobgroup}
+        allies = {ally.map_coords: ally for ally in self.mobgroup}
         for spell in self.current.spells:
-            range = self.spell_range(spell)
-            if self.target.mapcoords in range and spell.spellType != 'SUPPORT':
+            if spell.verif_conditions(self.current, self.target.combat_coords) and\
+                            spell.spellType != 'SUPPORT':
                 attack_spells.append(spell)
             if spell.spellType == 'SUPPORT' and not set(allies.keys()).isdisjoint(range):
                 intersects_at = set(allies.keys()).intersection(range)
                 assist_spells[spell] = [[allies[c] for c in intersects_at], range]
         most = 0
-        ass_spell = 0
+        assist_spell = 0
         for spell, r in assist_spells.items():
             if len(r[0]) > most:
                 most = len(r[0])
-                ass_spell = spell
+                assist_spell = spell
+
         odds = most / len(self.mobgroup)
-        assist_spells = assist_spells[ass_spell]
-        odds *= sum([mob.var_attributs.hp / mob.max_attributs.hp for mob in assist_spells[0]]) / len(assist_spells[0])
-        if odds > random():
-            self.apply_effect(ass_spell.effects, choice(assist_spells[0]))
+        if assist_spell in assist_spells.keys():
+            assist_spells = assist_spells[assist_spell]
+            odds *= sum([mob.var_attributs.hp / mob.max_attributs.hp for mob in assist_spells[0]]) / len(assist_spells[0])
+            if odds > random():
+                self.apply_effect(assist_spell.effects, choice(assist_spells[0]))
         elif len(attack_spells) > 0:
             available_mana = self.current.var_attributs.ap
             while True:
@@ -419,7 +423,7 @@ class Maps:
     """Cette classe contient la liste de toute les cartes du jeu"""
 
     def __init__(self):
-        json_file = open("maps.json")
+        json_file = c_open("maps.json", encoding='utf-8')
         file_maps = load(json_file)
         json_file.close()
         self.maps = {}
@@ -459,7 +463,7 @@ class Spell:
         self.reload = int(reload)
         self.effects = effects
 
-    def valide(self, joueur, cible):
+    def verif_conditions(self, joueur, cible):
         """Cette fonction détermine si le sort est valide"""
         return False
 
@@ -472,18 +476,47 @@ class LineSpell(Spell):
         self.max_range = forme["MAXRANGE"]
         self.min_range = forme["MINRANGE"]
 
-    def valide(self, entitee, cible):
+    def verif_conditions(self, entitee, cible):
         """Cette fonction détermine si le sort est valide"""
         if entitee.var_attributs.ap > self.cost:
-            if entitee.position_combat[0] == cible[0]:
-                if not (self.longeur_max >= abs(entitee.position_combat[1] - cible[1]) >= self.longeur_min):
+            if entitee.combat_coords[0] == cible[0]:
+                if not (self.max_range >= abs(entitee.combat_coords[1] - cible[1]) >= self.min_range):
                     return False
-            elif entitee.position_combat[1] == cible[1]:
-                if not (self.longeur_max >= abs(entitee.position_combat[0] - cible[0]) >= self.longeur_min):
+            elif entitee.combat_coords[1] == cible[1]:
+                if not (self.max_range >= abs(entitee.combat_coords[0] - cible[0]) >= self.min_range):
                     return False
             else:
                 return False
-            cases_traversee = bresenham(entitee.position_combat, cible)
+            cases_traversee = bresenham(entitee.combat_coords, cible)
+            for i in cases_traversee:
+                if i in entitee.combat.map.fullobs:
+                    return False
+            entitee.var_attributs.ap -= self.cost
+            return True
+        return False
+
+
+class SplashSpell(Spell):
+    # Agit comme LineSpell -> FloError
+    """Cette classe représente un sort lancé en ligne droite"""
+
+    def __init__(self, name: str, cost: int, spell_type: str, reload: int, effects: Dict, forme: Dict):
+        super().__init__(name, cost, spell_type, reload, effects)
+        self.max_range = forme["MAXRANGE"]
+        self.min_range = forme["MINRANGE"]
+
+    def verif_conditions(self, entitee, cible):
+        """Cette fonction détermine si le sort est valide"""
+        if entitee.var_attributs.ap > self.cost:
+            if entitee.combat_coords[0] == cible[0]:
+                if not (self.max_range >= abs(entitee.combat_coords[1] - cible[1]) >= self.min_range):
+                    return False
+            elif entitee.combat_coords[1] == cible[1]:
+                if not (self.max_range >= abs(entitee.combat_coords[0] - cible[0]) >= self.min_range):
+                    return False
+            else:
+                return False
+            cases_traversee = bresenham(entitee.combat_coords, cible)
             for i in cases_traversee:
                 if i in entitee.combat.map.fullobs:
                     return False
@@ -581,6 +614,18 @@ class Joueur(Entitee):
         self.id = id
         self.classe = CLASSES.get("001")
 
+def compare_tuple(depart: Tuple[int, int], arrivee: Tuple[int, int]):
+    """Cette fonction permet de voir dans quelle direction il faut aller pour passer d'un tuple a l'autre"""
+    if depart[0] - arrivee[0] == 1:
+        return Mouvements.GAUCHE
+    elif depart[0] - arrivee[0] == -1:
+        return Mouvements.DROITE
+    elif depart[1] - arrivee[1] == 1:
+        return Mouvements.HAUT
+    elif depart[1] - arrivee[1] == -1:
+        return Mouvements.BAS
+    else:
+        raise ValueError("Les deux tuples ne sont pas adjacents")
 
 SPELLS = Spells()
 MAPS = Maps()
