@@ -245,8 +245,7 @@ class Battle:
         joueur"""
         movements = {}
         for player in self.players:
-            movements[player] = calculate_movement(self.current.map_coords, player.map_coords, self.map.obstacles)
-
+            movements[player] = calculate_movement(self.current.combat_coords, player.combat_coords, self.map.obstacles)
         stats = {}
         for player in self.players:
             stats[player] = 1
@@ -257,8 +256,6 @@ class Battle:
                 else 2 if 0.5 <= player.var_attributs.hp / player.max_attributs.hp < 0.75 else 1
         player = list(stats.keys())[list(stats.values()).index(max(stats.values()))]
         path = movements[player]
-        print("Mob", self.current.name, 'targets Player')
-        print("PATH:", path)
         return player, path
 
     def get_ranges(self):
@@ -272,9 +269,12 @@ class Battle:
     def movement(self, dist):
         """ Effectue le déplacement sur la map """
 
-        for i in range(0, min([len(self.path), dist])):
-            self.move(self.current, compare_tuple(self.path[i], self.path[i + 1]))
-
+        if len(self.path) > self.current.max_attributs.mp:
+            for i in range(0, self.current.max_attributs.mp):
+                self.move(self.current, compare_tuple(self.path[i], self.path[i + 1]))
+        else:
+            for i in range(0, len(self.path) - 1):
+                    self.move(self.current, compare_tuple(self.path[i], self.path[i + 1]))
 
     # def spell_range(self, spell):
     #     """ En fonction du type de sort, renvoie les cases touchees """
@@ -369,13 +369,16 @@ class Battle:
             assist_spells = assist_spells[assist_spell]
             odds *= sum([mob.var_attributs.hp / mob.max_attributs.hp for mob in assist_spells[0]]) / len(assist_spells[0])
             if odds > random():
-                self.apply_effect(assist_spell.effects, choice(assist_spells[0]))
+                this_spell = choice(assist_spells[0])
+                self.apply_effect(assist_spell.effects, this_spell)
+                print("Sort lancé :", this_spell)
         elif len(attack_spells) > 0:
             available_mana = self.current.var_attributs.ap
             while True:
                 spell = choice(attack_spells)
                 available_mana -= spell.cost
                 if available_mana >= 0:
+                    print("Sort lancé :", spell)
                     self.apply_effect(spell.effects, self.target)
                 else:
                     break
