@@ -8,7 +8,6 @@
     <list default="true" id="114abdb7-0668-4678-ad4f-62735e3ecc53" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/serveur/classesentitee.py" afterPath="$PROJECT_DIR$/serveur/classesentitee.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/serveur/commandes.py" afterPath="$PROJECT_DIR$/serveur/commandes.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/serveur/main.py" afterPath="$PROJECT_DIR$/serveur/main.py" />
     </list>
     <ignored path="AbricotGame.iws" />
@@ -30,8 +29,8 @@
     <SUITE FILE_PATH="coverage/AbricotGame$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1494844753110" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client final" />
     <SUITE FILE_PATH="coverage/AbricotGame$pathfinding.coverage" NAME="pathfinding Coverage Results" MODIFIED="1494791950287" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/serveurfinal" />
     <SUITE FILE_PATH="coverage/AbricotGame$c_r.coverage" NAME="c_r Coverage Results" MODIFIED="1494755468766" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../../AbricotGame" />
-    <SUITE FILE_PATH="coverage/AbricotGame$main__2_.coverage" NAME="Server Coverage Results" MODIFIED="1494855022658" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/serveur" />
-    <SUITE FILE_PATH="coverage/AbricotGame$main__3_.coverage" NAME="Client Coverage Results" MODIFIED="1494855028286" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
+    <SUITE FILE_PATH="coverage/AbricotGame$main__2_.coverage" NAME="Server Coverage Results" MODIFIED="1494856306889" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/serveur" />
+    <SUITE FILE_PATH="coverage/AbricotGame$main__3_.coverage" NAME="Client Coverage Results" MODIFIED="1494856355007" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/client" />
     <SUITE FILE_PATH="coverage/AbricotGame$classesentitee.coverage" NAME="classesentitee Coverage Results" MODIFIED="1494852903933" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/serveur" />
   </component>
   <component name="CreatePatchCommitExecutor">
@@ -43,14 +42,13 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="classesentitee.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="classesentitee.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/serveur/classesentitee.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6536503">
-              <caret line="616" column="4" selection-start-line="616" selection-start-column="4" selection-end-line="616" selection-end-column="4" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="254" column="79" selection-start-line="254" selection-start-column="79" selection-end-line="254" selection-end-column="79" />
               <folding>
                 <element signature="e#490#667#0" expanded="false" />
-                <element signature="e#693#826#0" expanded="false" />
                 <element signature="e#848#1293#0" expanded="false" />
                 <element signature="e#1077#1293#0" expanded="false" />
                 <element signature="e#1311#4293#0" expanded="false" />
@@ -59,51 +57,63 @@
                 <element signature="e#2868#4293#0" expanded="false" />
                 <element signature="e#4316#5298#0" expanded="false" />
                 <element signature="e#4408#4932#0" expanded="false" />
-                <element signature="e#4972#5298#0" expanded="false" />
-                <element signature="e#5437#6711#0" expanded="false" />
-                <element signature="e#6743#7446#0" expanded="false" />
                 <element signature="e#7480#7742#0" expanded="false" />
-                <element signature="e#9143#10155#0" expanded="false" />
-                <element signature="e#10191#10436#0" expanded="false" />
-                <element signature="e#13796#15409#0" expanded="false" />
-                <element signature="e#15480#15817#0" expanded="false" />
-                <element signature="e#15839#16342#0" expanded="false" />
-                <element signature="e#15935#16342#0" expanded="false" />
-                <element signature="e#16369#17013#0" expanded="false" />
-                <element signature="e#16493#17013#0" expanded="false" />
-                <element signature="e#17032#17534#0" expanded="false" />
-                <element signature="e#17129#17381#0" expanded="false" />
-                <element signature="e#17430#17534#0" expanded="false" />
-                <element signature="e#17553#18081#0" expanded="false" />
-                <element signature="e#17635#17891#0" expanded="false" />
-                <element signature="e#17979#18081#0" expanded="false" />
-                <element signature="e#18101#18533#0" expanded="false" />
-                <element signature="e#18261#18403#0" expanded="false" />
-                <element signature="e#18460#18533#0" expanded="false" />
-                <element signature="e#18564#19754#0" expanded="false" />
-                <element signature="e#18737#18880#0" expanded="false" />
-                <element signature="e#18938#19754#0" expanded="false" />
-                <element signature="e#19787#21016#0" expanded="false" />
-                <element signature="e#19999#20142#0" expanded="false" />
-                <element signature="e#20200#21016#0" expanded="false" />
-                <element signature="e#21037#21951#0" expanded="false" />
-                <element signature="e#21132#21713#0" expanded="false" />
-                <element signature="e#21757#21951#0" expanded="false" />
-                <element signature="e#21757#21914#1" expanded="false" />
-                <element signature="e#21972#22453#0" expanded="false" />
-                <element signature="e#22191#22406#0" expanded="false" />
-                <element signature="e#22439#22453#0" expanded="false" />
-                <element signature="e#22475#23280#0" expanded="false" />
-                <element signature="e#22570#23141#0" expanded="false" />
-                <element signature="e#23186#23280#0" expanded="false" />
-                <element signature="e#23311#23806#0" expanded="false" />
-                <element signature="e#23455#23509#0" expanded="false" />
-                <element signature="e#23549#23632#0" expanded="false" />
-                <element signature="e#23672#23746#0" expanded="false" />
-                <element signature="e#23787#23806#0" expanded="false" />
-                <element signature="e#23836#24132#0" expanded="false" />
-                <element signature="e#23934#24132#0" expanded="false" />
+                <element signature="e#7813#9073#0" expanded="false" />
+                <element signature="e#10271#10516#0" expanded="false" />
+                <element signature="e#13876#15489#0" expanded="false" />
+                <element signature="e#15560#15897#0" expanded="false" />
+                <element signature="e#15919#16422#0" expanded="false" />
+                <element signature="e#16015#16422#0" expanded="false" />
+                <element signature="e#16449#17093#0" expanded="false" />
+                <element signature="e#17112#17614#0" expanded="false" />
+                <element signature="e#17209#17461#0" expanded="false" />
+                <element signature="e#17510#17614#0" expanded="false" />
+                <element signature="e#17633#18161#0" expanded="false" />
+                <element signature="e#18059#18161#0" expanded="false" />
+                <element signature="e#18181#18613#0" expanded="false" />
+                <element signature="e#18341#18483#0" expanded="false" />
+                <element signature="e#18540#18613#0" expanded="false" />
+                <element signature="e#19867#21096#0" expanded="false" />
+                <element signature="e#20079#20222#0" expanded="false" />
+                <element signature="e#20280#21096#0" expanded="false" />
+                <element signature="e#21117#22031#0" expanded="false" />
+                <element signature="e#21212#21793#0" expanded="false" />
+                <element signature="e#21837#22031#0" expanded="false" />
+                <element signature="e#21837#21994#1" expanded="false" />
+                <element signature="e#22052#22533#0" expanded="false" />
+                <element signature="e#22271#22486#0" expanded="false" />
+                <element signature="e#22519#22533#0" expanded="false" />
+                <element signature="e#22555#23360#0" expanded="false" />
+                <element signature="e#22650#23221#0" expanded="false" />
+                <element signature="e#23266#23360#0" expanded="false" />
+                <element signature="e#23391#23886#0" expanded="false" />
+                <element signature="e#23535#23589#0" expanded="false" />
+                <element signature="e#23629#23712#0" expanded="false" />
+                <element signature="e#23752#23826#0" expanded="false" />
+                <element signature="e#23867#23886#0" expanded="false" />
+                <element signature="e#23916#24212#0" expanded="false" />
+                <element signature="e#24014#24212#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CLASSES.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/serveur/CLASSES.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-14.384615">
+              <caret line="22" column="24" selection-start-line="22" selection-start-column="24" selection-end-line="22" selection-end-column="24" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MOBS.json" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/serveur/MOBS.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.8717949">
+              <caret line="35" column="20" selection-start-line="35" selection-start-column="20" selection-end-line="35" selection-end-column="20" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -141,8 +151,8 @@
       <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/serveur/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="38" column="30" selection-start-line="38" selection-start-column="30" selection-end-line="38" selection-end-column="30" />
+            <state vertical-scroll-proportion="-16.137932">
+              <caret line="66" column="0" selection-start-line="66" selection-start-column="0" selection-end-line="66" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -152,7 +162,7 @@
         <entry file="file://$PROJECT_DIR$/client/main.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="170" column="0" selection-start-line="170" selection-start-column="0" selection-end-line="181" selection-end-column="65" />
+              <caret line="128" column="0" selection-start-line="128" selection-start-column="0" selection-end-line="128" selection-end-column="0" />
               <folding>
                 <element signature="e#307#488#0" expanded="false" />
                 <element signature="e#506#923#0" expanded="false" />
@@ -160,10 +170,8 @@
                 <element signature="e#942#1454#0" expanded="false" />
                 <element signature="e#1039#1289#0" expanded="false" />
                 <element signature="e#1350#1454#0" expanded="false" />
-                <element signature="e#1503#7463#0" expanded="false" />
                 <element signature="e#1629#2495#0" expanded="false" />
                 <element signature="e#2545#3112#0" expanded="false" />
-                <element signature="e#3160#7463#0" expanded="false" />
                 <element signature="e#7540#7959#0" expanded="false" />
                 <element signature="e#8118#8692#0" expanded="false" />
                 <element signature="e#8763#9526#0" expanded="false" />
@@ -202,7 +210,9 @@
         <option value="$PROJECT_DIR$/serveur/pathfinding.py" />
         <option value="$PROJECT_DIR$/serveur/commandes.py" />
         <option value="$PROJECT_DIR$/serveur/classesentitee.py" />
+        <option value="$PROJECT_DIR$/serveur/CLASSES.json" />
         <option value="$PROJECT_DIR$/serveur/main.py" />
+        <option value="$PROJECT_DIR$/serveur/MOBS.json" />
       </list>
     </option>
   </component>
@@ -305,6 +315,46 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="client" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="AbricotGame" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="AbricotGame" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="client" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="assets" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="json" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="AbricotGame" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="AbricotGame" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="client" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="assets" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -647,14 +697,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3995943" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.07200811" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31643003" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31237322" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.0796875" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -878,14 +928,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/serveur/pathfinding.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="14" column="7" selection-start-line="14" selection-start-column="7" selection-end-line="14" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/serveur/commandes.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-3.7017543">
@@ -894,10 +936,72 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/serveur/SPELLS.json">
+    <entry file="file://$PROJECT_DIR$/serveur/CLASSES.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-22.384615">
-          <caret line="60" column="0" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
+        <state vertical-scroll-proportion="-14.384615">
+          <caret line="22" column="24" selection-start-line="22" selection-start-column="24" selection-end-line="22" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/serveur/classesentitee.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="254" column="79" selection-start-line="254" selection-start-column="79" selection-end-line="254" selection-end-column="79" />
+          <folding>
+            <element signature="e#490#667#0" expanded="false" />
+            <element signature="e#848#1293#0" expanded="false" />
+            <element signature="e#1077#1293#0" expanded="false" />
+            <element signature="e#1311#4293#0" expanded="false" />
+            <element signature="e#1403#2133#0" expanded="false" />
+            <element signature="e#2165#2757#0" expanded="false" />
+            <element signature="e#2868#4293#0" expanded="false" />
+            <element signature="e#4316#5298#0" expanded="false" />
+            <element signature="e#4408#4932#0" expanded="false" />
+            <element signature="e#7480#7742#0" expanded="false" />
+            <element signature="e#7813#9073#0" expanded="false" />
+            <element signature="e#10271#10516#0" expanded="false" />
+            <element signature="e#13876#15489#0" expanded="false" />
+            <element signature="e#15560#15897#0" expanded="false" />
+            <element signature="e#15919#16422#0" expanded="false" />
+            <element signature="e#16015#16422#0" expanded="false" />
+            <element signature="e#16449#17093#0" expanded="false" />
+            <element signature="e#17112#17614#0" expanded="false" />
+            <element signature="e#17209#17461#0" expanded="false" />
+            <element signature="e#17510#17614#0" expanded="false" />
+            <element signature="e#17633#18161#0" expanded="false" />
+            <element signature="e#18059#18161#0" expanded="false" />
+            <element signature="e#18181#18613#0" expanded="false" />
+            <element signature="e#18341#18483#0" expanded="false" />
+            <element signature="e#18540#18613#0" expanded="false" />
+            <element signature="e#19867#21096#0" expanded="false" />
+            <element signature="e#20079#20222#0" expanded="false" />
+            <element signature="e#20280#21096#0" expanded="false" />
+            <element signature="e#21117#22031#0" expanded="false" />
+            <element signature="e#21212#21793#0" expanded="false" />
+            <element signature="e#21837#22031#0" expanded="false" />
+            <element signature="e#21837#21994#1" expanded="false" />
+            <element signature="e#22052#22533#0" expanded="false" />
+            <element signature="e#22271#22486#0" expanded="false" />
+            <element signature="e#22519#22533#0" expanded="false" />
+            <element signature="e#22555#23360#0" expanded="false" />
+            <element signature="e#22650#23221#0" expanded="false" />
+            <element signature="e#23266#23360#0" expanded="false" />
+            <element signature="e#23391#23886#0" expanded="false" />
+            <element signature="e#23535#23589#0" expanded="false" />
+            <element signature="e#23629#23712#0" expanded="false" />
+            <element signature="e#23752#23826#0" expanded="false" />
+            <element signature="e#23867#23886#0" expanded="false" />
+            <element signature="e#23916#24212#0" expanded="false" />
+            <element signature="e#24014#24212#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/serveur/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-16.137932">
+          <caret line="66" column="0" selection-start-line="66" selection-start-column="0" selection-end-line="66" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -905,7 +1009,7 @@
     <entry file="file://$PROJECT_DIR$/client/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="170" column="0" selection-start-line="170" selection-start-column="0" selection-end-line="181" selection-end-column="65" />
+          <caret line="128" column="0" selection-start-line="128" selection-start-column="0" selection-end-line="128" selection-end-column="0" />
           <folding>
             <element signature="e#307#488#0" expanded="false" />
             <element signature="e#506#923#0" expanded="false" />
@@ -913,10 +1017,8 @@
             <element signature="e#942#1454#0" expanded="false" />
             <element signature="e#1039#1289#0" expanded="false" />
             <element signature="e#1350#1454#0" expanded="false" />
-            <element signature="e#1503#7463#0" expanded="false" />
             <element signature="e#1629#2495#0" expanded="false" />
             <element signature="e#2545#3112#0" expanded="false" />
-            <element signature="e#3160#7463#0" expanded="false" />
             <element signature="e#7540#7959#0" expanded="false" />
             <element signature="e#8118#8692#0" expanded="false" />
             <element signature="e#8763#9526#0" expanded="false" />
@@ -936,74 +1038,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/serveur/main.py">
+    <entry file="file://$PROJECT_DIR$/serveur/SPELLS.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="38" column="30" selection-start-line="38" selection-start-column="30" selection-end-line="38" selection-end-column="30" />
+        <state vertical-scroll-proportion="-22.384615">
+          <caret line="60" column="0" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/serveur/classesentitee.py">
+    <entry file="file://$PROJECT_DIR$/serveur/pathfinding.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6536503">
-          <caret line="616" column="4" selection-start-line="616" selection-start-column="4" selection-end-line="616" selection-end-column="4" />
-          <folding>
-            <element signature="e#490#667#0" expanded="false" />
-            <element signature="e#693#826#0" expanded="false" />
-            <element signature="e#848#1293#0" expanded="false" />
-            <element signature="e#1077#1293#0" expanded="false" />
-            <element signature="e#1311#4293#0" expanded="false" />
-            <element signature="e#1403#2133#0" expanded="false" />
-            <element signature="e#2165#2757#0" expanded="false" />
-            <element signature="e#2868#4293#0" expanded="false" />
-            <element signature="e#4316#5298#0" expanded="false" />
-            <element signature="e#4408#4932#0" expanded="false" />
-            <element signature="e#4972#5298#0" expanded="false" />
-            <element signature="e#5437#6711#0" expanded="false" />
-            <element signature="e#6743#7446#0" expanded="false" />
-            <element signature="e#7480#7742#0" expanded="false" />
-            <element signature="e#9143#10155#0" expanded="false" />
-            <element signature="e#10191#10436#0" expanded="false" />
-            <element signature="e#13796#15409#0" expanded="false" />
-            <element signature="e#15480#15817#0" expanded="false" />
-            <element signature="e#15839#16342#0" expanded="false" />
-            <element signature="e#15935#16342#0" expanded="false" />
-            <element signature="e#16369#17013#0" expanded="false" />
-            <element signature="e#16493#17013#0" expanded="false" />
-            <element signature="e#17032#17534#0" expanded="false" />
-            <element signature="e#17129#17381#0" expanded="false" />
-            <element signature="e#17430#17534#0" expanded="false" />
-            <element signature="e#17553#18081#0" expanded="false" />
-            <element signature="e#17635#17891#0" expanded="false" />
-            <element signature="e#17979#18081#0" expanded="false" />
-            <element signature="e#18101#18533#0" expanded="false" />
-            <element signature="e#18261#18403#0" expanded="false" />
-            <element signature="e#18460#18533#0" expanded="false" />
-            <element signature="e#18564#19754#0" expanded="false" />
-            <element signature="e#18737#18880#0" expanded="false" />
-            <element signature="e#18938#19754#0" expanded="false" />
-            <element signature="e#19787#21016#0" expanded="false" />
-            <element signature="e#19999#20142#0" expanded="false" />
-            <element signature="e#20200#21016#0" expanded="false" />
-            <element signature="e#21037#21951#0" expanded="false" />
-            <element signature="e#21132#21713#0" expanded="false" />
-            <element signature="e#21757#21951#0" expanded="false" />
-            <element signature="e#21757#21914#1" expanded="false" />
-            <element signature="e#21972#22453#0" expanded="false" />
-            <element signature="e#22191#22406#0" expanded="false" />
-            <element signature="e#22439#22453#0" expanded="false" />
-            <element signature="e#22475#23280#0" expanded="false" />
-            <element signature="e#22570#23141#0" expanded="false" />
-            <element signature="e#23186#23280#0" expanded="false" />
-            <element signature="e#23311#23806#0" expanded="false" />
-            <element signature="e#23455#23509#0" expanded="false" />
-            <element signature="e#23549#23632#0" expanded="false" />
-            <element signature="e#23672#23746#0" expanded="false" />
-            <element signature="e#23787#23806#0" expanded="false" />
-            <element signature="e#23836#24132#0" expanded="false" />
-            <element signature="e#23934#24132#0" expanded="false" />
-          </folding>
+        <state vertical-scroll-proportion="0.0">
+          <caret line="14" column="7" selection-start-line="14" selection-start-column="7" selection-end-line="14" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/serveur/MOBS.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.8717949">
+          <caret line="35" column="20" selection-start-line="35" selection-start-column="20" selection-end-line="35" selection-end-column="20" />
+          <folding />
         </state>
       </provider>
     </entry>

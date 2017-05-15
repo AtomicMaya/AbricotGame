@@ -243,22 +243,22 @@ class Battle:
     def find_target(self):
         """Permet a un mob de choisir sa cible en fonction de parametres comme la vie, la distance et le niveau du
         joueur"""
-        movements = []
+        movements = {}
         for player in self.players:
-            movements += [calculate_movement(self.current.map_coords, player.map_coords, self.map.obstacles)]
+            movements[player] = calculate_movement(self.current.map_coords, player.map_coords, self.map.obstacles)
 
         stats = {}
-        i = 0
         for player in self.players:
             stats[player] = 1
-            stats[player] *= 2 if movements[i] == max(movements) else 1
+            stats[player] *= 2 if len(movements[player]) == min([len(mov) for mov in movements.values()]) else 1
             stats[player] *= 2 if self.current.level > player.level else 1
             stats[player] *= 4 if 0 <= player.var_attributs.hp / player.max_attributs.hp < 0.25 else 3 \
                 if 0.25 <= player.var_attributs.hp / player.max_attributs.hp < 0.5 \
                 else 2 if 0.5 <= player.var_attributs.hp / player.max_attributs.hp < 0.75 else 1
-            i += 1
         player = list(stats.keys())[list(stats.values()).index(max(stats.values()))]
-        path = movements[self.players.index(player)]
+        path = movements[player]
+        print("Mob", self.current.name, 'targets Player')
+        print("PATH:", path)
         return player, path
 
     def get_ranges(self):
