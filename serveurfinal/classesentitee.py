@@ -193,16 +193,15 @@ class Battle:
                 self.phase = Phase.targeting
             elif self.phase == Phase.attack:
                 pass
-                # self.attack()
-                # self.phase = Phase.end
+                self.attack()
+                self.phase = Phase.end
             elif self.phase == Phase.movement:
                 pass
-                # self.movement(self.path, int(sum(self.get_ranges()) / 2))
-                # self.phase = Phase.attack
+                self.movement(self.path, int(sum(self.get_ranges()) / 2))
+                self.phase = Phase.attack
             elif self.phase == Phase.targeting:
-                self.phase = Phase.end
-                # self.target, self.path = self.find_target()
-                # self.phase = Phase.movement
+                self.target, self.path = self.find_target()
+                self.phase = Phase.movement
 
     def end_turn(self):
         """Indique le prochain joueur"""

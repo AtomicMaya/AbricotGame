@@ -7,9 +7,6 @@
 	},
 	"COST" : 0,
 	"EFFECTS" : null,
-	"AOE" : false,
-	"AOERANGE" : null,
-	"AOESHAPE" : null,
 	"RELOAD" : 0
 	},
 "000" : {
