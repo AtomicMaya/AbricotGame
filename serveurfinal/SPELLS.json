@@ -2,53 +2,62 @@
 "_template" : {
 	"NAME" : "",
 	"TYPE" : "",
-	"SHAPE" : "",
+	"SHAPE" : {
+
+	},
 	"COST" : 0,
-	"ATTACKMAXRANGE" : 1,
-	"ATTACKMINRANGE" : 1,
 	"EFFECTS" : null,
 	"AOE" : false,
 	"AOERANGE" : null,
 	"AOESHAPE" : null,
 	"RELOAD" : 0
 	},
-"001" : {
-	"NAME" : "Crachat",
-	"TYPE" : "RANGED",
-	"SHAPE" : "LINE",
-	"COST" : 25,
-	"ATTACKMAXRANGE" : 6,
-	"ATTACKMINRANGE" : 1,
-	"EFFECTS" : {"HP" : -30},
-	"AOE" : false,
-	"AOERANGE" : null,
-	"AOESHAPE" : null,
-	"RELOAD" : 0
+"000" : {
+	"NAME" : "Taper_fort",
+	"TYPE" : "PHYSICAL",
+	"SHAPE" : {
+		"SHAPE":"LINE",
+		"MAXRANGE":1,
+		"MINRANGE":1
 	},
-"002" : {
-	"NAME": "Morsure",
+	"COST" : 75,
+	"EFFECTS" : {"HP" : -40},
+	"RELOAD" : 1
+	},
+"001" : {
+	"NAME": "Coup",
 	"TYPE": "PHYSICAL",
-	"SHAPE": "SPLASH",
+	"SHAPE" : {
+		"SHAPE":"LINE",
+		"MAXRANGE":1,
+		"MINRANGE":1
+	},
 	"COST": 50,
-	"ATTACKMAXRANGE": 1,
-	"ATTACKMINRANGE": 1,
-	"EFFECTS": {"HP" : -40},
-	"AOE": false,
-	"AOERANGE": null,
-	"AOESHAPE": null,
+	"EFFECTS": {"HP" : -10},
 	"RELOAD": 0
 	},
-"003" : {
-	"NAME" : "Charge",
+"002" : {
+	"NAME" : "Coup_puissant",
 	"TYPE" : "PHYSICAL",
-	"SHAPE" : "SPLASH",
+	"SHAPE" : {
+		"SHAPE":"LINE",
+		"MAXRANGE":1,
+		"MINRANGE":1
+	},
+	"COST" : 75,
+	"EFFECTS": {"HP" : -20},
+	"RELOAD" : 0
+	},
+"003" : {
+	"NAME" : "Taper",
+	"TYPE" : "PHYSICAL",
+	"SHAPE" : {
+		"SHAPE":"LINE",
+		"MAXRANGE":1,
+		"MINRANGE":1
+	},
 	"COST" : 50,
-	"ATTACKMAXRANGE" : 1,
-	"ATTACKMINRANGE" : 1,
-	"EFFECTS": {"HP" : -50},
-	"AOE" : false,
-	"AOERANGE" : null,
-	"AOESHAPE" : null,
+	"EFFECTS": {"HP" : -20},
 	"RELOAD" : 1
 	}
 }

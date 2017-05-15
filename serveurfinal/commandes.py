@@ -47,7 +47,7 @@ def carte(id_joueur: str, joueurs: Dict) -> str:
             mobgroups.append(temp)
         temp = []
         for players in MAPS.get(joueur.map).joueurs.values():
-            temp.append({"name": players.name, "classe": players.classe, "position": players.mapcoords})
+            temp.append({"name": players.name, "classe": str(players.classe), "position": players.mapcoords})
         return dumps({"map": joueur.map, "mobs": mobgroups, "joueurs": temp})
 
 
@@ -76,12 +76,12 @@ def entitee_combat(id: int, joueurs: Dict) -> str:
         mobs.append((mob.name, mob.position_combat))
     temp = []
     for players in joueur.combat.players:
-        temp.append({"name": players.name, "classe": players.classe, "position": players.position_combat})
+        temp.append({"name": players.name, "classe": str(players.classe), "position": players.position_combat})
     actif = False
     if joueur == joueur.combat.current:
         actif = True
     return dumps({"mobs": mobs, "joueurs": temp, "actif": actif, "position": joueur.position_combat,
-                  "vie": joueur.var_attributs.hp})
+                  "vie": joueur.var_attributs.hp, "action": joueur.var_attributs.ap})
 
 
 def mouvement_combat(idjoueur: str, direction: str, joueurs: Dict):
@@ -102,12 +102,24 @@ def mouvement_combat(idjoueur: str, direction: str, joueurs: Dict):
             return joueur.combat.move(joueur, directionmouv)
 
 
+def lancer_sort(joueur: str, sort: str, cible: Tuple[int, int], joueurs: Dict):
+    """Cette fonction permet aux joueurs de lancer des sorts"""
+    if int(joueur) in joueurs.keys():
+        joueur = joueurs[int(joueur)]
+        sort = SPELLS.get(joueur.classe.spells[sort])
+        if sort.valide(joueur, cible):
+            return True
+    return False
+
+
 def commandecombat(message: List, client, joueurs: Dict):
     """Cette fonction efffectue toute les commandes liée au combat (attaque,déplacement,...)"""
     if message[0] == "carte" and len(message) == 2:
         client.send(entitee_combat(int(message[1]), joueurs).encode())
     elif message[0] == "move" and len(message) == 3:
         client.send(str(mouvement_combat(message[1], message[2], joueurs)).encode())
+    elif message[0] == "sort" and len(message) == 5:
+        client.send(str(lancer_sort(message[1], message[2], (int(message[3]), int(message[4])), joueurs)).encode())
     elif message[0] == "endturn" and len(message) == 2:
         if int(message[1]) in joueurs.keys():
             joueurs[int(message[1])].combat.end_turn()

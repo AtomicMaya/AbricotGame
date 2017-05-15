@@ -55,7 +55,6 @@ def linearize(path: List, obstacles: List[Tuple]) ->List:
 def bresenham(player: Tuple, end: Tuple)->List:
     """ Algorithme de Bresenham
     Prend en entree deux tuples de coordonnees et indique les cases traversees par une ligne passant de l'une à l'autre
-
     :param player:
     :param end:
     """
