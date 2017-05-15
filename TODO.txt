@@ -1,11 +1,3 @@
-Pour l'IA :
-
-MAP :
-	- Toutes les cases accessibles par un joueur / mob / npc doivent avoir un attribut 'Walkable' ou 'Marchable'
-	
-MOTEUR :
-	- Chaque instance d'acteur (Joueur, Mob ou NPC) doit avoir un up(), down(), left() et right() fonctionnel !!!
-	
 Pour l'uplauncher : 
 Client  :
 	-Actualise la version après le téléchargement. Supprime temp.
