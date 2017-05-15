@@ -192,15 +192,13 @@ class Playercontroller:
 
     def __init__(self, fenetre: RendererController):
         temp = demande("carte:connect")
-        temp = temp.split(":")
-        self.id = int(temp[0])
-        self.position = (int(temp[1]), int(temp[2]))
-        self.carte_id = (0, 0)
+        self.id = int(temp)
+        self.position = (-1, -1)
         self.carte_mobs = []
         self.carte_joueurs = []
         self.groupmobs = []
-        self.changement_carte(fenetre)
         self.chemin = []
+        self.carte_id = (0, 0)
         self.dernier_mouvment = 0
         self.en_combat = False
         self.mouvement = 3
@@ -209,6 +207,7 @@ class Playercontroller:
         self.vie = 150
         self.action_point = 150
         self.spell_actuel = None
+        self.changement_carte(fenetre)
 
     def changement_carte(self, fenetre: RendererController):
         """Cette fonction est appellée quand le joueur change de carte et sert a charger les nouvelles textures et la
@@ -229,7 +228,9 @@ class Playercontroller:
             self.carte_joueurs.append((i["classe"], i["position"], i["name"]))
         fenetre.charger_textures(self)
 
-    def clic(self):
+        self.position = (int(resultat["position"][0]), int(resultat["position"][1]))
+
+    def clic(self, fenetre):
         """Cette fonction est appellée quand le joueur fait un clic de souris"""
         if self.en_combat:
             position_clic = pygame.mouse.get_pos()
@@ -239,6 +240,7 @@ class Playercontroller:
                     if (demande("combat:sort:" + str(self.id) + ":" + str(self.spell_actuel) + ":" + str(
                             case[0]) + ":" + str(case[1])) == "True"):
                         self.en_combat = False
+                        self.changement_carte(fenetre)
                     self.spell_actuel = None
                 else:
                     self.move_to(case)
@@ -404,7 +406,7 @@ def boucle(fenetre: RendererController, joueur: Playercontroller) -> bool:
                 commande("carte:quitter:" + str(joueur.id))
                 return False
         if event.type == MOUSEBUTTONDOWN and event.button == 1:
-            joueur.clic()
+            joueur.clic(fenetre)
 
     fenetre.afficher_carte(joueur)
     joueur.update()
