@@ -98,23 +98,23 @@ class RendererController:
                 self.fenetre.blit(self.spells["002"], (400, 585))
                 self.fenetre.blit(self.spells["001"], (250, 585))
                 self.fenetre.blit(self.spells["000"], (100, 585))
-                cuseur = pygame.mouse.get_pos()
-                if 713 > cuseur[1] > 585 and 100 < cuseur[0] < 228:
+                curseur = pygame.mouse.get_pos()
+                if 713 > curseur[1] > 585 and 100 < curseur[0] < 228:
                     f = pygame.font.Font(None, 30)
                     txt = f.render("Coup : 50", 0, (255, 255, 255))
-                    self.fenetre.blit(txt, cuseur)
-                elif 713 > cuseur[1] > 585 and 250 < cuseur[0] < 378:
+                    self.fenetre.blit(txt, curseur)
+                elif 713 > curseur[1] > 585 and 250 < curseur[0] < 378:
                     f = pygame.font.Font(None, 30)
                     txt = f.render("Coup puissant : 75", 0, (255, 255, 255))
-                    self.fenetre.blit(txt, cuseur)
-                elif 713 > cuseur[1] > 585 and 400 < cuseur[0] < 528:
+                    self.fenetre.blit(txt, curseur)
+                elif 713 > curseur[1] > 585 and 400 < curseur[0] < 528:
                     f = pygame.font.Font(None, 30)
                     txt = f.render("Taper : 50", 0, (255, 255, 255))
-                    self.fenetre.blit(txt, cuseur)
-                elif 713 > cuseur[1] > 585 and 550 < cuseur[0] < 678:
+                    self.fenetre.blit(txt, curseur)
+                elif 713 > curseur[1] > 585 and 550 < curseur[0] < 678:
                     f = pygame.font.Font(None, 30)
                     txt = f.render("Taper fort : 75", 0, (255, 255, 255))
-                    self.fenetre.blit(txt, cuseur)
+                    self.fenetre.blit(txt, curseur)
             txt = None
             for i in joueur.carte_mobs:
                 self.fenetre.blit(self.textures_mobs[i[0]], decalage(i[1]))
