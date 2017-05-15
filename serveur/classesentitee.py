@@ -284,14 +284,11 @@ class Battle:
         if victoire:
             self.map.actif = True
             for i in self.joueurs_morts:
-<<<<<<< HEAD
                 self.map[i.id] = i
             # Futur : Loot Generator --> Nicolas
-=======
                 self.map.joueurs[i.id] = i
             for i in self.players:
                 self.map.joueurs[i.id] = i
->>>>>>> refs/remotes/origin/master
         else:
             MAPS.get("(0,0)").actif = True
             for i in self.joueurs_morts:
