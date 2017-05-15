@@ -471,7 +471,7 @@ class Spell:
         self.reload = int(reload)
         self.effects = effects
 
-    def verif_conditions(self, joueur: Entitee, cible: Tuple[int, int]) -> bool:
+    def verif_conditions(self, entitee: Entitee, cible: Tuple[int, int]) -> bool:
         """Cette fonction détermine si le sort est valide"""
         return False
 
@@ -520,6 +520,7 @@ class Spell:
                         return True
                     return False
 
+
 class LineSpell(Spell):
     """Cette classe représente un sort lancé en ligne droite"""
 
@@ -528,7 +529,7 @@ class LineSpell(Spell):
         self.max_range = forme["MAXRANGE"]
         self.min_range = forme["MINRANGE"]
 
-    def verif_conditions(self, entitee, cible):
+    def verif_conditions(self, entitee: Entitee, cible: Tuple[int, int]) -> bool:
         """Cette fonction détermine si le sort est valide"""
         if entitee.var_attributs.ap >= self.cost:
             if entitee.combat_coords[0] == cible[0]:
@@ -547,9 +548,34 @@ class LineSpell(Spell):
             return True
         return False
 
-    def liste_case(self, joueur, cible):
+    def liste_case(self, joueur: Entitee, cible: Tuple[int, int]) -> List:
         """Cette fonction renvoie la liste des cases touchées"""
         return [cible]
+
+    def cibles_potentielles(self, lanceur: Entitee) -> List:
+        """Cette fonction permet de voir toutes les cases qui pourraient être touchées par un sort"""
+        resultat = []
+        for i in range(self.min_range, self.max_range):
+            if (lanceur.combat_coords[0]+i, lanceur.combat_coords[1]) not in lanceur.combat.map.fullobs:
+                resultat.append((lanceur.combat_coords[0]+i, lanceur.combat_coords[1]))
+            else:
+                break
+        for i in range(self.min_range, self.max_range):
+            if (lanceur.combat_coords[0]-i, lanceur.combat_coords[1]) not in lanceur.combat.map.fullobs:
+                resultat.append((lanceur.combat_coords[0]-i, lanceur.combat_coords[1]))
+            else:
+                break
+        for i in range(self.min_range, self.max_range):
+            if (lanceur.combat_coords[0], lanceur.combat_coords[1]+i) not in lanceur.combat.map.fullobs:
+                resultat.append((lanceur.combat_coords[0], lanceur.combat_coords[1]+i))
+            else:
+                break
+        for i in range(self.min_range, self.max_range):
+            if (lanceur.combat_coords[0], lanceur.combat_coords[1]-i) not in lanceur.combat.map.fullobs:
+                resultat.append((lanceur.combat_coords[0], lanceur.combat_coords[1]-i))
+            else:
+                break
+        return resultat
 
 
 class SplashSpell(Spell):
