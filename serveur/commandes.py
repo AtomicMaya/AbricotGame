@@ -30,7 +30,7 @@ def connexion(client, ids: int, joueurs: Dict) -> Tuple[int, Dict]:
     map = MAPS.get(joueur.map)
     map.actif = True
     map.joueurs[ids] = joueur
-    client.send((str(ids) + ":" + str(joueur.mapcoords[0]) + ":" + str(joueur.mapcoords[1])).encode())
+    client.send((str(ids) + ":" + str(joueur.map_coords[0]) + ":" + str(joueur.map_coords[1])).encode())
     ids += 1
     return ids, joueurs
 
@@ -43,11 +43,11 @@ def carte(id_joueur: str, joueurs: Dict) -> str:
         for mobsgroups in MAPS.get(joueur.map).mobsgroups:
             temp = {"level": mobsgroups.level, "mobs": []}
             for mob in mobsgroups.mobgroup:
-                temp["mobs"].append((mob.name, mob.mapcoords))
+                temp["mobs"].append((mob.name, mob.map_coords))
             mobgroups.append(temp)
         temp = []
         for players in MAPS.get(joueur.map).joueurs.values():
-            temp.append({"name": players.name, "classe": str(players.classe), "position": players.mapcoords})
+            temp.append({"name": players.name, "classe": str(players.classe), "position": players.map_coords})
         return dumps({"map": joueur.map, "mobs": mobgroups, "joueurs": temp})
 
 
@@ -73,14 +73,14 @@ def entitee_combat(id: int, joueurs: Dict) -> str:
     joueur = joueurs[int(id)]
     mobs = []
     for mob in joueur.combat.mobgroup:
-        mobs.append((mob.name, mob.position_combat))
+        mobs.append((mob.name, mob.combat_coords))
     temp = []
     for players in joueur.combat.players:
-        temp.append({"name": players.name, "classe": str(players.classe), "position": players.position_combat})
+        temp.append({"name": players.name, "classe": str(players.classe), "position": players.combat_coords})
     actif = False
     if joueur == joueur.combat.current:
         actif = True
-    return dumps({"mobs": mobs, "joueurs": temp, "actif": actif, "position": joueur.position_combat,
+    return dumps({"mobs": mobs, "joueurs": temp, "actif": actif, "position": joueur.combat_coords,
                   "vie": joueur.var_attributs.hp, "action": joueur.var_attributs.ap})
 
 
@@ -107,7 +107,7 @@ def lancer_sort(joueur: str, sort: str, cible: Tuple[int, int], joueurs: Dict):
     if int(joueur) in joueurs.keys():
         joueur = joueurs[int(joueur)]
         sort = SPELLS.get(joueur.classe.spells[sort])
-        if sort.valide(joueur, cible):
+        if sort.verif_conditions(joueur, cible):
             return True
     return False
 

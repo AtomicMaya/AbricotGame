@@ -28,9 +28,9 @@ def lire_message():
                     temp = temp.decode()
                     messages.append((temp, client))
                 except ConnectionResetError:
-                    print("deconnexion")
+                    pass
                 except ConnectionAbortedError:
-                    print("deconnexion")
+                    pass
         yield messages
 
 
@@ -61,7 +61,6 @@ def main():
     ids = 0
     joueurs = {}
     combats = []
-    print("Démarage terminé")
     while True:
         ids, joueurs, combats = boucle(commandes, combats, ids, joueurs)
         pygame.time.Clock().tick(42)
