@@ -49,11 +49,14 @@ def boucle(commandes, combats: List, ids: int, joueurs: Dict) -> Tuple[int, Dict
     for i in MAPS.maps.values():
         if i.actif:
             i.update()
+    to_del = []
     for i in combats:
         if i.actif:
             i.update()
         else:
-            del i
+            to_del.append(i)
+    for i in to_del:
+        combats.remove(i)
     return ids, joueurs, combats
 
 

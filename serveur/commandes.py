@@ -139,13 +139,5 @@ def commandecombat(message: List, client, joueurs: Dict):
                 combat.joueurs_morts.append(joueur)
                 combat.queue.remove(joueur)
                 if len(combat.players) == 0:
-                    combat.actif = False
-                    for i in combat.joueurs_morts:
-                        i.var_attributs.hp = 1
-                        i.en_combat = False
-                        i.combat = None
-                        i.map_coords = (31, 4)
-                        i.map = "(0,0)"
-                        map = MAPS.get(i.map)
-                        map.actif = True
+                    combat.fin(False)
     return joueurs
