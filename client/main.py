@@ -120,7 +120,11 @@ class RendererController:
                 self.fenetre.blit(self.textures_mobs[i[0]], decalage(i[1]))
                 if i[1] == decalage_inverse(pygame.mouse.get_pos()):
                     f = pygame.font.Font(None, 30)
-                    txt = f.render(i[0] + ":" + str(i[2]), 0, (255, 255, 255))
+                    try:
+                        txt = f.render(i[0] + ":" + str(i[2]), 0, (255, 255, 255))
+                    except IndexError:
+                        # En attendant de trouver la vraie cause du bug
+                        pass
             for i in joueur.carte_joueurs:
                 self.fenetre.blit(self.textures_classes[i[0]], decalage(i[1]))
             if txt:
