@@ -1,0 +1,26 @@
+{
+  "_template": {
+    "NAME": "",
+    "SPELLS": [
+      null
+    ],
+    "BASEHP": 0,
+    "XHP": 0,
+    "MOVEMENTPOINTS": 0,
+    "ACTIONPOINTS": 0
+  },
+
+  "001": {
+    "NAME": "Guerrier",
+    "SPELLS": {
+        "000":"000",
+        "001":"001",
+        "002":"002",
+        "003":"003"
+    },
+    "BASEHP": 50,
+    "XHP": 5,
+    "MOVEMENTPOINTS": 3,
+    "ACTIONPOINTS": 150
+  }
+}
