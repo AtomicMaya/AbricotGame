@@ -7,7 +7,7 @@ from json import loads, load
 from typing import Dict, Tuple
 from pathfinding import calculate_movement
 import time
-
+from pprint import pprint
 
 def convert_image(chemin: str, couleurfond=(255, 255, 255)):
     """Cette image permet de transformer le chemin vers un fichier en image"""
@@ -120,11 +120,8 @@ class RendererController:
                 self.fenetre.blit(self.textures_mobs[i[0]], decalage(i[1]))
                 if i[1] == decalage_inverse(pygame.mouse.get_pos()):
                     f = pygame.font.Font(None, 30)
-                    try:
-                        txt = f.render(i[0] + ":" + str(i[2]), 0, (255, 255, 255))
-                    except IndexError:
-                        # En attendant de trouver la vraie cause du bug
-                        pass
+                    txt = f.render(i[0] + ":" + str(i[2]), 0, (255, 255, 255))
+                    
             for i in joueur.carte_joueurs:
                 self.fenetre.blit(self.textures_classes[i[0]], decalage(i[1]))
             if txt:
@@ -323,6 +320,8 @@ class Playercontroller:
         else:
             self.info_carte()
             self.mouvement_carte()
+            if self.en_combat:
+                self.actualisecombat()
 
     def mouvement_carte(self):
         """Cette fonction sert a déplacer le joueur sur la carte"""
