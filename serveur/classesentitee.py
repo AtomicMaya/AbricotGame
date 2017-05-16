@@ -200,7 +200,7 @@ class Battle:
                 self.movement()  # int(sum(self.get_ranges()) / 2))
                 self.phase = Phase.attack
             elif self.phase == Phase.targeting:
-                self.players, self.path = self.find_target()
+                self.target, self.path = self.find_target()
                 self.phase = Phase.movement
 
     def end_turn(self):
@@ -257,6 +257,14 @@ class Battle:
         path = movements[player]
         return player, path
 
+    def get_ranges(self):
+        """ :return: Portée minimale et maximale des attques du mob """
+        maxs, mins = [], []
+        for spell in self.current.spells:
+            maxs += [spell.max_range]
+            mins += [spell.min_range]
+        return min(mins), max(maxs)
+
     def movement(self):
         """ Effectue le déplacement sur la map """
 
@@ -268,7 +276,6 @@ class Battle:
                 self.move(self.current, compare_tuple(self.path[i], self.path[i + 1]))
 
     def fin(self, victoire: bool):
-        """Cette fonction se déclenche a la fin d'un combat"""
         self.actif = False
         for i in self.joueurs_morts:
             i.var_attributs.hp = 1
@@ -284,7 +291,6 @@ class Battle:
         if victoire:
             self.map.actif = True
             for i in self.joueurs_morts:
-                self.map[i.id] = i
             # Futur : Loot Generator --> Nicolas
                 self.map.joueurs[i.id] = i
             for i in self.players:
@@ -300,26 +306,19 @@ class Battle:
         """ Choisit soit d'attquer soit d'aider ses allies et effectue cette action """
         attack_spells = []
         assist_spells = {}
-        allies = {ally.combat_coords: ally for ally in self.mobgroup}
-        allies.pop(self.current.combat_coords)
-        print("\n", self.current.name, '\'s Attack')
+        allies = {ally.map_coords: ally for ally in self.mobgroup}
         for spell in self.current.spells:
             if spell.verif_conditions(self.current, self.target.combat_coords) and \
                             spell.spellType != 'SUPPORT':
                 attack_spells.append(spell)
-            print("Spell", spell)
-            attack_coords = spell.cibles_potentielles(self.current)
-            if spell.spellType == 'SUPPORT' and not set(allies.keys()).isdisjoint(attack_coords):
-                intersects_at = set(allies.keys()).intersection(attack_coords)
-                assist_spells[spell] = [[allies[c] for c in intersects_at], attack_coords]
-        print("Attack spells :", attack_spells)
+            if spell.spellType == 'SUPPORT' and not set(allies.keys()).isdisjoint(range):
+                intersects_at = set(allies.keys()).intersection(range)
+                assist_spells[spell] = [[allies[c] for c in intersects_at], range]
         most = 0
         assist_spell = 0
-        affected_mobs = []
         for spell, r in assist_spells.items():
             if len(r[0]) > most:
                 most = len(r[0])
-                affected_mobs = r[0]
                 assist_spell = spell
 
         odds = most / len(self.mobgroup)
@@ -329,19 +328,28 @@ class Battle:
                 assist_spells[0])
             if odds > random():
                 this_spell = choice(assist_spells[0])
-                self.current.var_attributs.ap -= this_spell.cost
-                this_spell.appliquer_effet(choice(affected_mobs))
+                self.apply_effect(assist_spell.effects, this_spell)
                 print("Sort lancé :", this_spell)
-        if len(attack_spells) > 0:
+        elif len(attack_spells) > 0:
             available_mana = self.current.var_attributs.ap
             while True:
                 spell = choice(attack_spells)
                 available_mana -= spell.cost
                 if available_mana >= 0:
                     print("Sort lancé :", spell)
-                    spell.appliquer_effet(self.target)
+                    self.apply_effect(spell.effects, self.target)
                 else:
                     break
+
+    def apply_effect(self, effects: Dict[str, int], target):
+        """ Applique un effet (perte de vie par exemple) a la cible """
+        for key, value in effects.items():
+            if key == 'HP':
+                target.var_attributs.hp += value
+            if key == 'AP':
+                target.var_attributs.ap += value
+            if key == 'MP':
+                target.var_attributs.mp += value
 
 
 class TypeMob:
@@ -449,7 +457,6 @@ class Spell:
                         combat.fin(True)
                         return True
                     return False
-
 
     def cibles_potentielles(self, lanceur: Entitee) -> List:
         """Cette fonction permet de voir toutes les cases qui pourraient être touchées par un sort"""
