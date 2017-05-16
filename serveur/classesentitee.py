@@ -276,6 +276,7 @@ class Battle:
                 self.move(self.current, compare_tuple(self.path[i], self.path[i + 1]))
 
     def fin(self, victoire: bool):
+        """Cette fonction se déclanche a la fin d'un combat"""
         self.actif = False
         for i in self.joueurs_morts:
             i.var_attributs.hp = 1
@@ -291,7 +292,6 @@ class Battle:
         if victoire:
             self.map.actif = True
             for i in self.joueurs_morts:
-            # Futur : Loot Generator --> Nicolas
                 self.map.joueurs[i.id] = i
             for i in self.players:
                 self.map.joueurs[i.id] = i
@@ -301,6 +301,75 @@ class Battle:
                 i.map_coords = (31, 4)
                 i.map = "(0,0)"
                 MAPS.get("(0,0)").joueurs[i.id] = i
+
+    # def spell_range(self, spell):
+    #     """ En fonction du type de sort, renvoie les cases touchees """
+    #     if spell.shape == 'SPLASH':
+    #         return self.splash(self.current.map_coords, spell.minRange, spell.maxRange)
+    #     if isinstance(spell, LineSpell):
+    #         return self.line(self.current, spell.minRange, spell.maxRange)
+    # 
+    # def splash(self, center: Tuple[int, int], minRange: int, maxRange: int) -> List[Tuple[int, int]]:
+    #     """ Si le sort a une zone d'attaque circulaire autour de l'entite """
+    #     aoe = [(0, maxRange), (maxRange, 0), (0, -maxRange), (-maxRange, 0)]
+    #     aoe = [tuple_add(a, center) for a in aoe]
+    #     over = bresenham(aoe[3], aoe[2])[:-1] + bresenham(aoe[2], aoe[1])
+    #     under = bresenham(aoe[3], aoe[0])[:-1] + bresenham(aoe[0], aoe[1])
+    #     out = over + under
+    #     for ind in range(len(over) - 2):
+    #         x, y = over[ind + 1]
+    #         dist = under[ind + 1][1] - y
+    #         for i in range(dist):
+    #             out.append((x, y + i))
+    #     out = list(remove_duplicates(out))
+    #     for c in out:
+    #         if c[0] < 0 or c[0] > 31 or c[1] < 0 or c[1] > 17:
+    #             out.remove(c)
+    #     edge = over + under
+    #     for e in edge:
+    #         br = bresenham(center, e)
+    #         if not set(br).isdisjoint(self.map.fullobs):
+    #             intersects_at = list(set(br).intersection(self.map.fullobs))
+    #             closest = distances(center, intersects_at)
+    #             try:
+    #                 remove = br[br.index(closest):]
+    #                 for r in remove:
+    #                     out.remove(r)
+    #             except ValueError:
+    #                 pass
+    #     if minRange != 0:
+    #         for c in self.splash(center, 0, minRange):
+    #             out.remove(c)
+    #     return out
+    # 
+    # def line(self, center: Tuple[int, int], minRange: int, maxRange: int) -> List[Tuple[int, int]]:
+    #     """ Si le sort a une zone d'attaque lineaire depuis l'entite """
+    #     aoe = [(0, maxRange), (maxRange, 0), (0, -maxRange), (-maxRange, 0)]
+    #     aoe = [tuple_add(a, center) for a in aoe]
+    #     out = []
+    #     for a in aoe:
+    #         out += bresenham(center, a)
+    #     for c in out:
+    #         if c[0] < 0 or c[0] > 31 or c[1] < 0 or c[1] > 17:
+    #             out.remove(c)
+    #     if minRange != 0:
+    #         for c in line(center, 0, minRange):
+    #             try:
+    #                 out.remove(c)
+    #             except ValueError:
+    #                 pass
+    #     for o in aoe:
+    #         br = bresenham(center, o)
+    #         if not set(br).isdisjoint(self.map.fullobs):
+    #             intersects_at = list(set(br).intersection(self.map.fullobs))
+    #             closest = distances(center, intersects_at)
+    #             try:
+    #                 remove = br[br.index(closest):]
+    #                 for r in remove:
+    #                     out.remove(r)
+    #             except ValueError:
+    #                 pass
+    #     return out
 
     def attack(self):
         """ Choisit soit d'attquer soit d'aider ses allies et effectue cette action """
