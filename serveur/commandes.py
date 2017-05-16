@@ -73,17 +73,18 @@ def entitee_combat(id: int, joueurs: Dict) -> str:
     """Cette fonction transmet au joueur toute les informations sur un combat"""
     joueur = joueurs[int(id)]
     mobs = []
-    for mob in joueur.combat.mobgroup:
-        mobs.append((mob.name, mob.combat_coords, mob.var_attributs.hp))
-    temp = []
-    for players in joueur.combat.players:
-        temp.append({"name": players.name, "classe": str(players.classe), "position": players.combat_coords})
-    actif = False
-    if joueur == joueur.combat.current:
-        actif = True
-    return dumps({"mobs": mobs, "joueurs": temp, "actif": actif, "position": joueur.combat_coords,
-                  "vie": joueur.var_attributs.hp, "action": joueur.var_attributs.ap})
-
+    if joueur.combat:
+        for mob in joueur.combat.mobgroup:
+            mobs.append((mob.name, mob.combat_coords, mob.var_attributs.hp))
+        temp = []
+        for players in joueur.combat.players:
+            temp.append({"name": players.name, "classe": str(players.classe), "position": players.combat_coords})
+        actif = False
+        if joueur == joueur.combat.current:
+            actif = True
+        return dumps({"mobs": mobs, "joueurs": temp, "actif": actif, "position": joueur.combat_coords,
+                      "vie": joueur.var_attributs.hp, "action": joueur.var_attributs.ap})
+    return dumps({"": False})
 
 def mouvement_combat(idjoueur: str, direction: str, joueurs: Dict):
     """Cette fonction sert a se déplacer si on est en combat"""
@@ -121,7 +122,7 @@ def lancer_sort(joueur: str, sort: str, cible: Tuple[int, int], joueurs: Dict):
 def commandecombat(message: List, client, joueurs: Dict):
     """Cette fonction efffectue toute les commandes liée au combat (attaque,déplacement,...)"""
     if message[0] == "carte" and len(message) == 2:
-        client.send(entitee_combat(int(message[1]), joueurs).encode())
+        client.send(str(entitee_combat(int(message[1]), joueurs)).encode())
     elif message[0] == "move" and len(message) == 3:
         client.send(str(mouvement_combat(message[1], message[2], joueurs)).encode())
     elif message[0] == "sort" and len(message) == 5:

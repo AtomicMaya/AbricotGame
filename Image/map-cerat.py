@@ -1,3 +1,4 @@
+# coding=utf-8
 import pygame
 from pygame.locals import *
 import json
@@ -42,5 +43,3 @@ with open(input("File name :"), "w") as file:
     file.write(s)
 
 pygame.quit()
-                
-    

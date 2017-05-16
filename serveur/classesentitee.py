@@ -149,11 +149,11 @@ class Battle:
         self.joueurs_morts = []
         self.ennemis_morts = []
         self.mobgroup = mobgroup.mobgroup
-        for mob in self.mobgroup:
-            mob.combat = self
         self.players = players
         self.map = map
         self.queue = self.players + self.mobgroup
+        for participant in self.queue:
+            participant.combat = self
         shuffle(self.queue)
         self.current = self.queue[0]
         self.phase = Phase.targeting
@@ -293,7 +293,7 @@ class Battle:
             self.map.actif = True
             for i in self.joueurs_morts:
                 self.map[i.id] = i
-            # Futur : Loot Generator --> Nicolas
+                # Futur : Loot Generator --> Nicolas
                 self.map.joueurs[i.id] = i
             for i in self.players:
                 self.map.joueurs[i.id] = i
@@ -343,8 +343,9 @@ class Battle:
                     spell.appliquer_effet(self.target)
                     available_mana = self.current.var_attributs.ap
                 except AttributeError:
-                    #Probablement
+                    # Probablement
                     self.end_turn()
+
 
 class TypeMob:
     """Cette classe représente une catégorie de mob"""
