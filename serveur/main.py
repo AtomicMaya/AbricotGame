@@ -34,7 +34,8 @@ def lire_message():
         yield messages
 
 
-def boucle(commandes, combats: List, ids: int, joueurs: Dict) -> Tuple[int, Dict, List]:
+def boucle(commandes, combats: List, ids: int, joueurs: Dict, joueurs_a_supprimer: List) -> Tuple[
+    int, Dict, List, List]:
     """Boucle principale du serveur"""
     messages = next(commandes)
     for demande in messages:
@@ -57,7 +58,7 @@ def boucle(commandes, combats: List, ids: int, joueurs: Dict) -> Tuple[int, Dict
             to_del.append(i)
     for i in to_del:
         combats.remove(i)
-    return ids, joueurs, combats
+    return ids, joueurs, combats, joueurs_a_supprimer
 
 
 def main():
@@ -66,8 +67,10 @@ def main():
     ids = 0
     joueurs = {}
     combats = []
+    joueurs_a_supprimer = []
+    print("Démarage terminé")
     while True:
-        ids, joueurs, combats = boucle(commandes, combats, ids, joueurs)
+        ids, joueurs, combats, joueurs_a_supprimer = boucle(commandes, combats, ids, joueurs, joueurs_a_supprimer)
         pygame.time.Clock().tick(42)
 
 
