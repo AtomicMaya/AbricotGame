@@ -9,6 +9,7 @@ from pathfinding import calculate_movement
 import time
 from pprint import pprint
 
+
 def convert_image(chemin: str, couleurfond=(255, 255, 255)):
     """Cette image permet de transformer le chemin vers un fichier en image"""
     image = pygame.image.load(chemin)
@@ -121,7 +122,7 @@ class RendererController:
                 if i[1] == decalage_inverse(pygame.mouse.get_pos()):
                     f = pygame.font.Font(None, 30)
                     txt = f.render(i[0] + ":" + str(i[2]), 0, (255, 255, 255))
-                    
+
             for i in joueur.carte_joueurs:
                 self.fenetre.blit(self.textures_classes[i[0]], decalage(i[1]))
             if txt:
@@ -208,9 +209,10 @@ class Playercontroller:
         self.vie = 150
         self.action_point = 150
         self.spell_actuel = None
-        self.changement_carte(fenetre)
+        self.fenetre = fenetre
+        self.changement_carte()
 
-    def changement_carte(self, fenetre: RendererController):
+    def changement_carte(self):
         """Cette fonction est appellée quand le joueur change de carte et sert a charger les nouvelles textures et la
         forme de la carte"""
         resultat = loads(demande("carte:carte:" + str(self.id)))
@@ -227,11 +229,11 @@ class Playercontroller:
         self.carte_joueurs = []
         for i in resultat["joueurs"]:
             self.carte_joueurs.append((i["classe"], i["position"], i["name"]))
-        fenetre.charger_textures(self)
+        self.fenetre.charger_textures(self)
 
         self.position = (int(resultat["position"][0]), int(resultat["position"][1]))
 
-    def clic(self, fenetre):
+    def clic(self):
         """Cette fonction est appellée quand le joueur fait un clic de souris"""
         if self.en_combat:
             position_clic = pygame.mouse.get_pos()
@@ -241,7 +243,7 @@ class Playercontroller:
                     if (demande("combat:sort:" + str(self.id) + ":" + str(self.spell_actuel) + ":" + str(
                             case[0]) + ":" + str(case[1])) == "True"):
                         self.en_combat = False
-                        self.changement_carte(fenetre)
+                        self.changement_carte()
                     self.spell_actuel = None
                 else:
                     self.move_to(case)
@@ -293,23 +295,27 @@ class Playercontroller:
     def actualisecombat(self):
         """En attandant d'avoir un vrai systeme"""
         resultat = loads(demande("combat:carte:" + str(self.id)))
-        self.carte_mobs = []
-        for j in resultat["mobs"]:
-            mob = (j[0], (j[1][0], j[1][1]), j[2])
-            self.carte_mobs.append(mob)
-        self.carte_joueurs = []
-        for i in resultat["joueurs"]:
-            self.carte_joueurs.append((i["classe"], i["position"], i["name"]))
-        self.position = (resultat["position"][0], resultat["position"][1])
-        self.vie = resultat["vie"]
-        self.action_point = resultat["action"]
-        if resultat["actif"]:
-            if not self.debut_tour:
-                self.debut_tour = True
-                self.chemin = []
-            self.tour_actif = True
+        if "" in resultat.keys():
+            self.en_combat = False
+            self.changement_carte()
         else:
-            self.tour_actif = False
+            self.carte_mobs = []
+            for j in resultat["mobs"]:
+                mob = (j[0], (j[1][0], j[1][1]), j[2])
+                self.carte_mobs.append(mob)
+            self.carte_joueurs = []
+            for i in resultat["joueurs"]:
+                self.carte_joueurs.append((i["classe"], i["position"], i["name"]))
+            self.position = (resultat["position"][0], resultat["position"][1])
+            self.vie = resultat["vie"]
+            self.action_point = resultat["action"]
+            if resultat["actif"]:
+                if not self.debut_tour:
+                    self.debut_tour = True
+                    self.chemin = []
+                self.tour_actif = True
+            else:
+                self.tour_actif = False
 
     def update(self):
         """Cette fonction est appellée une fois par tick"""
@@ -409,7 +415,7 @@ def boucle(fenetre: RendererController, joueur: Playercontroller) -> bool:
                 commande("carte:quitter:" + str(joueur.id))
                 return False
         if event.type == MOUSEBUTTONDOWN and event.button == 1:
-            joueur.clic(fenetre)
+            joueur.clic()
 
     fenetre.afficher_carte(joueur)
     joueur.update()
