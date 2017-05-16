@@ -1,5 +1,7 @@
 <?php
-/*
+/* USED TO CREATE THE DATABASES AT START
+
+
 	class MyDB extends SQLite3
 	{
 		function __construct()
