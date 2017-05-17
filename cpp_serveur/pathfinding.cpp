@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <set>
 #include <chrono>
+
 using namespace std;
 using namespace std::chrono;
 
@@ -72,9 +73,10 @@ vector<Coordinates> linearize(vector<Coordinates> vec, vector<Coordinates> obsta
     else { y_dir = -1; }
     for(unsigned int i = 0; i < vec.size() - 1; i++) {
         out.emplace_back(vec.at(i));
-        if (!vec.at(i).adjacent(vec.at(i + 1))) {
+        Coordinates next = vec.at(i + 1);
+        if (!vec.at(i).adjacent(next)) {
             Coordinates option1 = Coordinates(vec.at(i).get_x() + x_dir, vec.at(i).get_y());
-            if (find(obstacles.cbegin(), obstacles.cend(), option1) == obstacles.cend()) { out.push_back(option1); }
+            if (find(begin(obstacles), end(obstacles), option1) == end(obstacles)) { out.push_back(option1); }
             else { out.push_back(Coordinates(vec.at(i).get_x(), vec.at(i).get_y() + y_dir)); }
         }
     }
