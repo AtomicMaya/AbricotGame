@@ -66,7 +66,7 @@ vector<Coordinates> bresenham(Coordinates start, Coordinates end) {
     return crossed_points;
 }
 
-list<Coordinates> aStar(Coordinates start, Coordinates end, vector<Coordinates> obstacles) {
+vector<Coordinates> aStar(Coordinates start, Coordinates end, vector<Coordinates> obstacles) {
     vector<Coordinates> open_list;
     make_heap(open_list.begin(), open_list.end());
     set<vector<Coordinates>> closed_list;
@@ -76,19 +76,5 @@ list<Coordinates> aStar(Coordinates start, Coordinates end, vector<Coordinates> 
     int start_x = start.get(0), start_y = start.get(1);
     int end_x = end.get(0), end_y = end.get(1);
     vector<Coordinates> temp_obstacles = obstacles;
+    return temp_obstacles;
 }
-/*
-list aStar(tuple<int, int> start, tuple<int, int> end, vector<tuple<int, int>> obstacles) {
-    vector<tuple<int, int>> open_list;
-    make_heap(open_list.begin(), open_list.end());
-    set<vector<tuple<int, int>>> closed_list;
-    vector<tuple<int, int>> all_cells;
-
-    int grid_height = 18, grid_width = 32;
-
-
-
-
-    return list;
-}
-*/
