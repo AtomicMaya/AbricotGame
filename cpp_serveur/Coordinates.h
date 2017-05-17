@@ -15,6 +15,5 @@ public:
     bool operator> (Coordinates &rhs) { return x > rhs.get_x(); }
     bool operator== (Coordinates &rhs) { return (x == rhs.get_x()) && (y == rhs.get_y()); }
     std::string to_str();
-    bool adjacent(Coordinates&);
 };
 #endif

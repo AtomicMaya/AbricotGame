@@ -20,8 +20,3 @@ string Coordinates::to_str(){
     oss << "(" << x << ", " << y << ")";
     return oss.str();
 }
-
-bool Coordinates::adjacent(Coordinates& other) {
-    return !((x != other.get_x()) && (y != other.get_y()));
-
-}

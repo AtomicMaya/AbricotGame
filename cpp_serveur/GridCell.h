@@ -1,20 +1,27 @@
 #ifndef GRID_CELL
 #define GRID_CELL
 
-class GridCell {
-    int cell_x, cell_y;
+#include "Coordinates.h"
+class GridCell : public Coordinates{
+private:
     bool obstacle;
-    int g, h, f;
+    unsigned int g = 0, h = 0, f = 0;
     GridCell* parent;
 
 public:
     GridCell(int, int, bool);
-    void is_obstacle(bool);
-    void set_parent(GridCell&);
 
-    void set_g(int);
-    void set_h(int);
-    void calc_f();
+    void set_is_obstacle(bool);
+    void set_parent(GridCell&);
+    void set_g(unsigned int);
+    void set_h(unsigned int);
+    void set_f();
+
+    bool get_is_obstacle();
+    GridCell get_parent();
+    unsigned int get_g();
+    unsigned int get_h();
+    unsigned int get_f();
 };
 
 #endif

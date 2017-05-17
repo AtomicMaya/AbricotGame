@@ -1,0 +1,9 @@
+C:\Users\boeck\Desktop\Code\AbricotGit2\AbricotGame\cpp_tools\Map Creator\Map Creator\bin\Debug\Map Creator.exe.config
+C:\Users\boeck\Desktop\Code\AbricotGit2\AbricotGame\cpp_tools\Map Creator\Map Creator\bin\Debug\Map Creator.exe
+C:\Users\boeck\Desktop\Code\AbricotGit2\AbricotGame\cpp_tools\Map Creator\Map Creator\bin\Debug\Map Creator.pdb
+C:\Users\boeck\Desktop\Code\AbricotGit2\AbricotGame\cpp_tools\Map Creator\Map Creator\obj\Debug\Map Creator.csprojResolveAssemblyReference.cache
+C:\Users\boeck\Desktop\Code\AbricotGit2\AbricotGame\cpp_tools\Map Creator\Map Creator\obj\Debug\Map_Creator.Form1.resources
+C:\Users\boeck\Desktop\Code\AbricotGit2\AbricotGame\cpp_tools\Map Creator\Map Creator\obj\Debug\Map_Creator.Properties.Resources.resources
+C:\Users\boeck\Desktop\Code\AbricotGit2\AbricotGame\cpp_tools\Map Creator\Map Creator\obj\Debug\Map Creator.csproj.GenerateResource.Cache
+C:\Users\boeck\Desktop\Code\AbricotGit2\AbricotGame\cpp_tools\Map Creator\Map Creator\obj\Debug\Map Creator.exe
+C:\Users\boeck\Desktop\Code\AbricotGit2\AbricotGame\cpp_tools\Map Creator\Map Creator\obj\Debug\Map Creator.pdb
