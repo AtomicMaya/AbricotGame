@@ -6,7 +6,7 @@ class GridCell : public Coordinates{
 private:
     bool obstacle;
     unsigned int g = 0, h = 0, f = 0;
-    GridCell* parent;
+    GridCell* parent = NULL;
 
 public:
     GridCell(int, int, bool);
@@ -22,6 +22,8 @@ public:
     unsigned int get_g();
     unsigned int get_h();
     unsigned int get_f();
+
+    bool has_parent();
 };
 
 #endif

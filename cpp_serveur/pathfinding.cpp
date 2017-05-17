@@ -1,8 +1,6 @@
 #include "GridCell.h"
-#include "Coordinates.h"
 #include <iostream>
 #include <vector>
-#include <algorithm>
 #include <set>
 #include <chrono>
 
@@ -10,11 +8,23 @@ using namespace std;
 using namespace std::chrono;
 
 bool contains(Coordinates c, vector<Coordinates> obj_to_scan) {
+        bool result = false;
+        for(unsigned int i = 0; i < obj_to_scan.size(); i++) {
+            if(obj_to_scan.at(i).get_x() == c.get_x() && obj_to_scan.at(i).get_y() == c.get_y()) { result = true; }
+        }
+        return result;
+}
+
+bool contains(GridCell b, vector<GridCell> obj_to_scan) {
     bool result = false;
     for(unsigned int i = 0; i < obj_to_scan.size(); i++) {
-        if(obj_to_scan.at(i).get_x() == c.get_x() && obj_to_scan.at(i).get_y() == c.get_y()) { result = true; }
+        if(obj_to_scan.at(i) == b) { result = true; }
     }
     return result;
+}
+
+bool contains(GridCell c, set<GridCell> obj_to_scan) {
+    return obj_to_scan.find(c) != obj_to_scan.end();
 }
 
 vector<Coordinates> bresenham(Coordinates start, Coordinates end) {
@@ -44,11 +54,8 @@ vector<Coordinates> bresenham(Coordinates start, Coordinates end) {
     dx = x2 - x1, dy = y2 - y1;
     int error = int(dx / 2.0);
     int y_step = 0;
-    if (y1 < y2) {
-        y_step = 1;
-    } else {
-        y_step = -1;
-    }
+    if (y1 < y2) { y_step = 1; }
+    else { y_step = -1; }
     vector<Coordinates> crossed_points;
     int y = y1;
     for (int x = x1; x < x2 + 1; x++) {
@@ -107,7 +114,6 @@ GridCell get_cell(int x, int y, int grid_height, vector<GridCell> all_cells) {
 
 vector<Coordinates> aStar(Coordinates start, Coordinates end, vector<Coordinates> obstacles) {
     vector<GridCell> open_list;
-    make_heap(open_list.begin(), open_list.end());
     set<GridCell> closed_list;
     vector<GridCell> all_cells;
 
@@ -133,10 +139,9 @@ vector<Coordinates> aStar(Coordinates start, Coordinates end, vector<Coordinates
     GridCell start_cell = get_cell(start_x, start_y, grid_height, all_cells);
     GridCell end_cell = get_cell(end_x, end_y, grid_height, all_cells);
 
-    push_heap(open_list, {start_cell.get_f(), start_cell});
+    open_list.push_back(start_cell);
     while (!open_list.empty()) {
-        pop_heap(open_list.begin(), open_list.end());
-        unsigned f = open_list.back().get_f();
+        open_list.erase(open_list.begin());
         GridCell active_cell = open_list.back();
         closed_list.insert(active_cell);
         if (active_cell == end_cell) {
@@ -146,11 +151,48 @@ vector<Coordinates> aStar(Coordinates start, Coordinates end, vector<Coordinates
         // Get Neighbors
         vector<GridCell> neighbors;
         if (active_cell.get_x() < grid_width) {
-            neighbors.push_back(get_cell(active_cell.get_x + 1, active_cell.get_y(), grid_height, all_cells));
+            neighbors.push_back(get_cell(active_cell.get_x() + 1, active_cell.get_y(), grid_height, all_cells));
         }
-
+        if (active_cell.get_y() > 1) {
+            neighbors.push_back(get_cell(active_cell.get_x(), active_cell.get_y() - 1, grid_height, all_cells));
+        }
+        if (active_cell.get_x() > 1) {
+            neighbors.push_back(get_cell(active_cell.get_x() - 1, active_cell.get_y(), grid_height, all_cells));
+        }
+        if (active_cell.get_y() < grid_height) {
+            neighbors.push_back(get_cell(active_cell.get_x(), active_cell.get_y() + 1, grid_height, all_cells));
+        }
+        for (GridCell n_cell : neighbors) {
+            if (!n_cell.get_is_obstacle() && !contains(n_cell, closed_list)) {
+                if(contains(n_cell, open_list)){
+                    if(n_cell.get_g() > active_cell.get_g()) {
+                        n_cell.set_g(active_cell.get_g() + 10);
+                        n_cell.set_h((unsigned) 10 * (abs(n_cell.get_x() - end_cell.get_x()) + abs(n_cell.get_y() - end_cell.get_y()))); // Calculate Manhattan distance (h)
+                        n_cell.set_parent(active_cell);
+                        n_cell.set_f();
+                    }
+                }
+                else {
+                    n_cell.set_g(active_cell.get_g() + 10);
+                    n_cell.set_h((unsigned) 10 * (abs(n_cell.get_x() - end_cell.get_x()) + abs(n_cell.get_y() - end_cell.get_y())));
+                    n_cell.set_parent(active_cell);
+                    n_cell.set_f();
+                    open_list.push_back(n_cell);
+                }
+            }
+        }
     }
-    return revised_obstacles;
+    GridCell current = end_cell;
+    vector<Coordinates> path = {Coordinates(current.get_x() - 1, current.get_y() - 1)};
+    if(current.has_parent()) {
+        while(!(current.get_parent() == start_cell)) {
+            current = current.get_parent();
+            path.push_back(Coordinates(current.get_x() - 1, current.get_y() - 1));
+        }
+        path.push_back(Coordinates(start_cell.get_x() - 1, start_cell.get_y() - 1));
+        reverse(path.begin(), path.end());
+    }
+    return path;
 }
 
 int main() {
@@ -160,15 +202,21 @@ int main() {
     vector<Coordinates> br = bresenham(a, b);
     high_resolution_clock::time_point t3 = high_resolution_clock::now();
     vector<Coordinates> lin = linearize(br, {Coordinates(0, 0)});
-    high_resolution_clock ::time_point t4 = high_resolution_clock::now();
+    high_resolution_clock::time_point t4 = high_resolution_clock::now();
+    vector<Coordinates> as = aStar(a, b, {});
+    high_resolution_clock::time_point t5 = high_resolution_clock::now();
+
     auto duration1 = duration_cast<nanoseconds>(t2-t1).count();
     auto duration2 = duration_cast<nanoseconds>(t3-t2).count();
     auto duration3 = duration_cast<nanoseconds>(t4-t1).count();
+    auto duration4 = duration_cast<nanoseconds>(t5-t4).count();
 
     cout << a.to_str() << " / " << b.to_str() << " --- Calculated in : " << duration1 << " nanoseconds" << endl;
     vector_to_string(br);
     cout << "Bresenham calculated in : " << duration2 << " nanoseconds" << endl;
     vector_to_string(lin);
     cout << "Linearized  in : " << duration3 << " nanoseconds" << endl;
+    vector_to_string(as);
+    cout << "A* calculated in : " << duration4 << " nanoseconds" << endl;
     return 0;
 }

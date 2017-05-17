@@ -1,6 +1,6 @@
 #include <iostream>
 #include "GridCell.h"
-#include "Coordinates.h"
+
 using namespace std;
 
 GridCell::GridCell(int x, int y, bool aBool): Coordinates(x, y){
@@ -26,3 +26,7 @@ unsigned int GridCell::get_g() { return g; }
 unsigned int GridCell::get_h() { return h; }
 
 unsigned int GridCell::get_f() { return f; }
+
+bool GridCell::has_parent() {
+        return parent != NULL;
+}

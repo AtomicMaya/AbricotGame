@@ -19,8 +19,6 @@ iostream
 -
 GridCell.h
 C:/Users/boeck/Desktop/Code/AbricotGit2/AbricotGame/cpp_serveur/GridCell.h
-Coordinates.h
-C:/Users/boeck/Desktop/Code/AbricotGit2/AbricotGame/cpp_serveur/Coordinates.h
 
 C:/Users/boeck/Desktop/Code/AbricotGit2/AbricotGame/cpp_serveur/GridCell.h
 Coordinates.h
@@ -29,13 +27,9 @@ C:/Users/boeck/Desktop/Code/AbricotGit2/AbricotGame/cpp_serveur/Coordinates.h
 C:/Users/boeck/Desktop/Code/AbricotGit2/AbricotGame/cpp_serveur/pathfinding.cpp
 GridCell.h
 C:/Users/boeck/Desktop/Code/AbricotGit2/AbricotGame/cpp_serveur/GridCell.h
-Coordinates.h
-C:/Users/boeck/Desktop/Code/AbricotGit2/AbricotGame/cpp_serveur/Coordinates.h
 iostream
 -
 vector
--
-algorithm
 -
 set
 -
