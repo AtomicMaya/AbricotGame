@@ -1,19 +1,16 @@
 #include "GridCell.h"
 #include "Coordinates.h"
 #include <iostream>
-#include <list>
 #include <vector>
 #include <algorithm>
 #include <set>
+#include <chrono>
 using namespace std;
-
-int main() {
-    return 0;
-}
+using namespace std::chrono;
 
 vector<Coordinates> bresenham(Coordinates start, Coordinates end) {
-    int x1 = start.get(0), y1 = start.get(1);
-    int x2 = end.get(0), y2 = end.get(1);
+    int x1 = start.get_x(), y1 = start.get_y();
+    int x2 = end.get_x(), y2 = end.get_y();
     int dx = x2 - x1, dy = y2 - y1;
     bool slope = abs(dy) > abs(dx);
     if (slope) {
@@ -66,6 +63,32 @@ vector<Coordinates> bresenham(Coordinates start, Coordinates end) {
     return crossed_points;
 }
 
+vector<Coordinates> linearize(vector<Coordinates> vec, vector<Coordinates> obstacles) {
+    vector<Coordinates> out;
+    int x_dir, y_dir;
+    if (vec.front().get_x() < vec.back().get_x()) { x_dir = 1; }
+    else { x_dir = -1; }
+    if (vec.front().get_y() < vec.back().get_y()) { y_dir = 1; }
+    else { y_dir = -1; }
+    for(unsigned int i = 0; i < vec.size() - 1; i++) {
+        out.emplace_back(vec.at(i));
+        if (!vec.at(i).adjacent(vec.at(i + 1))) {
+            Coordinates option1 = Coordinates(vec.at(i).get_x() + x_dir, vec.at(i).get_y());
+            if (find(obstacles.cbegin(), obstacles.cend(), option1) == obstacles.cend()) { out.push_back(option1); }
+            else { out.push_back(Coordinates(vec.at(i).get_x(), vec.at(i).get_y() + y_dir)); }
+        }
+    }
+    return out;
+}
+
+void vector_to_string(vector<Coordinates> vec) {
+    cout << endl;
+    for (unsigned int i = 0; i < vec.size() - 1; i++){
+        cout << vec.at(i).to_str() << ", ";
+    }
+    cout << vec.back().to_str() << endl;
+}
+
 vector<Coordinates> aStar(Coordinates start, Coordinates end, vector<Coordinates> obstacles) {
     vector<Coordinates> open_list;
     make_heap(open_list.begin(), open_list.end());
@@ -73,8 +96,28 @@ vector<Coordinates> aStar(Coordinates start, Coordinates end, vector<Coordinates
     vector<Coordinates> all_cells;
 
     int grid_height = 18, grid_width = 32;
-    int start_x = start.get(0), start_y = start.get(1);
-    int end_x = end.get(0), end_y = end.get(1);
+    int start_x = start.get_x(), start_y = start.get_y();
+    int end_x = end.get_x(), end_y = end.get_y();
     vector<Coordinates> temp_obstacles = obstacles;
     return temp_obstacles;
+}
+
+int main() {
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
+    Coordinates a = Coordinates(0, 0), b = Coordinates(32, 18);
+    high_resolution_clock::time_point t2 = high_resolution_clock::now();
+    vector<Coordinates> br = bresenham(a, b);
+    high_resolution_clock::time_point t3 = high_resolution_clock::now();
+    vector<Coordinates> lin = linearize(br, {Coordinates(0, 0)});
+    high_resolution_clock ::time_point t4 = high_resolution_clock::now();
+    auto duration1 = duration_cast<nanoseconds>(t2-t1).count();
+    auto duration2 = duration_cast<nanoseconds>(t3-t2).count();
+    auto duration3 = duration_cast<nanoseconds>(t4-t3).count();
+
+    cout << a.to_str() << " / " << b.to_str() << " --- Calculated in : " << duration1 << " nanoseconds" << endl;
+    vector_to_string(br);
+    cout << "Bresenham calculated in : " << duration2 << " nanoseconds" << endl;
+    vector_to_string(lin);
+    cout << "Linearized  in : " << duration3 << " nanoseconds" << endl;
+    return 0;
 }
