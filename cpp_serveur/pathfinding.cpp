@@ -117,7 +117,7 @@ GridCell get_cell(int x, int y, int grid_height, vector<GridCell> all_cells) {
 }
 
 vector<Coordinates> aStar(Coordinates start, Coordinates end, vector<Coordinates> obstacles) {
-    vector<GridCell> open_list;
+    vector<GridCell> open_list = {};
     set<GridCell> closed_list;
     vector<GridCell> all_cells;
 
@@ -145,9 +145,11 @@ vector<Coordinates> aStar(Coordinates start, Coordinates end, vector<Coordinates
 
     open_list.push_back(start_cell);
     while (!open_list.empty()) {
-        open_list.erase(open_list.begin());
-        open_list.shrink_to_fit();
         GridCell active_cell = open_list.back();
+        reverse(open_list.begin(), open_list.end());
+        open_list.pop_back();
+        reverse(open_list.begin(), open_list.end());
+        open_list.shrink_to_fit();
         closed_list.insert(active_cell);
         if (active_cell == end_cell) {
             break;
@@ -213,7 +215,7 @@ int main() {
     high_resolution_clock::time_point t3 = high_resolution_clock::now();
     vector<Coordinates> lin = linearize(br, {Coordinates(0, 0)});
     high_resolution_clock::time_point t4 = high_resolution_clock::now();
-    vector<Coordinates> as = aStar(a, b, {});
+    vector<Coordinates> as = aStar(a, b, {Coordinates(3, 2)});
     high_resolution_clock::time_point t5 = high_resolution_clock::now();
 
     auto duration1 = duration_cast<nanoseconds>(t2-t1).count();
