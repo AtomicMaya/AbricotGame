@@ -11,7 +11,13 @@ private:
 public:
     GridCell(int, int, bool);
 
-    void set_is_obstacle(bool);
+    GridCell operator+ (GridCell &rhs) { return GridCell(x + rhs.x, x + rhs.x, obstacle); }
+    GridCell operator- (GridCell &rhs) { return GridCell(x - rhs.x, y - rhs.y, obstacle); }
+    bool operator< (GridCell &rhs) { return x < rhs.x; }
+    bool operator> (GridCell &rhs) { return x > rhs.x; }
+    bool operator== (GridCell &rhs) { return (x == rhs.x) && (y == rhs.y); }
+    bool inferior_than(GridCell const& lhs) const;
+
     void set_parent(GridCell&);
     void set_g(unsigned int);
     void set_h(unsigned int);

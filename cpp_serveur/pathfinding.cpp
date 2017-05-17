@@ -3,9 +3,13 @@
 #include <vector>
 #include <set>
 #include <chrono>
+#include <algorithm>
 
 using namespace std;
 using namespace std::chrono;
+
+
+
 
 bool contains(Coordinates c, vector<Coordinates> obj_to_scan) {
         bool result = false;
@@ -24,7 +28,7 @@ bool contains(GridCell b, vector<GridCell> obj_to_scan) {
 }
 
 bool contains(GridCell c, set<GridCell> obj_to_scan) {
-    return obj_to_scan.find(c) != obj_to_scan.end();
+    return obj_to_scan.count(c) != 0;
 }
 
 vector<Coordinates> bresenham(Coordinates start, Coordinates end) {
@@ -142,6 +146,7 @@ vector<Coordinates> aStar(Coordinates start, Coordinates end, vector<Coordinates
     open_list.push_back(start_cell);
     while (!open_list.empty()) {
         open_list.erase(open_list.begin());
+        open_list.shrink_to_fit();
         GridCell active_cell = open_list.back();
         closed_list.insert(active_cell);
         if (active_cell == end_cell) {
@@ -194,6 +199,11 @@ vector<Coordinates> aStar(Coordinates start, Coordinates end, vector<Coordinates
     }
     return path;
 }
+
+bool operator<(GridCell const &a, GridCell const& b){
+    return a.inferior_than(b);
+}
+
 
 int main() {
     high_resolution_clock::time_point t1 = high_resolution_clock::now();

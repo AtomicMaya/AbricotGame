@@ -14,10 +14,14 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ba7c346c-f5a5-4cba-b451-d050d3aa7db9" name="Default" comment="cpp a* finished neighbors">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/cpp_serveur.dir/pathfinding.cpp.obj" afterPath="" />
+    <list default="true" id="ba7c346c-f5a5-4cba-b451-d050d3aa7db9" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/pathfinding.exe" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/cpp_serveur.dir/Coordinates.cpp.obj" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/cpp_serveur.dir/Coordinates.cpp.obj" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/cpp_serveur.dir/GridCell.cpp.obj" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/cpp_serveur.dir/GridCell.cpp.obj" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/cpp_serveur.dir/objects.a" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/cpp_serveur.dir/objects.a" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cmake-build-debug/cpp_serveur.exe" afterPath="$PROJECT_DIR$/cmake-build-debug/cpp_serveur.exe" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Coordinates.h" afterPath="$PROJECT_DIR$/Coordinates.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GridCell.cpp" afterPath="$PROJECT_DIR$/GridCell.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GridCell.h" afterPath="$PROJECT_DIR$/GridCell.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/cpp_serveur.dir/CXX.includecache" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/cpp_serveur.dir/CXX.includecache" />
@@ -50,16 +54,15 @@
       <file leaf-file-name="pathfinding.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pathfinding.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="45" column="25" lean-forward="true" selection-start-line="45" selection-start-column="25" selection-end-line="45" selection-end-column="25" />
+            <state relative-caret-position="349">
+              <caret line="185" column="17" lean-forward="true" selection-start-line="185" selection-start-column="17" selection-end-line="185" selection-end-column="17" />
               <folding>
                 <element signature="e#0#21#0" expanded="true" />
-                <element signature="e#145#451#0" expanded="false" />
-                <element signature="e#453#675#0" expanded="false" />
-                <element signature="e#677#786#0" expanded="false" />
-                <element signature="e#2096#2959#0" expanded="false" />
-                <element signature="e#2961#3175#0" expanded="false" />
-                <element signature="e#3177#3332#0" expanded="false" />
+                <element signature="e#169#475#0" expanded="false" />
+                <element signature="e#477#699#0" expanded="false" />
+                <element signature="e#2105#2968#0" expanded="false" />
+                <element signature="e#2970#3184#0" expanded="false" />
+                <element signature="e#3186#3341#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -68,8 +71,8 @@
       <file leaf-file-name="Coordinates.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Coordinates.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="21" column="1" lean-forward="false" selection-start-line="21" selection-start-column="1" selection-end-line="21" selection-end-column="1" />
+            <state relative-caret-position="136">
+              <caret line="8" column="17" lean-forward="false" selection-start-line="8" selection-start-column="17" selection-end-line="8" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -78,8 +81,8 @@
       <file leaf-file-name="Coordinates.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Coordinates.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="19" lean-forward="true" selection-start-line="0" selection-start-column="19" selection-end-line="0" selection-end-column="19" />
+            <state relative-caret-position="102">
+              <caret line="6" column="7" lean-forward="false" selection-start-line="6" selection-start-column="7" selection-end-line="6" selection-end-column="7" />
               <folding />
             </state>
           </provider>
@@ -88,11 +91,11 @@
       <file leaf-file-name="GridCell.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GridCell.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="34">
-              <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+            <state relative-caret-position="510">
+              <caret line="32" column="77" lean-forward="false" selection-start-line="32" selection-start-column="77" selection-end-line="32" selection-end-column="77" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
-                <element signature="e#65#153#0" expanded="false" />
+                <element signature="e#66#154#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -101,14 +104,20 @@
       <file leaf-file-name="GridCell.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GridCell.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
-              <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="22" />
+            <state relative-caret-position="289">
+              <caret line="17" column="60" lean-forward="true" selection-start-line="17" selection-start-column="60" selection-end-line="17" selection-end-column="60" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
     </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>get</find>
+      <find>erase</find>
+    </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="PREVIOUS_COMMIT_AUTHORS">
@@ -404,7 +413,7 @@
       <workItem from="1494954950471" duration="7635000" />
       <workItem from="1494967740693" duration="13810000" />
       <workItem from="1495022376016" duration="4790000" />
-      <workItem from="1495030259246" duration="17756000" />
+      <workItem from="1495030259246" duration="23248000" />
     </task>
     <task id="LOCAL-00001" summary="cpp bresenham a*">
       <created>1495008780666</created>
@@ -434,11 +443,18 @@
       <option name="project" value="LOCAL" />
       <updated>1495025394413</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="cpp finished a* needs bug removal">
+      <created>1495054061647</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1495054061647</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="43991000" />
+    <option name="totallyTimeSpent" value="49483000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -451,16 +467,16 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296146" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3296146" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296146" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3296146" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296146" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296146" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.0921875" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296146" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -471,7 +487,6 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
@@ -504,8 +519,11 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="cpp bresenham a*" />
-    <option name="LAST_COMMIT_MESSAGE" value="cpp bresenham a*" />
+    <MESSAGE value="cpp finished a* needs bug removal" />
+    <option name="LAST_COMMIT_MESSAGE" value="cpp finished a* needs bug removal" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -515,7 +533,7 @@
           <line>291</line>
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="8" />
+      <option name="time" value="15" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -550,12 +568,11 @@
           <caret line="89" column="12" lean-forward="false" selection-start-line="89" selection-start-column="12" selection-end-line="89" selection-end-column="12" />
           <folding>
             <element signature="e#0#21#0" expanded="true" />
-            <element signature="e#145#451#0" expanded="false" />
-            <element signature="e#453#675#0" expanded="false" />
-            <element signature="e#677#786#0" expanded="false" />
-            <element signature="e#2096#2959#0" expanded="false" />
-            <element signature="e#2961#3175#0" expanded="false" />
-            <element signature="e#3177#3332#0" expanded="false" />
+            <element signature="e#169#475#0" expanded="false" />
+            <element signature="e#477#699#0" expanded="false" />
+            <element signature="e#2105#2968#0" expanded="false" />
+            <element signature="e#2970#3184#0" expanded="false" />
+            <element signature="e#3186#3341#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -574,12 +591,11 @@
           <caret line="68" column="0" lean-forward="false" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
           <folding>
             <element signature="e#0#21#0" expanded="true" />
-            <element signature="e#145#451#0" expanded="false" />
-            <element signature="e#453#675#0" expanded="false" />
-            <element signature="e#677#786#0" expanded="false" />
-            <element signature="e#2096#2959#0" expanded="false" />
-            <element signature="e#2961#3175#0" expanded="false" />
-            <element signature="e#3177#3332#0" expanded="false" />
+            <element signature="e#169#475#0" expanded="false" />
+            <element signature="e#477#699#0" expanded="false" />
+            <element signature="e#2105#2968#0" expanded="false" />
+            <element signature="e#2970#3184#0" expanded="false" />
+            <element signature="e#3186#3341#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -614,12 +630,11 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
           <folding>
             <element signature="e#0#21#0" expanded="true" />
-            <element signature="e#145#451#0" expanded="false" />
-            <element signature="e#453#675#0" expanded="false" />
-            <element signature="e#677#786#0" expanded="false" />
-            <element signature="e#2096#2959#0" expanded="false" />
-            <element signature="e#2961#3175#0" expanded="false" />
-            <element signature="e#3177#3332#0" expanded="false" />
+            <element signature="e#169#475#0" expanded="false" />
+            <element signature="e#477#699#0" expanded="false" />
+            <element signature="e#2105#2968#0" expanded="false" />
+            <element signature="e#2970#3184#0" expanded="false" />
+            <element signature="e#3186#3341#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -728,10 +743,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Coordinates.cpp">
+    <entry file="file://C:/MinGW/lib/gcc/mingw32/5.3.0/include/c++/bits/stl_heap.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="21" column="1" lean-forward="false" selection-start-line="21" selection-start-column="1" selection-end-line="21" selection-end-column="1" />
+        <state relative-caret-position="212">
+          <caret line="152" column="6" lean-forward="false" selection-start-line="152" selection-start-column="6" selection-end-line="152" selection-end-column="6" />
           <folding />
         </state>
       </provider>
@@ -744,53 +759,52 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Coordinates.h">
+    <entry file="file://$PROJECT_DIR$/GridCell.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="19" lean-forward="true" selection-start-line="0" selection-start-column="19" selection-end-line="0" selection-end-column="19" />
+        <state relative-caret-position="289">
+          <caret line="17" column="60" lean-forward="true" selection-start-line="17" selection-start-column="60" selection-end-line="17" selection-end-column="60" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GridCell.h">
+    <entry file="file://$PROJECT_DIR$/Coordinates.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="22" />
+        <state relative-caret-position="136">
+          <caret line="8" column="17" lean-forward="false" selection-start-line="8" selection-start-column="17" selection-end-line="8" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Coordinates.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" column="7" lean-forward="false" selection-start-line="6" selection-start-column="7" selection-end-line="6" selection-end-column="7" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/GridCell.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+        <state relative-caret-position="510">
+          <caret line="32" column="77" lean-forward="false" selection-start-line="32" selection-start-column="77" selection-end-line="32" selection-end-column="77" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
-            <element signature="e#65#153#0" expanded="false" />
+            <element signature="e#66#154#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/MinGW/lib/gcc/mingw32/5.3.0/include/c++/bits/stl_heap.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="212">
-          <caret line="152" column="6" lean-forward="false" selection-start-line="152" selection-start-column="6" selection-end-line="152" selection-end-column="6" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/pathfinding.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="45" column="25" lean-forward="true" selection-start-line="45" selection-start-column="25" selection-end-line="45" selection-end-column="25" />
+        <state relative-caret-position="349">
+          <caret line="185" column="17" lean-forward="true" selection-start-line="185" selection-start-column="17" selection-end-line="185" selection-end-column="17" />
           <folding>
             <element signature="e#0#21#0" expanded="true" />
-            <element signature="e#145#451#0" expanded="false" />
-            <element signature="e#453#675#0" expanded="false" />
-            <element signature="e#677#786#0" expanded="false" />
-            <element signature="e#2096#2959#0" expanded="false" />
-            <element signature="e#2961#3175#0" expanded="false" />
-            <element signature="e#3177#3332#0" expanded="false" />
+            <element signature="e#169#475#0" expanded="false" />
+            <element signature="e#477#699#0" expanded="false" />
+            <element signature="e#2105#2968#0" expanded="false" />
+            <element signature="e#2970#3184#0" expanded="false" />
+            <element signature="e#3186#3341#0" expanded="false" />
           </folding>
         </state>
       </provider>
