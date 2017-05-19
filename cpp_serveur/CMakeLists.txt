@@ -3,8 +3,6 @@ project(cpp_serveur)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(SOURCE_FILES
-        GridCell.h GridCell.cpp
-        pathfinding.cpp Coordinates.cpp Coordinates.h)
+set(SOURCE_FILES)
 
-add_executable(cpp_serveur ${SOURCE_FILES} pathfinding.cpp)
+add_executable(astar ${SOURCE_FILES} astar.cpp)

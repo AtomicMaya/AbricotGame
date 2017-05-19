@@ -31,3 +31,10 @@ bool GridCell::has_parent() {
 }
 
 bool GridCell::inferior_than(GridCell const& lhs) const { return x < lhs.x; }
+
+string GridCell::to_str(){
+    ostringstream oss;
+    oss.clear();
+    oss << "(" << x << ", " << y << ")";
+    return oss.str();
+}

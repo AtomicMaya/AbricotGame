@@ -30,6 +30,7 @@ public:
     unsigned int get_f();
 
     bool has_parent();
+    std::string to_str();
 };
 
 #endif
