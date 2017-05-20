@@ -2,21 +2,21 @@
 using namespace std;
 
 Coordinates::Coordinates(int a, int b) {
-    x = a;
-    y = b;
+    m_x = a;
+    m_y = b;
 }
 
 int Coordinates::get_x() {
-    return x;
+    return m_x;
 }
 
 int Coordinates::get_y() {
-    return y;
+    return m_y;
 }
 
-string Coordinates::to_str(){
+string Coordinates::to_str() {  // Debug Function
     ostringstream oss;
     oss.clear();
-    oss << "(" << x << ", " << y << ")";
+    oss << "(" << m_x << ", " << m_y << ")";
     return oss.str();
 }

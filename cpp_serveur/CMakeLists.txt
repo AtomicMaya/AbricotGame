@@ -3,6 +3,6 @@ project(cpp_serveur)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(SOURCE_FILES)
+set(SOURCE_FILES astar.cpp Coordinates.cpp Coordinates.h)
 
-add_executable(astar ${SOURCE_FILES} astar.cpp)
+add_executable(cpp_serveur ${SOURCE_FILES} astar.cpp)

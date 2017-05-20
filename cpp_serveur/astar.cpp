@@ -1,17 +1,16 @@
-// Astar.cpp
-// http://en.wikipedia.org/wiki/A*
-// Compiler: Dev-C++ 4.9.9.2
-// FB - 201012256
 #include <iostream>
 #include <iomanip>
 #include <queue>
 #include <string>
 #include <math.h>
 #include <ctime>
+#include <chrono>
+#include "Coordinates.h"
 using namespace std;
+using namespace std::chrono;
 
-const int map_width = 60; // horizontal size of the map
-const int map_height = 60; // vertical size size of the map
+const int map_width = 32; // horizontal size of the map
+const int map_height = 18; // vertical size size of the map
 static int map[map_width][map_height];
 static int closed_nodes_map[map_width][map_height]; // map of closed (tried-out) nodes
 static int open_nodes_map[map_width][map_height]; // map of open (not-yet-tried) nodes
@@ -92,23 +91,15 @@ string pathFind(const int & xStart, const int & yStart,
 
 	while (!pq[pqi].empty())
 	{
-		// get the current node w/ the highest priority
-		// from the list of open nodes
 		n0 = new GridCell(pq[pqi].top().get_x(), pq[pqi].top().get_y(),
 			pq[pqi].top().get_Level(), pq[pqi].top().get_Priority());
 
 		x = n0->get_x(); y = n0->get_y();
 
-		pq[pqi].pop(); // remove the node from the open list
+		pq[pqi].pop();
 		open_nodes_map[x][y] = 0;
-		// mark it on the closed nodes map
 		closed_nodes_map[x][y] = 1;
-
-		// quit searching when the goal state is reached
-		//if((*n0).estimate(xFinish, yFinish) == 0)
 		if (x == xFinish && y == yFinish) {
-			// generate the path from finish to start
-			// by following the directions
 			string path = "";
 			while (!(x == xStart && y == yStart)) {
 				j = dir_map[x][y];
@@ -118,7 +109,6 @@ string pathFind(const int & xStart, const int & yStart,
 				y += dy[j];
 			}
 
-			// garbage collection
 			delete n0;
 			while (!pq[pqi].empty()) pq[pqi].pop();
 			return path;
@@ -131,40 +121,29 @@ string pathFind(const int & xStart, const int & yStart,
 			if (!(xdx<0 || xdx>map_width - 1 || ydy<0 || ydy>map_height - 1 || map[xdx][ydy] == 1
 				|| closed_nodes_map[xdx][ydy] == 1))
 			{
-				// generate a child node
 				m0 = new GridCell(xdx, ydy, n0->get_Level(),
 					n0->get_Priority());
 				m0->next_Level(i);
 				m0->update_Priority(xFinish, yFinish);
 
-				// if it is not in the open list then add into that
 				if (open_nodes_map[xdx][ydy] == 0)
 				{
 					open_nodes_map[xdx][ydy] = m0->get_Priority();
 					pq[pqi].push(*m0);
-					// mark its parent node direction
 					dir_map[xdx][ydy] = (i + available_directions / 2) % available_directions;
 				}
 				else if (open_nodes_map[xdx][ydy]>m0->get_Priority())
 				{
-					// update the priority info
 					open_nodes_map[xdx][ydy] = m0->get_Priority();
-					// update the parent direction info
 					dir_map[xdx][ydy] = (i + available_directions / 2) % available_directions;
 
-					// replace the node
-					// by emptying one pq to the other one
-					// except the node to be replaced will be ignored
-					// and the new node will be pushed in instead
 					while (!(pq[pqi].top().get_x() == xdx &&
 						pq[pqi].top().get_y() == ydy))
 					{
 						pq[1 - pqi].push(pq[pqi].top());
 						pq[pqi].pop();
 					}
-					pq[pqi].pop(); // remove the wanted node
-
-								   // empty the larger size pq to the smaller one
+					pq[pqi].pop();
 					if (pq[pqi].size()>pq[1 - pqi].size()) pqi = 1 - pqi;
 					while (!pq[pqi].empty())
 					{
@@ -172,26 +151,22 @@ string pathFind(const int & xStart, const int & yStart,
 						pq[pqi].pop();
 					}
 					pqi = 1 - pqi;
-					pq[pqi].push(*m0); // add the better node instead
+					pq[pqi].push(*m0);
 				}
-				else delete m0; // garbage collection
+				else delete m0; 
 			}
 		}
-		delete n0; // garbage collection
+		delete n0;
 	}
-	return ""; // no route found
+	return "";
 }
 
-string calculate_movement()
-{
-	srand(time(NULL));
+string calculate_movement(Coordinates start, Coordinates end) {
 
-	// create empty map
 	for (int y = 0; y<map_height; y++) {
 		for (int x = 0; x<map_width; x++) map[x][y] = 0;
 	}
 
-	// fillout the map matrix with a '+' pattern
 	for (int x = map_width / 8; x<map_width * 7 / 8; x++) {
 		map[x][map_height / 2] = 1;
 	}
@@ -199,25 +174,19 @@ string calculate_movement()
 		map[map_width / 2][y] = 1;
 	}
 
-	// randomly select start and finish locations
-	int xA, yA, xB, yB;
-	xA = 0; yA = 0; xB = 10; yB = 12;
+	int x_start = start.m_x, y_start = start.m_y, x_end = end.m_x, y_end = end.m_y;
 
-	cout << "Map Size (X,Y): " << map_width << "," << map_height << endl;
-	cout << "Start: " << xA << "," << yA << endl;
-	cout << "Finish: " << xB << "," << yB << endl;
-	// get the route
-	clock_t start = clock();
-	string route = pathFind(xA, yA, xB, yB);
-	if (route == "") cout << "An empty route generated!" << endl;
-	clock_t end = clock();
-	double time_elapsed = double(end - start);
-	cout << "Time to calculate the route (ms): " << time_elapsed << endl;
+	high_resolution_clock::time_point t1 = high_resolution_clock::now();
+	string route = pathFind(x_start, y_start, x_end, y_end);
+	high_resolution_clock::time_point t2 = high_resolution_clock::now();
+	auto duration1 = duration_cast<nanoseconds>(t2 - t1).count();
+	cout << "Time to calculate the route (ns): " << duration1 << endl;
 	return route;
 }
 
 int main() {
-	string path = calculate_movement();
+	Coordinates start = Coordinates(10, 12), end = Coordinates(21, 15);
+	string path = calculate_movement(start, end);
 	cout << path;
 	getchar();
 	return 0;
