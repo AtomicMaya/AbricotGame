@@ -1,0 +1,46 @@
+# depslib dependency file v1.0
+1495202268 source:f:\abricotgame\serveur\serveur\entitee.cpp
+	"Entitee.h"
+
+1495187694 source:f:\abricotgame\serveur\serveur\mob.cpp
+
+1495189568 source:f:\abricotgame\serveur\serveur\main.cpp
+
+1495203058 source:f:\abricotgame\serveur\serveur\coordinates.cpp
+	"Coordinates.h"
+
+1495201670 f:\abricotgame\serveur\serveur\coordinates.h
+	<sstream>
+
+1495202144 source:f:\abricotgame\serveur\serveur\caracteristiques.cpp
+	"Caracteristiques.h"
+
+1495201710 f:\abricotgame\serveur\serveur\caracteristiques.h
+
+1495202144 f:\abricotgame\serveur\serveur\entitee.h
+	"Coordinates.h"
+	"Caracteristiques.h"
+
+1495201782 source:d:\abricotgame\serveur\serveur\main.cpp
+	"Entitee.h"
+
+1495201446 source:d:\abricotgame\serveur\serveur\entitee.cpp
+	"Entitee.h"
+
+1495201446 d:\abricotgame\serveur\serveur\entitee.h
+	"Coordinates.h"
+	"Caracteristiques.h"
+
+1495201400 d:\abricotgame\serveur\serveur\coordinates.h
+	<sstream>
+
+1495201400 d:\abricotgame\serveur\serveur\caracteristiques.h
+
+1495184094 source:d:\abricotgame\serveur\serveur\mob.cpp
+
+1495201400 source:d:\abricotgame\serveur\serveur\coordinates.cpp
+	"Coordinates.h"
+
+1495201400 source:d:\abricotgame\serveur\serveur\caracteristiques.cpp
+	"Caracteristiques.h"
+

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Serveur" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin\Debug\Serveur" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Debug\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin\Release\Serveur" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Release\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-std=c++98" />
+			<Add option="-Wall" />
+			<Add option="-pedantic" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Unit filename="Caracteristiques.cpp" />
+		<Unit filename="Caracteristiques.h" />
+		<Unit filename="Coordinates.cpp" />
+		<Unit filename="Coordinates.h" />
+		<Unit filename="Entitee.cpp" />
+		<Unit filename="Entitee.h" />
+		<Unit filename="Mob.cpp" />
+		<Unit filename="Mob.h" />
+		<Unit filename="TypeMob.cpp" />
+		<Unit filename="TypeMob.h" />
+		<Unit filename="main.cpp">
+			<Option weight="0" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
