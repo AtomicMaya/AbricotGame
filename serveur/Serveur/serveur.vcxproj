@@ -112,6 +112,7 @@
   <ItemGroup>
     <ClInclude Include="Caracteristiques.h" />
     <ClInclude Include="Coordinates.h" />
+    <ClInclude Include="Effet.h" />
     <ClInclude Include="Entitee.h" />
     <ClInclude Include="Mob.h" />
     <ClInclude Include="Spell.h" />
@@ -120,6 +121,7 @@
   <ItemGroup>
     <ClCompile Include="Caracteristiques.cpp" />
     <ClCompile Include="Coordinates.cpp" />
+    <ClCompile Include="Effet.cpp" />
     <ClCompile Include="Entitee.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mob.cpp" />
