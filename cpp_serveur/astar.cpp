@@ -5,6 +5,7 @@
 #include <math.h>
 #include <ctime>
 #include <chrono>
+#include <list>
 #include "Coordinates.h"
 using namespace std;
 using namespace std::chrono;
@@ -31,19 +32,14 @@ class GridCell
 	int priority;  // smaller: higher priority
 
 public:
-	GridCell(int xp, int yp, int d, int p)
-	{
-		m_x = xp; m_y = yp; level = d; priority = p;
-	}
+	GridCell(int xp, int yp, int d, int p) { m_x = xp; m_y = yp; level = d; priority = p; }
 
 	int get_x() const { return m_x; }
 	int get_y() const { return m_y; }
 	int get_Level() const { return level; }
 	int get_Priority() const { return priority; }
 
-	void update_Priority(const int & xDest, const int & yDest) {
-		priority = level + heuristic(xDest, yDest) * 10;
-	}
+	void update_Priority(const int & xDest, const int & yDest) { priority = level + heuristic(xDest, yDest) * 10; }
 
 	void next_Level(const int & dir) { level += (available_directions == 8 ? (dir % 2 == 0 ? 10 : 14) : 10); }
 
@@ -52,7 +48,6 @@ public:
 		static int xd, yd, d;
 		xd = xDest - m_x;
 		yd = yDest - m_y;
-
 		d = static_cast<int>(sqrt(xd*xd + yd*yd));		// Euclidian Distance
 
 		return(d);
@@ -161,7 +156,7 @@ string pathFind(const int & xStart, const int & yStart,
 	return "";
 }
 
-string calculate_movement(Coordinates start, Coordinates end) {
+list<Coordinates> calculate_movement(Coordinates start, Coordinates end) {
 
 	for (int y = 0; y<map_height; y++) {
 		for (int x = 0; x<map_width; x++) map[x][y] = 0;
@@ -181,13 +176,48 @@ string calculate_movement(Coordinates start, Coordinates end) {
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
 	auto duration1 = duration_cast<nanoseconds>(t2 - t1).count();
 	cout << "Time to calculate the route (ns): " << duration1 << endl;
-	return route;
+	cout << route << endl;
+	list<Coordinates> path = {};
+	// follow the route on the map and display it 
+	if (route.length()>0)
+	{
+		int j; char c;
+		int x = x_start;
+		int y = y_start;
+		map[x][y] = 2;
+		for (int i = 0; i<route.length(); i++)
+		{
+			c = route.at(i);
+			j = atoi(&c);
+			x = x + dx[j];
+			y = y + dy[j];
+			map[x][y] = 3;
+		}
+		map[x][y] = 4;
+
+		// display the map with the route
+		for (int y = 0; y<map_height; y++)
+		{
+			for (int x = 0; x<map_width; x++)
+				if (map[x][y] == 0)
+					cout << ".";
+				else if (map[x][y] == 1)
+					cout << "O"; //obstacle
+				else if (map[x][y] == 2)
+					cout << "S"; //start
+				else if (map[x][y] == 3)
+					cout << "R"; //route
+				else if (map[x][y] == 4)
+					cout << "F"; //finish
+			cout << endl;
+		}
+	}
+	return path;
 }
 
 int main() {
-	Coordinates start = Coordinates(10, 12), end = Coordinates(21, 15);
-	string path = calculate_movement(start, end);
-	cout << path;
+	Coordinates start = Coordinates(31, 17), end = Coordinates(0,0);
+	list<Coordinates> path = calculate_movement(start, end);
 	getchar();
 	return 0;
 }
