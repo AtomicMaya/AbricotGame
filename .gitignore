@@ -1,0 +1,7 @@
+/v15
+
+/cpp_serveur/cmake-build-debug
+/cpp_serveur/CMakeFiles
+/cpp_serveur/.idea
+/cpp_serveur/.vs
+cpp_tools/Map Creator/.vs
