@@ -3,7 +3,7 @@
 
 enum Effets
 {
-	vie,
+	vie
 };
 
 class Effet

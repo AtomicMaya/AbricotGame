@@ -38,10 +38,14 @@
 		<Unit filename="Caracteristiques.h" />
 		<Unit filename="Coordinates.cpp" />
 		<Unit filename="Coordinates.h" />
+		<Unit filename="Effet.cpp" />
+		<Unit filename="Effet.h" />
 		<Unit filename="Entitee.cpp" />
 		<Unit filename="Entitee.h" />
 		<Unit filename="Mob.cpp" />
 		<Unit filename="Mob.h" />
+		<Unit filename="Spell.cpp" />
+		<Unit filename="Spell.h" />
 		<Unit filename="TypeMob.cpp" />
 		<Unit filename="TypeMob.h" />
 		<Unit filename="main.cpp">

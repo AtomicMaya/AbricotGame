@@ -1,10 +1,11 @@
-﻿  Entitee.cpp
-  Effet.cpp
-  Génération de code en cours...
-  Compilation en cours...
+﻿  TypeMob.cpp
   Spell.cpp
-  Génération de code en cours...
-  Ignoré... (aucune modification pertinente détectée)
+  Mob.cpp
   main.cpp
-  serveur.vcxproj -> D:\Abricotgame\serveur\serveur\Debug\serveur.exe
-  serveur.vcxproj -> D:\Abricotgame\serveur\serveur\Debug\serveur.pdb (Partial PDB)
+  Entitee.cpp
+  Effet.cpp
+  Coordinates.cpp
+  Caracteristiques.cpp
+  Génération de code en cours...
+  serveur.vcxproj -> F:\Abricotgame\serveur\Serveur\Debug\serveur.exe
+  serveur.vcxproj -> F:\Abricotgame\serveur\Serveur\Debug\serveur.pdb (Partial PDB)

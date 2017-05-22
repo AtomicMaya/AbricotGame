@@ -4,22 +4,29 @@
 #include "Caracteristiques.h"
 #include "Effet.h"
 #include <list>
-#include <string>
+#include "Spell.h"
+#include <vector>
+
+class Spell;
 
 class Entitee
 {
 public:
     Entitee();
-    Entitee(int vie, int energie, int vitesse);
+    Entitee(int vie, int energie, int vitesse,std::string name,int level,const std::vector<Spell*> &spells);
+    Entitee(Caracteristiques max,std::string name,int level,const std::vector<Spell*> &spells);
 	void recevoir_effet(Effet effet);
-private:
-	void subir_effet(Effet & effet);
-	std::string name;
+protected:
+	void subir_effet(Effet &effet);
+	virtual void mort()=0;
+	const std::string m_name;
     Coordinates m_position;
     Caracteristiques m_maxAttributs;
     Caracteristiques m_varAttributs;
 	std::list<Effet> m_effetsSubis;
-	virtual void mort()=0;
+	const std::vector<Spell*> m_spells;
+	int m_level;
 };
+
 
 #endif // ENTITEE_H_INCLUDED

@@ -1,9 +1,10 @@
 #ifndef SPELL_H_INCLUDED
 #define SPELL_H_INCLUDED
 
-#include <string>
-#include <vector>
 #include "Entitee.h"
+#include <vector>
+
+class Entitee;
 
 class Spell
 {
@@ -18,5 +19,6 @@ private:
 	const int m_reload;
 	std::vector<Effet> m_effect;
 };
+
 
 #endif

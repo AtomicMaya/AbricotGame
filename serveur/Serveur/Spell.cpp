@@ -8,4 +8,4 @@ void Spell::appliquer_effet(Entitee &cible)const
 	{
 		cible.recevoir_effet(m_effect[i]);
 	}
-};
+}
