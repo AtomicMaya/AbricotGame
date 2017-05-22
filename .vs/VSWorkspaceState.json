@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\cpp_serveur"
+    "\\cpp_serveur",
+    "\\serveur"
   ],
-  "SelectedNode": "\\cpp_serveur\\CMakeSettings.json",
+  "SelectedNode": "\\cpp_serveur\\CMakeLists.txt",
   "PreviewInSolutionExplorer": false
 }
