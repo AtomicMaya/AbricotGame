@@ -2,6 +2,8 @@
   "ExpandedNodes": [
     "",
     "\\cpp_serveur",
+    "\\cpp_serveur\\CMakeFiles",
+    "\\cpp_serveur\\CMakeFiles\\3.8.1",
     "\\serveur"
   ],
   "SelectedNode": "\\cpp_serveur\\CMakeLists.txt",
