@@ -1,5 +1,4 @@
-#ifndef GRID_CELL
-#define GRID_CELL
+#pragma once
 
 class GridCell {
 private:
@@ -23,5 +22,3 @@ public:
 	const int & heuristic(const int & x_end, const int & y_end) const;
 	friend bool operator<(const GridCell & a, const GridCell & b) { return a.get_priority() > b.get_priority(); }
 };
-
-#endif // !GRID_CELL

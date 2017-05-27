@@ -1,6 +1,4 @@
-#ifndef COORDINATES
-#define COORDINATES
-
+#pragma once
 #include <sstream>
 class Coordinates{
 
@@ -16,4 +14,3 @@ public:
     bool operator== (Coordinates &rhs) { return (m_x == rhs.get_x()) && (m_y == rhs.get_y()); }
     std::string to_str();
 };
-#endif
