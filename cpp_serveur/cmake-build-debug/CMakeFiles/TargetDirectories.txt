@@ -1,3 +1,0 @@
-C:/Users/boeck/Desktop/Code/AbricotGit2/AbricotGame/cpp_serveur/cmake-build-debug/CMakeFiles/cpp_serveur.dir
-C:/Users/boeck/Desktop/Code/AbricotGit2/AbricotGame/cpp_serveur/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/boeck/Desktop/Code/AbricotGit2/AbricotGame/cpp_serveur/cmake-build-debug/CMakeFiles/rebuild_cache.dir

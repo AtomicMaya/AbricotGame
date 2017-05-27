@@ -1,3 +1,0 @@
-"D:\CLion 2017.1\bin\cmake\bin\cmake.exe" -E remove -f CMakeFiles\cpp_serveur.dir/objects.a
-C:\MinGW\bin\ar.exe cr CMakeFiles\cpp_serveur.dir/objects.a @CMakeFiles\cpp_serveur.dir\objects1.rsp
-C:\MinGW\bin\g++.exe  -g   -Wl,--whole-archive CMakeFiles\cpp_serveur.dir/objects.a -Wl,--no-whole-archive  -o cpp_serveur.exe -Wl,--out-implib,libcpp_serveur.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\cpp_serveur.dir\linklibs.rsp
