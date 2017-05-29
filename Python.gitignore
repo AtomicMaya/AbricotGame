@@ -106,5 +106,7 @@ ENV/
 #pycharm
 .idea
 
+
 #VisualStudio
+#VS
 .vs

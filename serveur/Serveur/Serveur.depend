@@ -1,0 +1,127 @@
+# depslib dependency file v1.0
+1495202268 source:f:\abricotgame\serveur\serveur\entitee.cpp
+	"Entitee.h"
+
+1495187694 source:f:\abricotgame\serveur\serveur\mob.cpp
+
+1495189568 source:f:\abricotgame\serveur\serveur\main.cpp
+
+1495203058 source:f:\abricotgame\serveur\serveur\coordinates.cpp
+	"Coordinates.h"
+
+1495201670 f:\abricotgame\serveur\serveur\coordinates.h
+	<sstream>
+
+1495202144 source:f:\abricotgame\serveur\serveur\caracteristiques.cpp
+	"Caracteristiques.h"
+
+1495201710 f:\abricotgame\serveur\serveur\caracteristiques.h
+
+1495202144 f:\abricotgame\serveur\serveur\entitee.h
+	"Coordinates.h"
+	"Caracteristiques.h"
+
+1495436950 source:d:\abricotgame\serveur\serveur\main.cpp
+	"Mob.h"
+
+1495405826 source:d:\abricotgame\serveur\serveur\entitee.cpp
+	"Entitee.h"
+
+1495438010 d:\abricotgame\serveur\serveur\entitee.h
+	"Coordinates.h"
+	"Caracteristiques.h"
+	"Effet.h"
+	<list>
+	"Spell.h"
+	<vector>
+
+1495392542 d:\abricotgame\serveur\serveur\coordinates.h
+	<sstream>
+
+1495201400 d:\abricotgame\serveur\serveur\caracteristiques.h
+
+1495437022 source:d:\abricotgame\serveur\serveur\mob.cpp
+	"Mob.h"
+
+1495201400 source:d:\abricotgame\serveur\serveur\coordinates.cpp
+	"Coordinates.h"
+
+1495201400 source:d:\abricotgame\serveur\serveur\caracteristiques.cpp
+	"Caracteristiques.h"
+
+1495435754 d:\abricotgame\serveur\serveur\effet.h
+
+1495406138 source:d:\abricotgame\serveur\serveur\effet.cpp
+	"Effet.h"
+
+1495435786 source:d:\abricotgame\serveur\serveur\spell.cpp
+	"Spell.h"
+
+1495436970 d:\abricotgame\serveur\serveur\spell.h
+	"Entitee.h"
+	<vector>
+
+1495392910 source:d:\abricotgame\serveur\serveur\typemob.cpp
+	"TypeMob.h"
+
+1495436608 d:\abricotgame\serveur\serveur\typemob.h
+	<string>
+	"Caracteristiques.h"
+	"Spell.h"
+
+1495437276 d:\abricotgame\serveur\serveur\mob.h
+	"Entitee.h"
+	"TypeMob.h"
+
+1495436950 source:e:\abricotgame\serveur\serveur\main.cpp
+	"Mob.h"
+
+1495437276 e:\abricotgame\serveur\serveur\mob.h
+	"Entitee.h"
+	"TypeMob.h"
+
+1495459786 e:\abricotgame\serveur\serveur\entitee.h
+	"Coordinates.h"
+	"Caracteristiques.h"
+	"Effet.h"
+	<list>
+	"Spell.h"
+	<vector>
+
+1495392542 e:\abricotgame\serveur\serveur\coordinates.h
+	<sstream>
+
+1495201400 e:\abricotgame\serveur\serveur\caracteristiques.h
+
+1495435754 e:\abricotgame\serveur\serveur\effet.h
+
+1495436970 e:\abricotgame\serveur\serveur\spell.h
+	"Entitee.h"
+	<vector>
+
+1495459566 e:\abricotgame\serveur\serveur\typemob.h
+	<string>
+	"Caracteristiques.h"
+	"Spell.h"
+
+1495406138 source:e:\abricotgame\serveur\serveur\effet.cpp
+	"Effet.h"
+
+1495435786 source:e:\abricotgame\serveur\serveur\spell.cpp
+	"Spell.h"
+
+1495459566 source:e:\abricotgame\serveur\serveur\typemob.cpp
+	"TypeMob.h"
+
+1495201400 source:e:\abricotgame\serveur\serveur\coordinates.cpp
+	"Coordinates.h"
+
+1495201400 source:e:\abricotgame\serveur\serveur\caracteristiques.cpp
+	"Caracteristiques.h"
+
+1495460040 source:e:\abricotgame\serveur\serveur\entitee.cpp
+	"Entitee.h"
+
+1495459736 source:e:\abricotgame\serveur\serveur\mob.cpp
+	"Mob.h"
+
