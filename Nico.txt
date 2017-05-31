@@ -1,0 +1,17 @@
+Event Handling :
+	Window Resized 		-> Handle correct drawing of dimensions if not auto.
+	Window Lost Focus 	-> Escape Menu if client state out of combat else nothing
+	Window Gained Focus -> Nothing
+	Window Closed 		-> Save Data Server-side and client-side and exit process.
+	// If menu not opened, open menu else close.
+	Keyboard I 			-> Inventory
+	Keyboard Enter		-> Write to Chat
+	Keyboard S			-> Spells
+	Keyboard 1-0		-> Mapped action (Activate spell targeting, eat food, etc...)
+	Keyboard J 			-> Quests
+	Keyboard G			-> Guild ?
+	Keyboard Esc		-> Escape Menu
+	
+	MouseMoved			-> Compare with box bounds (Map ?, Chat ?, Menus area ?) then compare inside.
+	
+	
