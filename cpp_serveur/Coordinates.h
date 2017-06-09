@@ -1,16 +1,30 @@
 #pragma once
 #include <sstream>
-class Coordinates{
-
+class Coordinates
+{
 public:
-    int m_x, m_y;
-
+    const int x, y;
+    Coordinates();
     Coordinates(int, int);
-    int get_x(), get_y();
-    Coordinates operator+ (Coordinates &rhs) { return Coordinates(m_x + rhs.get_x(), m_y + rhs.get_y()); }
-    Coordinates operator- (Coordinates &rhs) { return Coordinates(m_x - rhs.get_x(), m_y - rhs.get_y()); }
-    bool operator< (Coordinates &rhs) { return m_x < rhs.get_x(); }
-    bool operator> (Coordinates &rhs) { return m_x > rhs.get_x(); }
-    bool operator== (Coordinates &rhs) { return (m_x == rhs.get_x()) && (m_y == rhs.get_y()); }
-    std::string to_str();
+    Coordinates operator+ (Coordinates const& rhs) const
+    {
+        return Coordinates(x + rhs.x, y + rhs.y);
+    }
+    Coordinates operator- (Coordinates const& rhs) const
+    {
+        return Coordinates(x - rhs.x, y - rhs.y);
+    }
+    bool operator< (Coordinates const& rhs) const
+    {
+        return x < rhs.x;
+    }
+    bool operator> (Coordinates const& rhs) const
+    {
+        return x > rhs.x;
+    }
+    bool operator== (Coordinates const& rhs) const
+    {
+        return (x == rhs.x) && (y == rhs.y);
+    }
+    std::string to_str() const;
 };

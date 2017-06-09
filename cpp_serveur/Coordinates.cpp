@@ -1,22 +1,14 @@
 #include "Coordinates.h"
 using namespace std;
 
-Coordinates::Coordinates(int a, int b) {
-    m_x = a;
-    m_y = b;
-}
+Coordinates::Coordinates():x(-1),y(-1) {}
 
-int Coordinates::get_x() {
-    return m_x;
-}
+Coordinates::Coordinates(int a, int b):x(a),y(b) {}
 
-int Coordinates::get_y() {
-    return m_y;
-}
-
-string Coordinates::to_str() {  // Debug Function
+string Coordinates::to_str() const
+{
     ostringstream oss;
     oss.clear();
-    oss << "(" << m_x << ", " << m_y << ")";
+    oss << "(" << x << ", " << y << ")";
     return oss.str();
 }
